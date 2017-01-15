@@ -15,6 +15,23 @@ import com.jfinal.render.ViewType;
 import com.limicala.controller.UserController;
 import com.limicala.model.Admin;
 
+/**
+ * JFinal框架总配置类（继承JFinalConfig类）
+ * 方法作用：
+ * 		1、configConstant(Constants me)
+ * 		       配置视图文件格式、开发模式、上传下载文件的路径等；
+ *  	2、configRoute(Routes me) 代替web.xml的功能，同时实现一个servlet接受处理多个请求
+ * 		       配置请求的映射关系和转发重定向的路径等；
+ * 		3、configPlugin(Plugins me) 
+ * 		       配置添加插件，Plugins类作为插件管理类
+ * 		4、configInterceptor(Interceptors me) 
+ * 		       配置过滤器
+ * 		5、configHandler(Handlers me) 
+ * 		       
+ * 
+ * @author ZDD
+ *
+ */
 public class BaseConfig extends JFinalConfig{
 
 	@Override
@@ -22,20 +39,18 @@ public class BaseConfig extends JFinalConfig{
 		// TODO Auto-generated method stub
 		/**
 		 * JFinal框架的开发配置步骤
-		 * 1。配置视图类型：jsp模式
-		 * 2.
+		 * 1、配置视图类型：jsp模式
+		 * 
+		 */
+
+		/**
+		 * 配置c3p0数据源
 		 */
 		//读取数据库配置文件
 		PropKit.use("c3p0.properties");
 		
-		
 		me.setViewType(ViewType.JSP);
 		me.setDevMode(PropKit.getBoolean("devMode", false));
-		
-		/**
-		 * 配置c3p0数据源
-		 */
-		
 		
 	}
 

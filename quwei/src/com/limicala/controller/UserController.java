@@ -15,7 +15,7 @@ public class UserController extends Controller{
 		}
 	}
 	
-	@Before(Tx.class)
+	@Before(Tx.class)//执行出错事务回滚
 	public void add(){
 		String id = getPara("id");
 		String password = getPara("password");
