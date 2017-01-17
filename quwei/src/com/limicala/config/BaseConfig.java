@@ -12,8 +12,13 @@ import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
 import com.jfinal.render.ViewType;
+import com.limicala.constant.AppTableConstant;
+import com.limicala.controller.AdminController;
 import com.limicala.controller.UserController;
 import com.limicala.model.Admin;
+import com.limicala.model.ConfigOS;
+import com.limicala.model.History;
+import com.limicala.model.Question;
 
 /**
  * JFinal框架总配置类（继承JFinalConfig类）
@@ -47,7 +52,7 @@ public class BaseConfig extends JFinalConfig{
 		 * 配置c3p0数据源
 		 */
 		//读取数据库配置文件
-		PropKit.use("c3p0.properties");
+		PropKit.use("jdbc.properties");
 		
 		me.setViewType(ViewType.JSP);
 		me.setDevMode(PropKit.getBoolean("devMode", false));
@@ -57,7 +62,8 @@ public class BaseConfig extends JFinalConfig{
 	@Override
 	public void configRoute(Routes me) {
 		// TODO Auto-generated method stub
-		me.add("user", UserController.class);
+		me.add("admin", AdminController.class,"/pages/admin");
+		me.add("/", UserController.class,"/pages/user");
 	}
 	
 	@Override
@@ -76,7 +82,10 @@ public class BaseConfig extends JFinalConfig{
 		
 		//把表和一个对象对应起来
 		
-		arp.addMapping("Admin", Admin.class);
+		arp.addMapping(AppTableConstant.ADMIN, AppTableConstant.ADMIN_KEY, Admin.class);
+		arp.addMapping(AppTableConstant.CONFIG_OS,AppTableConstant.CONFIG_OS_KEY, ConfigOS.class);
+		arp.addMapping(AppTableConstant.QUESTION,AppTableConstant.QUESTION_KEY, Question.class);
+		arp.addMapping(AppTableConstant.HISTORY, History.class);
 	}
 
 	@Override
@@ -91,6 +100,6 @@ public class BaseConfig extends JFinalConfig{
 		
 	}
 	public static void main(String[] args) {
-		JFinal.start("WebContent", 6000, "/", 5);
+		JFinal.start("WebContent", 9080, "/", 5);
 	}
 }
