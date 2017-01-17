@@ -5,8 +5,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="/quwei/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="/quwei/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	<style>
 	body{
 	  padding-top: 15px;
@@ -48,7 +48,7 @@
   </div>
 
   </div>
-  	<script src="frame/jquery/js/jquery.js" type="text/javascript"></script>
-	<script src="frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+  	<script src="/quwei/frame/jquery/js/jquery.js" type="text/javascript"></script>
+	<script src="/quwei/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
   </body>
 </html>

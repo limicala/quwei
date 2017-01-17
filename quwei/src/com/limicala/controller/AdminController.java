@@ -31,6 +31,7 @@ public class AdminController extends BaseController{
 	 * ajax判断登录是否合法
 	 */
 	public void doLogin(){
+		System.out.println("done");
 		ResponseModel rm = new ResponseModel();
 		String aid = getPara("id");//账号
 		String apassword = getPara("password");
