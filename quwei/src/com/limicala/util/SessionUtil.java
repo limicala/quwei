@@ -16,7 +16,7 @@ public final class SessionUtil {
 	 * @param userId
 	 * @return
 	 */
-	public static void setAdminUserId(HttpSession httpSession,Integer userId){
+	public static void setAdminUserId(HttpSession httpSession,String userId){
 		if(httpSession != null && userId != null){
 			httpSession.setAttribute(AppConstant.adminUserId, userId);
 		}
@@ -61,7 +61,7 @@ public final class SessionUtil {
 		return null;
 	}
 	
-	public static void setAdminUserInfo(HttpSession httpSession,Integer userId,String username){
+	public static void setAdminUserInfo(HttpSession httpSession,String userId,String username){
 		setAdminUserId(httpSession, userId);
 		setAdminUsername(httpSession, username);
 //		setSessionId(httpSession, sessionId);

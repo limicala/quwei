@@ -31,7 +31,7 @@
             <img src="/quwei/resources/images/main.jpg" class="img-rounded">
         </div>
 
-        <div class="navbar " style="padding-top: 4px;">
+        <div class="navbar" style="padding-top: 4px;">
             <div class="navbar navbar-inner">
                 <div class="container">
                     <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -44,7 +44,7 @@
 
                     <div class="nav-collapse collapse text-center">
                         <ul class="nav" >
-                            <li><a href="#"><span class="icon-user"></span> 用户管理</a></li>
+                            <li><a href="userManageView"><span class="icon-user"></span> 用户管理</a></li>
                             <li><a href="#about"><span class="icon-list-alt"></span> 题库信息管理</a></li>
                             <li><a href="#contact"><span class="icon-check"></span> 答题记录管理</a></li>
                             <li><a href="#contact"><span class="icon-wrench"></span> 系统配置</a></li>

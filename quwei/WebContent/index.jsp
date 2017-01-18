@@ -5,8 +5,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/quwei/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="/quwei/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	<style>
 	body{
 	  padding-top: 15px;
@@ -41,14 +41,14 @@
     </div>
 
   <div class="text-right" style="padding-top: 35px;">
-    <a href="pages/admin/login.jsp"><span class="icon-user"></span>管理员登录</a>
+    <a href="admin"><span class="icon-user"></span>管理员登录</a>
     <p>
       <small class="text-left">@肇庆学院-陈熹图书馆-技术部</small>
     </p>
   </div>
 
   </div>
-  	<script src="/quwei/frame/jquery/js/jquery.js" type="text/javascript"></script>
-	<script src="/quwei/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+  	<script src="frame/jquery/js/jquery.js" type="text/javascript"></script>
+	<script src="frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
   </body>
 </html>

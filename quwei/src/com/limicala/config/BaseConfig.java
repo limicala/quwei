@@ -62,7 +62,7 @@ public class BaseConfig extends JFinalConfig{
 	@Override
 	public void configRoute(Routes me) {
 		// TODO Auto-generated method stub
-		me.add("/admin", AdminController.class,"/pages/user");
+		me.add("/admin", AdminController.class,"/pages/admin");
 		me.add("/", UserController.class,"/pages/user");
 	}
 	

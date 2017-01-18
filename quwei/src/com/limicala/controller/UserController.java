@@ -7,7 +7,7 @@ public class UserController extends BaseController{
 	 * 答题者首页
 	 */
 	public void index(){
-		render("index.jsp");
+		render("/index.jsp");
 	}
 	
 }

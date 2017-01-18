@@ -43,7 +43,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="brand" href="/quwei/pages/admin/index.jsp"><span class="icon-home" style="margin-top: 5px;"></span><strong> 首 页 </strong></a>
+                    <a class="brand" href="mainView"><span class="icon-home" style="margin-top: 5px;"></span><strong> 首 页 </strong></a>
 
                     <div class="nav-collapse collapse text-center">
                         <ul class="nav" style="padding-top:1px;">

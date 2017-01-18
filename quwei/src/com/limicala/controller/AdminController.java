@@ -15,7 +15,15 @@ public class AdminController extends BaseController{
 	 * 管理员首页
 	 */
 	public void index(){
+		render("login.jsp");
+	}
+	
+	public void mainView(){
 		render("index.jsp");
+	}
+	
+	public void userManageView(){
+		render("userManage.jsp");
 	}
 	
 	public void checkAid(){
