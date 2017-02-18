@@ -7,8 +7,8 @@
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
-    <link href="/quwei/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="/quwei/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	<title>趣味问答系统-用户管理</title>
 	
 	<style>
@@ -31,11 +31,12 @@
     </style>
 </head>
 <body>
-	<div class="container">
+    <div class="container">
+        <!-- 图片 -->
         <div class="jumbotron text-center" style="padding-top: 5px;">
-            <img src="/quwei/resources/images/main.jpg" class="img-rounded">
+            <img src="<%=request.getContextPath()%>/resources/images/main.jpg" class="img-rounded">
         </div>
-
+        <!-- 导航栏 -->
         <div class="navbar " style="padding-top: 4px;">
             <div class="navbar navbar-inner">
                 <div class="container">
@@ -59,22 +60,22 @@
                 </div>
             </div>
         </div>
-
+        <!-- 用户信息 -->
         <div class="container text-center">
             <ul class="inline">
                 <li>
-					查询 &rsaquo;&rsaquo;
+                    查询 &rsaquo;&rsaquo;
                     <div class="input-append" style="padding-top: 7px;">
                         <input class="span2" type="text" placeholder="账号">
                         <button class="btn" type="button"><span class="icon-search"></span> 查 找 </button>
                     </div>
                 </li>
                 <li>
-					<button class="btn" type="button"><span class="icon-refresh"></span> 刷 新 </button>
-				</li>
+                    <button class="btn" type="button"><span class="icon-refresh"></span> 刷 新 </button>
+                </li>
                 <li>
                     <form class="form-inline">
-						添加新用户 &rsaquo;&rsaquo;
+                        添加新用户 &rsaquo;&rsaquo;
                         <input type="text" class="input-small" placeholder="新账号">
                         <input type="password" class="input-small" placeholder="密码">
                         <button type="submit" class="btn"><span class="icon-arrow-up"></span> 提 交 </button>
@@ -94,38 +95,28 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>admin</td><td>admin</td>
-                            <td>
-                                <button class="btn btn-link">编辑</button><button class="btn btn-link">删除</button>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>admin</td><td>admin</td>
+                        <td>
+                            <button class="btn btn-link" data-toggle="modal" data-target="#editModal">编辑</button><button class="btn btn-link">删除</button>
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td>jishubu</td><td>jishubu</td>
-                            <td>
-                                <button class="btn btn-link">编辑</button><button class="btn btn-link">删除</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td>
-                            	<input class="input-mini" type="text">
-                            </td>
-                            <td>
-                            	<input class="input-mini" type="text">
-                            </td>
-                            <td>
-                                <button class="btn btn-link">编辑</button><button class="btn btn-link">删除</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td>quwei</td><td>quwei</td>
-                            <td>
-                                <button class="btn btn-link">编辑</button><button class="btn btn-link">删除</button>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>jishubu</td><td>jishubu</td>
+                        <td>
+                            <button class="btn btn-link" data-toggle="modal" data-target="#editModal">编辑</button><button class="btn btn-link">删除</button>
+                        </td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td>quwei</td><td>quwei</td>
+                        <td>
+                            <button class="btn btn-link" data-toggle="modal" data-target="#editModal">编辑</button><button class="btn btn-link">删除</button>
+                        </td>
+                    </tr>
 
                     </tbody>
                 </table>
@@ -144,10 +135,43 @@
             </div>
 
         </div>
-        
-        
-	</div>
-	<script src="/quwei/frame/jquery/js/jquery.js" type="text/javascript"></script>
-	<script src="/quwei/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+    </div>
+
+    <!--编辑用户信息模态框-->
+    <div class="modal hide fade" id="editModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">编 辑 用 户 信 息</h4>
+                </div>
+                <div class="modal-body text-center">
+                    <ul class="inline">
+                        <li><h5>用户名 </h5></li>
+                        <li><input name="editUserName" id="editN"/></li>
+                    </ul>
+                    <ul class="inline">
+                        <li><h5>密&nbsp;&nbsp;&nbsp;&nbsp;码 </h5></li>
+                        <li><input name="editPassword" id="editP"/></li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
+    <script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script>
+        $("#editModal").on('hidden', function () {
+            /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据           判断*/
+            $("#editN").val("");
+            $("#editP").val("");
+        })
+    </script>
 </body>
 </html>

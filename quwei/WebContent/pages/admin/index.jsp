@@ -8,8 +8,8 @@
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
-    <link href="/quwei/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="/quwei/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	<title>趣味问答系统-管理员首页</title>
 	
 	<style>
@@ -31,7 +31,7 @@
 <body>
 	<div class="container">
         <div class="jumbotron text-center" style="padding-top: 5px;">
-            <img src="/quwei/resources/images/main.jpg" class="img-rounded">
+            <img src="<%=request.getContextPath()%>/resources/images/main.jpg" class="img-rounded">
         </div>
 
         <div class="navbar" style="padding-top: 4px;">
@@ -64,7 +64,7 @@
             <h1 style="font-size: 40px;">趣味问答系统</h1>
         </div>
 	</div>
-	<script src="/quwei/frame/jquery/js/jquery.js" type="text/javascript"></script>
-	<script src="/quwei/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
+	<script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 </body>
 </html>

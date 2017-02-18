@@ -7,15 +7,14 @@
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
-    <link href="/quwei/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="/quwei/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
     
     <title>趣味问答-结果</title>
 
 </head>
 <body style="background-color: #f5f5f5">
 	<div class="container">
-	    <!--顶端图片-->
 	    <div class="text-center" style="padding-top: 5px;">
 	        <h1>图书馆小常识测试</h1>
 	    </div>
@@ -156,8 +155,8 @@
 	    </div>
 	</div>
 	
-	<script src="quwei/frame/jquery/js/jquery.js" type="text/javascript"></script>
-	<script src="quwei/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
+	<script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 
 </body>
 </html>

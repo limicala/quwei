@@ -7,8 +7,8 @@
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
-    <link href="/quwei/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="/quwei/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	
     <title>趣味问答系统-题库管理</title>
 
@@ -71,7 +71,7 @@
     <div class="container">
         <!--顶端图片-->
         <div class="jumbotron text-center" style="padding-top: 5px;">
-            <img src="/quwei/resources/images/main.jpg" class="img-rounded">
+            <img src="<%=request.getContextPath()%>/resources/images/main.jpg" class="img-rounded">
         </div>
 
         <!--菜单导航-->
@@ -617,8 +617,8 @@
     </div>
 
 
-    <script src="/quwei/frame/jquery/js/jquery.js" type="text/javascript"></script>
-    <script src="/quwei/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
+    <script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script>
         $("#singleModal").on('hidden', function () {
             /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据           单项*/
