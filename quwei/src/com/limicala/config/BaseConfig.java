@@ -55,7 +55,7 @@ public class BaseConfig extends JFinalConfig{
 		PropKit.use("jdbc.properties");
 		
 		me.setViewType(ViewType.JSP);
-		me.setDevMode(PropKit.getBoolean("devMode", false));
+		me.setDevMode(PropKit.getBoolean("devMode", true));
 		
 	}
 

@@ -1,4 +1,8 @@
+<%@page import="java.util.List"%>
+<%@page import="com.jfinal.plugin.activerecord.Record"%>
+<%@page import="com.jfinal.plugin.activerecord.Page"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -60,14 +64,15 @@
                 </div>
             </div>
         </div>
+        
         <!-- 用户信息 -->
         <div class="container text-center">
             <ul class="inline">
                 <li>
                     查询 &rsaquo;&rsaquo;
                     <div class="input-append" style="padding-top: 7px;">
-                        <input class="span2" type="text" placeholder="账号">
-                        <button class="btn" type="button"><span class="icon-search"></span> 查 找 </button>
+                        <input id="account" class="span2" type="text" placeholder="账号">
+                        <button class="btn" type="button" onclick="search()"><span class="icon-search"></span> 查 找 </button>
                     </div>
                 </li>
                 <li>
@@ -85,55 +90,40 @@
             </ul>
 
             <div class="container">
-                <table class="table table-striped text-center" style="max-width: 500px;margin-left: auto;margin-right: auto;">
+                <table id="table" class="table table-striped text-center" style="max-width: 500px;margin-left: auto;margin-right: auto;">
                     <caption class="text-left"><h4><strong>管理员信息</strong></h4></caption>
                     <thead>
-                    <tr>
-                        <th>账号</th>
-                        <th>密码</th>
-                        <th>&nbsp;&nbsp;&nbsp;编辑</th>
-                    </tr>
+	                    <tr>
+	                        <th>账号</th>
+	                        <th>密码</th>
+	                        <th>&nbsp;&nbsp;&nbsp;编辑</th>
+	                    </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>admin</td><td>admin</td>
-                        <td>
-                            <button class="btn btn-link" data-toggle="modal" data-target="#editModal">编辑</button><button class="btn btn-link">删除</button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>jishubu</td><td>jishubu</td>
-                        <td>
-                            <button class="btn btn-link" data-toggle="modal" data-target="#editModal">编辑</button><button class="btn btn-link">删除</button>
-                        </td>
-                    </tr>
-
-
-
-                    <tr>
-                        <td>quwei</td><td>quwei</td>
-                        <td>
-                            <button class="btn btn-link" data-toggle="modal" data-target="#editModal">编辑</button><button class="btn btn-link">删除</button>
-                        </td>
-                    </tr>
-
-                    </tbody>
+                   
+                    <%Page<Record> p = (Page<Record>)request.getAttribute("page"); %>
+                    
+                    <%List<Record> p_list = p.getList(); %>
+                    
+                    <%if(p_list.size()>0){ %>
+	                    <tbody>
+	                    	<%Integer table_id = 1; %>
+	                    	<%for(Record r : p_list){ %>
+	                    		<tr>
+			                        <td><%=r.get("aid") %></td><td><%=r.get("apassword") %></td>
+			                        <td>
+			                            <button class="btn btn-link" id="<%=table_id++ %>" data-toggle="modal" data-target="#editModal" onclick="edit(this)">编辑</button><button class="btn btn-link">删除</button>
+			                        </td>
+			                    </tr>
+	                    	<%} %>
+		                    
+						</tbody>
+					<%}else{ %>
+                    	
+		                
+                    <%} %>
                 </table>
             </div>
-
-            <div class="pagination">
-                <ul>
-                    <li class="active"><a>&lsaquo;&lsaquo;</a></li>
-                    <li class="active"><a>1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="#">&rsaquo;&rsaquo;</a></li>
-                </ul>
-            </div>
-
+			<%@include file="../common/page.jsp" %>
         </div>
 
     </div>
@@ -147,9 +137,13 @@
                     <h4 class="modal-title">编 辑 用 户 信 息</h4>
                 </div>
                 <div class="modal-body text-center">
+                	<ul class="inline">
+                        <li><input  name="oldUserName" id="oldN"/></li>
+                    </ul>
+                	
                     <ul class="inline">
                         <li><h5>用户名 </h5></li>
-                        <li><input name="editUserName" id="editN"/></li>
+                        <li><input  name="editUserName" id="editN"/></li>
                     </ul>
                     <ul class="inline">
                         <li><h5>密&nbsp;&nbsp;&nbsp;&nbsp;码 </h5></li>
@@ -157,7 +151,7 @@
                     </ul>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="">确定</button>
+                    <button type="button" class="btn btn-primary" onclick="update()">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
                 </div>
             </div>
@@ -167,11 +161,49 @@
     <script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
     <script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script>
+    	function edit(obj){
+    		
+    		var id = $(obj).attr("id"); 
+    		//alert(id+table_id);
+    	    //获取表格中的一行数据  
+    	    var account = document.getElementById("table").rows[id].cells[0].innerText;  
+    	    var password = document.getElementById("table").rows[id].cells[1].innerText;
+    	    //向模态框中传值 
+    	    $('#oldN').val(account);  
+    	    $('#editN').val(account);  
+    	    $('#editP').val(password);  
+    	}
+    	
+    	function update(){
+    		var old_account = $('#oldN').val();  
+    	    var account = $('#editN').val();  
+    	    var password = $('#editP').val();  
+    	    $.ajax({  
+    	        type: "post",  
+    	        url: "<%=request.getContextPath()%>/admin/update",  
+    	        data: "old_account=" + old_account + "&account=" + account + "&password=" + password,  
+    	        dataType: 'html',  
+    	        contentType: "application/x-www-form-urlencoded; charset=utf-8",  
+    	        success: function(result) {  
+    	            //location.reload();  
+    	            alert("xx");
+    	        }  
+    	    });  
+    	}
+    	
         $("#editModal").on('hidden', function () {
             /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据           判断*/
             $("#editN").val("");
             $("#editP").val("");
         })
+        
+        
+        function search(){
+        	account = $("#account").val();
+        	//alert(account);
+        	url="userManageView?account="+account;
+        	window.location.href = url;
+        }
     </script>
 </body>
 </html>

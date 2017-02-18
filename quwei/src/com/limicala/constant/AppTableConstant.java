@@ -2,15 +2,15 @@ package com.limicala.constant;
 
 public final class AppTableConstant {
 	
-	//船舶所有权登记证书
+	//管理员
 	public static final String ADMIN = "admin";
 	public static final String ADMIN_KEY = "aid";
-	//电台执照
+	//配置信息
 	public static final String CONFIG_OS = "config_os";
 	public static final String CONFIG_OS_KEY = "cid";
-	//船舶国籍证书
+	//答题历史
 	public static final String HISTORY = "history";
-	//船舶防止油污证书
+	//问题
 	public static final String QUESTION = "question";
 	public static final String QUESTION_KEY = "qid";
 }

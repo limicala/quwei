@@ -3,6 +3,7 @@ package com.limicala.controller;
 import java.util.List;
 
 import com.jfinal.aop.Before;
+import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.limicala.config.BaseController;
@@ -23,6 +24,11 @@ public class AdminController extends BaseController{
 	}
 	
 	public void userManageView(){
+		Integer pageNumber = this.getParaToInt("pageNumber", 1);
+		Integer pageSize = 6;
+		String account = getPara("account");
+		Page<Record> page = Admin.me.findByParams(pageNumber, pageSize, account);
+		setAttr("page", page);
 		render("userManage.jsp");
 	}
 	
@@ -59,14 +65,7 @@ public class AdminController extends BaseController{
 		renderJson(rm);
 	}
 	
-	/**
-	 * 列出所有管理员
-	 */
-	public void list_view(){
-		List<Admin> admins = Admin.me.findAll();
-		setAttr("list", admins);
-		render("list_view.jsp");
-	}
+
 	/**
 	 * 添加
 	 * @param aid
@@ -93,8 +92,11 @@ public class AdminController extends BaseController{
 	@Before(Tx.class)
 	public void update(){
 		ResponseModel rm = new ResponseModel();
-		Admin admin = getModel(Admin.class);
-		if (admin.update()) {
+		String old_aid = getPara("old_account");
+		String new_aid = getPara("account");
+		String password = getPara("password");
+		
+		if (Admin.me.updateInfo(old_aid, new_aid, password)) {
 			rm.msgSuccess("修改管理员成功");
 		} else {
 			rm.msgFailed("修改管理员失败");

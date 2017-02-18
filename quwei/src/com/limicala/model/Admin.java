@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.limicala.config.BaseModel;
 import com.limicala.constant.AppTableConstant;
@@ -46,12 +47,25 @@ public class Admin extends BaseModel<Admin>{
 		return false;
 	}
 	
-	/**
-	 * 获取所有管理员信息
-	 * @return
-	 */
-	public List<Admin> findAll(){
-		return this.find("select * from "+getTableName());
+	
+	public Page<Record> findByParams(Integer pageNumber, Integer pageSize, String aid){
+		// TODO Auto-generated method stub
+		StringBuilder selectSql = new StringBuilder();
+		selectSql.append(" select * ");
+		StringBuilder fromSql = new StringBuilder();
+		fromSql.append("from admin");
+		StringBuilder whereSql = new StringBuilder();
+		whereSql.append(" where 1 = 1 ");
+		if (StrKit.notBlank(aid)) {
+			whereSql.append(" and aid like ").append("'%").append(aid).append("%'");
+		}
+		
+		return Db.paginate(pageNumber, pageSize, selectSql.toString(), fromSql
+				.append(whereSql).toString());
 	}
 	
+	public boolean updateInfo(String old_aid, String new_aid, String password){
+		
+		return Db.update("update "+getTableName()+"set aid=?,apassword=? where aid=?", new_aid,password,old_aid)>0;
+	}
 }
