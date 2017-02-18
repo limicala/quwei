@@ -5,6 +5,9 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
     <link href="/quwei/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="/quwei/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	<title>趣味问答系统-管理员首页</title>
@@ -45,7 +48,7 @@
                     <div class="nav-collapse collapse text-center">
                         <ul class="nav" >
                             <li><a href="userManageView"><span class="icon-user"></span> 用户管理</a></li>
-                            <li><a href="#about"><span class="icon-list-alt"></span> 题库信息管理</a></li>
+                            <li><a href="questionManageView"><span class="icon-list-alt"></span> 题库信息管理</a></li>
                             <li><a href="#contact"><span class="icon-check"></span> 答题记录管理</a></li>
                             <li><a href="#contact"><span class="icon-wrench"></span> 系统配置</a></li>
                             <li><a href="#contact"><span class="icon-off"></span> 退出系统</a></li>

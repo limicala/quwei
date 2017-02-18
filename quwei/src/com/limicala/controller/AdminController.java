@@ -26,6 +26,10 @@ public class AdminController extends BaseController{
 		render("userManage.jsp");
 	}
 	
+	public void questionManageView(){
+		render("questionManage.jsp");
+	}
+	
 	public void checkAid(){
 		String aid = getPara("id");//账号
 		if(Admin.me.checkIdExist(aid)){
