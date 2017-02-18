@@ -76,7 +76,7 @@
                     </div>
                 </li>
                 <li>
-                    <button class="btn" type="button"><span class="icon-refresh"></span> 刷 新 </button>
+                    <button class="btn" type="button" onclick="location.href='userManageView'"><span class="icon-refresh"></span> 刷 新 </button>
                 </li>
                 <li>
                     <form class="form-inline">
@@ -109,7 +109,7 @@
 	                    	<%Integer table_id = 1; %>
 	                    	<%for(Record r : p_list){ %>
 	                    		<tr>
-			                        <td><%=r.get("aid") %></td><td><%=r.get("apassword") %></td>
+			                        <td><%=r.getStr("aid") %></td><td><%=r.getStr("apassword") %></td>
 			                        <td>
 			                            <button class="btn btn-link" id="<%=table_id++ %>" data-toggle="modal" data-target="#editModal" onclick="edit(this)">编辑</button><button class="btn btn-link">删除</button>
 			                        </td>
