@@ -1,4 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.List"%>
+<%@page import="com.jfinal.plugin.activerecord.Record"%>
+<%@page import="com.jfinal.plugin.activerecord.Page"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -11,7 +15,7 @@
 	<link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	
     <title>趣味问答系统-题库管理</title>
-
+	
     <style>
         body{
             background-color: #f5f5f5;
@@ -103,15 +107,15 @@
         <div class="container text-center">
             <!-- tab按钮 -->
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#single" data-toggle="tab">单项选择题</a></li>
-                <li><a href="#mutil" data-toggle="tab">多项选择题</a></li>
-                <li><a href="#judge" data-toggle="tab">判断题</a></li>
+                <li ${ct eq "1" ? "class='active'" : "" } ><a href="#single" data-toggle="tab">单项选择题</a></li>
+                <li ${ct eq "2" ? "class='active'" : "" } ><a href="#mutil" data-toggle="tab">多项选择题</a></li>
+                <li ${ct eq "3" ? "class='active'" : "" } ><a href="#judge" data-toggle="tab">判断题</a></li>
             </ul>
             <!-- 对应tab按钮内容 -->
             <div class="tab-content" style="overflow-x: hidden;">
 
                 <!--单项选择题-->
-                <div class="tab-pane fade active in" id="single">
+                <div class="tab-pane fade ${ct eq '1' ? 'active in' : '' }" id="single">
                     <!--操作按钮-->
                     <ul class="inline"><!--操作-->
                         <li>
@@ -120,7 +124,7 @@
                                 <button class="btn" type="button"><span class="icon-search"></span> 查 找 </button>
                             </div>
                         </li>
-                        <li><button class="btn" type="button"><span class="icon-refresh"></span> 刷 新 </button></li>
+                        <li><button class="btn" type="button" onclick="location.href='questionManageView?ct=1&spn=${page.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
                         <li><button type="submit" class="btn" data-toggle="modal" data-target="#singleModal"><span class="icon-plus"></span> 添 加 </button></li>
                         <li><button type="reset" class="btn"><span class="icon-trash"></span> 删除所选 </button></li>
                         <li><button type="reset" class="btn"  data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
@@ -133,11 +137,12 @@
                                 <th style="width: 45px;"> 全 选
                                     <input type="checkbox" value="">
                                 </th>
-                                <th style="width: 15px;">#</th>
                                 <th >题 目 内 容</th>
                                 <th colspan="2">选 项</th>
                                 <th style="width: 50px;">答案</th>
                                 <th style="width: 100px;">注解</th>
+                                <th style="width: 15px;">回答次数（次）</th>
+                                <th style="width: 15px;">正确率（%）</th>
                                 <th>&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
@@ -145,58 +150,42 @@
 
                             <!-- ******************************************默认显示样式****************************************** -->
 
-                            <tr>
-                                <td rowspan="4" style="padding-left: 25px;"><input type="checkbox" value=""></td><!--选择-->
-                                <td rowspan="4">1</td><!--编号#-->
-                                <td rowspan="4" class="content"><!--题目内容-->
-                                    借书归还日期是什么时候?为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么
-                                </td>
-                                <td style="max-width: 7px;"><strong>A</strong></td><!--选项标记-->
-                                <td class="itemContent">1天</td><!--选项内容-->
-                                <td rowspan="4" style="width: 50px;">D</td><!--答案-->
-                                <td rowspan="4" class="tip">没有注释</td><!--题目注释-->
-                                <td rowspan="4" style="min-width: 33px;"><!--题目操作->编辑->删除-->
-                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
-                                </td>
-                            </tr>
-                            <tr><!--B选项-->
-                                <td style="max-width: 7px;"><strong>B</strong></td>
-                                <td class="itemContent">1天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天</td>
-                            </tr>
-                            <tr><!--C选项-->
-                                <td style="max-width: 7px;"><strong>C</strong></td>
-                                <td class="itemContent">1个月</td>
-                            </tr>
-                            <tr><!--D选项-->
-                                <td style="max-width: 7px;"><strong>D</strong></td>
-                                <td class="itemContent">1年</td>
-                            </tr>
+							<c:forEach items="${page.list }" var="s">
+								<tr>
+	                                <td rowspan="4" style="padding-left: 25px;"><input type="checkbox" value=""></td><!--选择-->
+	                                <td rowspan="4" class="content"><!--题目内容-->
+	                                    ${s.qcontent}
+	                                </td>
+	                                <td style="max-width: 7px;"><strong>A</strong></td><!--选项标记-->
+	                                <td class="itemContent">${s.qa }</td><!--选项内容-->
+	                                <td rowspan="4" style="width: 50px;">${s.qanswer }</td><!--答案-->
+	                                <td rowspan="4" class="tip">${s.explain }</td><!--题目注释-->
+	                                <td rowspan="4">${s.qall_times }</td><!--回答次数-->
+	                                <td rowspan="4">${s.qtrue_times }</td><!--正确率-->
+	                                <td rowspan="4" style="width: 150px;"><!--题目操作->编辑->删除-->
+	                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
+	                                </td>
+	                            </tr>
+	                            <tr><!--B选项-->
+	                                <td style="max-width: 7px;"><strong>B</strong></td>
+	                                <td class="itemContent">${s.qb }</td>
+	                            </tr>
+	                            <tr><!--C选项-->
+	                                <td style="max-width: 7px;"><strong>C</strong></td>
+	                                <td class="itemContent">${s.qc }</td>
+	                            </tr>
+	                            <tr><!--D选项-->
+	                                <td style="max-width: 7px;"><strong>D</strong></td>
+	                                <td class="itemContent">${s.qd }</td>
+	                            </tr>
+							</c:forEach>
 
                             </tbody>
                         </table>
                     </div>
                     <!--分页-->
-                    <ul class="inline">
-                        <li style="float:left;">
-                            <div>
-                                <br>
-                                <h6>共<a>2</a>条记录，当前显示第&nbsp;<a>1&nbsp;</a>页</h6>
-                            </div>
-                        </li>
-                        <li style="float:right;">
-                            <div class="pagination "  ><!--分页-->
-                                <ul>
-                                    <li class="active"><a>&lsaquo;&lsaquo;</a></li>
-                                    <li class="active"><a>1</a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#">5</a></li>
-                                    <li><a href="#">&rsaquo;&rsaquo;</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
+                    <%@include file="../common/page.jsp" %>
+
                     <!--modal添加单个题目模态框-->
                     <!--
                         Button trigger modal 添加触发按钮，即“添加按钮”
@@ -269,7 +258,7 @@
                 </div>
 
                 <!--多项选择题-->
-                <div class="tab-pane fade " id="mutil">
+                <div class="tab-pane fade ${ct eq '2' ? 'active in' : '' }" id="mutil">
                     <!--操作按钮-->
                     <ul class="inline"><!--操作-->
                         <li>
@@ -278,7 +267,7 @@
                                 <button class="btn" type="button"><span class="icon-search"></span> 查 找 </button>
                             </div>
                         </li>
-                        <li><button class="btn" type="button"><span class="icon-refresh"></span> 刷 新 </button></li>
+                        <li><button class="btn" type="button" onclick="location.href='questionManageView?ct=2&mpn=${page1.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
                         <li><button type="submit" class="btn" data-toggle="modal" data-target="#mutilModal"><span class="icon-plus"></span> 添 加 </button></li>
                         <li><button type="reset" class="btn"><span class="icon-trash"></span> 删除所选 </button></li>
                         <li><button type="reset" class="btn"  data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
@@ -291,70 +280,54 @@
                                 <th style="width: 45px;"> 全 选
                                     <input type="checkbox" value="">
                                 </th>
-                                <th style="width: 15px;">#</th>
                                 <th >题 目 内 容</th>
                                 <th colspan="2">选 项</th>
                                 <th style="width: 50px;">答案</th>
                                 <th style="width: 100px;">注解</th>
+                                <th style="width: 15px;">回答次数（次）</th>
+                                <th style="width: 15px;">正确率（%）</th>
                                 <th>&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
                             <tbody>
 
                             <!-- ******************************************默认显示样式****************************************** -->
-
-                            <tr>
-                                <td rowspan="4" style="padding-left: 25px;"><input type="checkbox" value=""></td><!--选择-->
-                                <td rowspan="4">1</td><!--编号#-->
-                                <td rowspan="4" class="content"><!--题目内容-->
-                                    借书归还日期是什么时候?为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么
-                                </td>
-                                <td style="max-width: 7px;"><strong>A</strong></td><!--选项标记-->
-                                <td class="itemContent">1天</td><!--选项内容-->
-                                <td rowspan="4" style="width: 50px;">AD</td><!--答案-->
-                                <td rowspan="4" class="tip">没有注释</td><!--题目注释-->
-                                <td rowspan="4" style="min-width: 33px;"><!--题目操作->编辑->删除-->
-                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
-                                </td>
-                            </tr>
-                            <tr><!--B选项-->
-                                <td style="max-width: 7px;"><strong>B</strong></td>
-                                <td class="itemContent">1天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天天</td>
-                            </tr>
-                            <tr><!--C选项-->
-                                <td style="max-width: 7px;"><strong>C</strong></td>
-                                <td class="itemContent">1个月</td>
-                            </tr>
-                            <tr><!--D选项-->
-                                <td style="max-width: 7px;"><strong>D</strong></td>
-                                <td class="itemContent">1年</td>
-                            </tr>
-
+							<c:forEach items="${page1.list }" var="m">
+								<tr>
+	                                <td rowspan="4" style="padding-left: 25px;"><input type="checkbox" value=""></td><!--选择-->
+	                                <td rowspan="4" class="content"><!--题目内容-->
+	                                    ${m.qcontent}
+	                                </td>
+	                                <td style="max-width: 7px;"><strong>A</strong></td><!--选项标记-->
+	                                <td class="itemContent">${m.qa }</td><!--选项内容-->
+	                                <td rowspan="4" style="width: 50px;">${m.qanswer }</td><!--答案-->
+	                                <td rowspan="4" class="tip">${m.explain }</td><!--题目注释-->
+	                                <td rowspan="4">${m.qall_times }</td><!--回答次数-->
+	                                <td rowspan="4">${m.qtrue_times }</td><!--正确率-->
+	                                <td rowspan="4" style="width: 150px;"><!--题目操作->编辑->删除-->
+	                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
+	                                </td>
+	                            </tr>
+	                            <tr><!--B选项-->
+	                                <td style="max-width: 7px;"><strong>B</strong></td>
+	                                <td class="itemContent">${m.qb }</td>
+	                            </tr>
+	                            <tr><!--C选项-->
+	                                <td style="max-width: 7px;"><strong>C</strong></td>
+	                                <td class="itemContent">${m.qc }</td>
+	                            </tr>
+	                            <tr><!--D选项-->
+	                                <td style="max-width: 7px;"><strong>D</strong></td>
+	                                <td class="itemContent">${m.qd }</td>
+	                            </tr>
+							</c:forEach>
+                            
                             </tbody>
                         </table>
                     </div>
                     <!--分页-->
-                    <ul class="inline">
-                        <li style="float:left;">
-                            <div>
-                                <br>
-                                <h6>共<a>2</a>条记录，当前显示第&nbsp;<a>1&nbsp;</a>页</h6>
-                            </div>
-                        </li>
-                        <li style="float:right;">
-                            <div class="pagination"  ><!--分页-->
-                                <ul>
-                                    <li class="active"><a>&lsaquo;&lsaquo;</a></li>
-                                    <li class="active"><a>1</a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#">5</a></li>
-                                    <li><a href="#">&rsaquo;&rsaquo;</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
+                    <%@include file="../common/page1.jsp" %>
+                    
                     <!--modal添加单个题目模态框-->
                     <!--
                         Button trigger modal 添加触发按钮，即“添加按钮”
@@ -427,7 +400,7 @@
                 </div>
 
                 <!--判断题-->
-                <div class="tab-pane fade" id="judge">
+                <div class="tab-pane fade ${ct eq '3' ? 'active in' : ''}" id="judge">
                     <!--操作按钮-->
                     <ul class="inline"><!--操作-->
                         <li>
@@ -436,7 +409,7 @@
                                 <button class="btn" type="button"><span class="icon-search"></span> 查 找 </button>
                             </div>
                         </li>
-                        <li><button class="btn" type="button"><span class="icon-refresh"></span> 刷 新 </button></li>
+                        <li><button class="btn" type="button" onclick="location.href='questionManageView?ct=3&jpn=${page2.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
                         <li><button type="submit" class="btn" data-toggle="modal" data-target="#judgeModal"><span class="icon-plus"></span> 添 加 </button></li>
                         <li><button type="reset" class="btn"><span class="icon-trash"></span> 删除所选 </button></li>
                         <li><button type="reset" class="btn"  data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
@@ -449,55 +422,46 @@
                                 <th style="width: 45px;"> 全 选
                                     <input type="checkbox" value="">
                                 </th>
-                                <th style="width: 15px;">#</th>
-                                <th >题 目 内 容</th>
+                                <th style="width: 200px;">题 目 内 容</th>
                                 <th style="width: 50px;">答案</th>
                                 <th style="width: 100px;">注解</th>
+                                <th style="width: 15px;">回答次数（次）</th>
+                                <th style="width: 15px;">正确率（%）</th>
                                 <th>&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
                             <tbody>
 
                             <!-- ******************************************默认显示样式****************************************** -->
-
-                            <tr>
-                                <td style="padding-left: 25px;"><input type="checkbox" value=""></td><!--选择-->
-                                <td >1</td><!--编号#-->
-                                <td class="content"><!--题目内容-->
-                                    借书归还日期是什么时候?为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么
-                                </td>
-                                <td style="width: 50px;">AD</td><!--答案-->
-                                <td class="tip">没有注释</td><!--题目注释-->
-                                <td style="min-width: 33px;"><!--题目操作->编辑->删除-->
-                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
-                                </td>
-                            </tr>
-
+							<c:forEach items="${page2.list }" var="j">
+								<tr>
+	                                <td style="padding-left: 25px;"><input type="checkbox" value=""></td><!--选择-->
+	                                
+	                                <td class="content"><!--题目内容-->${j.qcontent }</td>
+	                                <c:choose>
+									 	<c:when test="${j.qanswer eq 1 }">
+									 		<td style="width: 50px;"><span class="icon-ok"></span></td><!--答案-->
+									 	</c:when>
+									 	<c:otherwise>
+									 		<td style="width: 50px;"><span class="icon-remove"></span></td><!--答案-->
+									 	</c:otherwise>
+									</c:choose>
+	                                
+	                                <td class="tip" style="width: 210px;">${j.qexplain }</td><!--题目注释-->
+	                                <td >${j.qall_times }</td><!--答题次数-->
+	                                <td >${j.qtrue_times }</td><!--正确率-->
+	                                <td style="width: 100px;"><!--题目操作->编辑->删除-->
+	                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
+	                                </td>
+	                            </tr>
+							</c:forEach>
+                            
                             </tbody>
                         </table>
                     </div>
                     <!--分页-->
-                    <ul class="inline">
-                        <li style="float:left;">
-                            <div>
-                                <br>
-                                <h6>共<a>2</a>条记录，当前显示第&nbsp;<a>1&nbsp;</a>页</h6>
-                            </div>
-                        </li>
-                        <li style="float:right;">
-                            <div class="pagination"  ><!--分页-->
-                                <ul>
-                                    <li class="active"><a>&lsaquo;&lsaquo;</a></li>
-                                    <li class="active"><a>1</a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#">5</a></li>
-                                    <li><a href="#">&rsaquo;&rsaquo;</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
+                    <%@include file="../common/page2.jsp" %>
+                    
                     <!--modal添加单个判断题目模态框-->
                     <!--
                         Button trigger modal 添加触发按钮，即“添加按钮”
