@@ -107,9 +107,9 @@
         <div class="container text-center">
             <!-- tab按钮 -->
             <ul class="nav nav-tabs">
-                <li ${ct eq "1" ? "class='active'" : "" } ><a href="#single" data-toggle="tab">单项选择题</a></li>
-                <li ${ct eq "2" ? "class='active'" : "" } ><a href="#mutil" data-toggle="tab">多项选择题</a></li>
-                <li ${ct eq "3" ? "class='active'" : "" } ><a href="#judge" data-toggle="tab">判断题</a></li>
+                <li ${ct eq "1" ? "class='active'" : "" } ><a href="#single" data-toggle="tab">单 项 选 择 题</a></li>
+                <li ${ct eq "2" ? "class='active'" : "" } ><a href="#mutil" data-toggle="tab">多 项 选 择 题</a></li>
+                <li ${ct eq "3" ? "class='active'" : "" } ><a href="#judge" data-toggle="tab">判 断 题</a></li>
             </ul>
             <!-- 对应tab按钮内容 -->
             <div class="tab-content" style="overflow-x: hidden;">
@@ -153,13 +153,11 @@
 							<c:forEach items="${page.list }" var="s">
 								<tr>
 	                                <td rowspan="4" style="padding-left: 25px;"><input type="checkbox" value=""></td><!--选择-->
-	                                <td rowspan="4" class="content"><!--题目内容-->
-	                                    ${s.qcontent}
-	                                </td>
+	                                <td rowspan="4" class="content">${s.qcontent}</td>
 	                                <td style="max-width: 7px;"><strong>A</strong></td><!--选项标记-->
 	                                <td class="itemContent">${s.qa }</td><!--选项内容-->
 	                                <td rowspan="4" style="width: 50px;">${s.qanswer }</td><!--答案-->
-	                                <td rowspan="4" class="tip">${s.explain }</td><!--题目注释-->
+	                                <td rowspan="4" class="tip">${s.qexplain }</td><!--题目注释-->
 	                                <td rowspan="4">${s.qall_times }</td><!--回答次数-->
 	                                <td rowspan="4">${s.qtrue_times }</td><!--正确率-->
 	                                <td rowspan="4" style="width: 150px;"><!--题目操作->编辑->删除-->
@@ -301,7 +299,7 @@
 	                                <td style="max-width: 7px;"><strong>A</strong></td><!--选项标记-->
 	                                <td class="itemContent">${m.qa }</td><!--选项内容-->
 	                                <td rowspan="4" style="width: 50px;">${m.qanswer }</td><!--答案-->
-	                                <td rowspan="4" class="tip">${m.explain }</td><!--题目注释-->
+	                                <td rowspan="4" class="tip">${m.qexplain }</td><!--题目注释-->
 	                                <td rowspan="4">${m.qall_times }</td><!--回答次数-->
 	                                <td rowspan="4">${m.qtrue_times }</td><!--正确率-->
 	                                <td rowspan="4" style="width: 150px;"><!--题目操作->编辑->删除-->
