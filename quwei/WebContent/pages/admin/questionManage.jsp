@@ -91,7 +91,7 @@
                             <li><a href="userManageView"><span class="icon-user"></span> 用户管理</a></li>
                             <li class="active"><a><span class="icon-list-alt"></span> 题库信息管理</a></li>
                             <li><a href="#contact"><span class="icon-check"></span> 答题记录管理</a></li>
-                            <li><a href="#contact"><span class="icon-wrench"></span> 系统配置</a></li>
+                            <li><a href="configView"><span class="icon-wrench"></span> 系统配置</a></li>
                             <li><a href="#contact"><span class="icon-off"></span> 退出系统</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->

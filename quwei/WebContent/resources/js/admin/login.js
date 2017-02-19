@@ -1,6 +1,8 @@
 
 $("form").submit(function(e){
+	//alert("yyy");
     e.preventDefault();   // disabled default action
+    //alert("xxx");
     // do something and ajax ....
     var id = document.getElementById("id").value;
 	var pwd = document.getElementById("password").value;
@@ -16,14 +18,15 @@ $("form").submit(function(e){
 		flag = true;
 	}
 	if (flag){
+		//alert("cc");
 		$.ajax({
-			url:"admin/doLogin",
+			url:"doLogin",
 			dataType:"json",
 			data:{"id":id,"password":pwd},
 			success:function(response){
 			
 			if(response.success){
-				location.href="admin/mainView";
+				location.href="mainView";
 				
 			}else{
 //				$("div.tip-text").text(response.msg);

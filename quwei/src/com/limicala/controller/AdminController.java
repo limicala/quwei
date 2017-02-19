@@ -1,7 +1,5 @@
 package com.limicala.controller;
 
-import java.util.List;
-
 import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
@@ -9,6 +7,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.limicala.config.BaseController;
 import com.limicala.model.Admin;
+import com.limicala.model.ConfigOS;
 import com.limicala.model.ResponseModel;
 import com.limicala.util.SessionUtil;
 
@@ -37,12 +36,37 @@ public class AdminController extends BaseController{
 		render("questionManage.jsp");
 	}
 	
+	public void configView(){
+		setAttr("configOS", ConfigOS.me.findById(new Integer(1)));
+		render("config.jsp");
+	}
+	
 	public void checkAid(){
 		String aid = getPara("account");//账号
 		if(Admin.me.checkIdExist(aid)){
 			renderJson(true);
 		}else{
 			renderJson(false);
+		}
+	}
+	/**
+	 * 修改答题间隔时间
+	 */
+	public void update_interval(){
+		ConfigOS configOS = getModel(ConfigOS.class);
+		if(configOS.getInt("cid")!= null){
+			renderJson(configOS.update());
+		}else{
+			renderJson(configOS.save());
+		}
+	}
+	
+	public void update_score(){
+		ConfigOS configOS = getModel(ConfigOS.class);
+		if(configOS.getInt("cid")!= null){
+			renderJson(configOS.update());
+		}else{
+			renderJson(configOS.save());
 		}
 	}
 	
