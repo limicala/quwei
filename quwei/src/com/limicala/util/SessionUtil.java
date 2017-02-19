@@ -61,9 +61,9 @@ public final class SessionUtil {
 		return null;
 	}
 	
-	public static void setAdminUserInfo(HttpSession httpSession,String userId,String username){
+	public static void setAdminUserInfo(HttpSession httpSession,String userId){
 		setAdminUserId(httpSession, userId);
-		setAdminUsername(httpSession, username);
+//		setAdminUsername(httpSession, username);
 //		setSessionId(httpSession, sessionId);
 	}
 	
