@@ -6,8 +6,13 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.limicala.config.BaseController;
+import com.limicala.constant.AppTableConstant;
 import com.limicala.model.Admin;
+
 import com.limicala.model.ConfigOS;
+
+import com.limicala.model.Question;
+
 import com.limicala.model.ResponseModel;
 import com.limicala.util.SessionUtil;
 
@@ -33,6 +38,21 @@ public class AdminController extends BaseController{
 	}
 	
 	public void questionManageView(){
+		Integer jpn = this.getParaToInt("jpn", 1);//判断题
+		Integer spn = this.getParaToInt("spn", 1);//单项选择题
+		Integer mpn = this.getParaToInt("mpn", 1);//多项选择题
+		Integer type = this.getParaToInt("ct", 1);//当前的tab页面
+		Integer pageSize = 5;
+		Page<Record> page = Question.me.findByParams(spn, pageSize, AppTableConstant.QUESTION_SINGLE);
+		Page<Record> page1 = Question.me.findByParams(mpn, pageSize, AppTableConstant.QUESTION_MUTIL);
+		Page<Record> page2 = Question.me.findByParams(jpn, pageSize, AppTableConstant.QUESTION_JUDGE);
+		
+		setAttr("url", "questionManageView");
+		setAttr("ct", type);
+		setAttr("page", page);
+		setAttr("page1", page1);
+		setAttr("page2", page2);
+		
 		render("questionManage.jsp");
 	}
 	

@@ -171,7 +171,10 @@
     <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
         <div class="modal-dialog" role="document" >
             <div class="modal-content">
-                
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <!-- <h4 class="modal-title">确  定  删  除</h4> -->
+                </div>
                 <div class="modal-body text-center">
                 	<!-- <ul class="inline">
                         <li><input  name="oldUserName" id="oldN"/></li>
@@ -297,7 +300,7 @@
     	}
     	
         $("#editModal").on('hidden', function () {
-            /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据           判断*/
+            /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据     判断*/
             $("#editN").val("");
             $("#editP").val("");
             

@@ -18,22 +18,24 @@ $("form").submit(function(e){
 		flag = true;
 	}
 	if (flag){
+		
 		//alert("cc");
 		$.ajax({
-			url:"doLogin",
+			url:"admin/doLogin",
 			dataType:"json",
 			data:{"id":id,"password":pwd},
 			success:function(response){
 			
-			if(response.success){
-				location.href="mainView";
-				
-			}else{
-//				$("div.tip-text").text(response.msg);
-				showWrongMsg(response.msg);
-			}
-
-			}//success
+				if(response.success){
+					alert("cc");
+					location.href="admin/mainView";
+					
+				}else{
+	//				$("div.tip-text").text(response.msg);
+					showWrongMsg(response.msg);
+				}
+	
+				}//success
 		});//ajax
 	}
     
