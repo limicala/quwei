@@ -43,7 +43,7 @@
   <div class="text-right" style="padding-top: 35px;">
     <a href="admin"><span class="icon-user"></span>管理员登录</a>
     <p>
-      <small class="text-left">@肇庆学院-陈熹图书馆-技术部</small>
+      <small class="text-left">@肇庆学院-福慧图书馆-技术部</small>
     </p>
   </div>
 

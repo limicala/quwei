@@ -13,7 +13,16 @@ public class ResponseModel implements Serializable {
 	private Boolean success;				//调用是否成功
 	private String code;					//调用返回错误代码
 	private String msg;						//调用返回错误信息
+	private String type;					//调用返回类型（编辑或添加）
 	private Object data;					//调用返回结果
+	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	
 	
 	public Boolean getSuccess() {
 		return success;

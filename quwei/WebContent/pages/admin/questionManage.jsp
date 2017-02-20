@@ -71,6 +71,7 @@
     </style>
 </head>
 <body>
+	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
     <!-- 主要内容 -->
     <div class="container">
         <!--顶端图片-->
@@ -120,14 +121,20 @@
                     <ul class="inline"><!--操作-->
                         <li>
                             <div class="input-append" style="padding-top: 10px;">
-                                <input class="span2" type="text" placeholder="题目关键字">
-                                <button class="btn" type="button"><span class="icon-search"></span> 查 找 </button>
+                                <c:if test="${scondi eq '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="scondi">
+                                </c:if>
+                                <c:if test="${scondi ne '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="scondi" value="${scondi }">
+                                </c:if>
+                                
+                                <button class="btn" type="button" id="s" onclick="query(this);"><span class="icon-search"></span> 查 找 </button>
                             </div>
                         </li>
                         <li><button class="btn" type="button" onclick="location.href='questionManageView?ct=1&spn=${page.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
                         <li><button type="submit" class="btn" data-toggle="modal" data-target="#singleModal"><span class="icon-plus"></span> 添 加 </button></li>
-                        <li><button type="reset" class="btn"><span class="icon-trash"></span> 删除所选 </button></li>
-                        <li><button type="reset" class="btn"  data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
+                        <li><button type="reset" class="btn" data-toggle="modal" data-target="#tipModal"><span class="icon-trash"></span> 删除所选 </button></li>
+                        <li><button type="reset" class="btn" data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
                     </ul>
                     <!--题库内容（表格显示）-->
                     <div class="container tb-responsive">
@@ -143,6 +150,7 @@
                                 <th style="width: 100px;">注解</th>
                                 <th style="width: 15px;">回答次数（次）</th>
                                 <th style="width: 15px;">正确率（%）</th>
+                                <th >答题限定</th>
                                 <th>&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
@@ -153,28 +161,38 @@
 							<c:forEach items="${page.list }" var="s">
 								<tr>
 	                                <td rowspan="4" style="padding-left: 25px;"><input type="checkbox" value=""></td><!--选择-->
-	                                <td rowspan="4" class="content">${s.qcontent}</td>
+	                                <td rowspan="4" class="content" id="${s.qid }Content">${s.qcontent}</td>
 	                                <td style="max-width: 7px;"><strong>A</strong></td><!--选项标记-->
-	                                <td class="itemContent">${s.qa }</td><!--选项内容-->
-	                                <td rowspan="4" style="width: 50px;">${s.qanswer }</td><!--答案-->
-	                                <td rowspan="4" class="tip">${s.qexplain }</td><!--题目注释-->
+	                                <td class="itemContent" id="${s.qid }A">${s.qa }</td><!--选项内容-->
+	                                <td rowspan="4" style="width: 50px;" id="${s.qid }Answer">${s.qanswer }</td><!--答案-->
+	                                <td rowspan="4" class="tip" id="${s.qid }Explain">${s.qexplain }</td><!--题目注释-->
 	                                <td rowspan="4">${s.qall_times }</td><!--回答次数-->
 	                                <td rowspan="4">${s.qtrue_times }</td><!--正确率-->
+	                                <td rowspan="4">
+	                                	<input class="hidden" id="o${s.qid }State" value="${s.qlimit }"/>
+	                                	<select id="${s.qid }State" onchange="setState(this)" class="${s.qlimit eq '1' ? 'text-error' : '' }" style="width: 65px;">
+										  <option ${s.qlimit eq "0" ? "SELECTED" : ""} value="0">随机</option>
+										  <option ${s.qlimit eq "1" ? "SELECTED" : ""} value="1">必答</option>
+										</select>
+	                                </td><!--答题限定-->
 	                                <td rowspan="4" style="width: 150px;"><!--题目操作->编辑->删除-->
-	                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
+	                                    <a class="btn btn-link" id="${s.qid }" onclick="edit(this)">编辑</a><a class="btn btn-link">删除</a>
 	                                </td>
 	                            </tr>
 	                            <tr><!--B选项-->
 	                                <td style="max-width: 7px;"><strong>B</strong></td>
-	                                <td class="itemContent">${s.qb }</td>
+	                                <td class="itemContent" id="${s.qid }B">${s.qb }</td>
 	                            </tr>
 	                            <tr><!--C选项-->
 	                                <td style="max-width: 7px;"><strong>C</strong></td>
-	                                <td class="itemContent">${s.qc }</td>
+	                                <td class="itemContent" id="${s.qid }C">${s.qc }</td>
 	                            </tr>
 	                            <tr><!--D选项-->
 	                                <td style="max-width: 7px;"><strong>D</strong></td>
-	                                <td class="itemContent">${s.qd }</td>
+	                                <td class="itemContent" id="${s.qid }D">${s.qd }</td>
+	                            </tr>
+	                            <tr style="max-height: 1px;"><!--间隔-->
+	                                <td colspan="10" style="max-height: 1px; background-color:#cccccc;"></td>
 	                            </tr>
 							</c:forEach>
 
@@ -187,7 +205,7 @@
                     <!--modal添加单个题目模态框-->
                     <!--
                         Button trigger modal 添加触发按钮，即“添加按钮”
-                        为触发按钮添加属性： data-toggle="modal" data-target="#singleModal"  对应id
+                                                                        为触发按钮添加属性： data-toggle="modal" data-target="#singleModal"  对应id
                         data-backdrop="false" 点击窗口外不会关闭窗口
                     -->
                     <!-- 单项选择题添加Modal -->
@@ -197,13 +215,14 @@
                                 <div class="modal-header red">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <h4 class="modal-title">新 增 单 项 选 择 题 目</h4>
+                                    <input id="singleId" value="" class="hidden"/>
                                 </div>
                                 <div class="modal-body">
                                     <form class="form-horizontal" style="width: 100%;" id="singlePlus">
                                         <table style="width: 90%;">
                                             <tr>
                                                 <td colspan="1"><strong  style="white-space: nowrap">题目:</strong></td>
-                                                <td colspan="3"><textarea id="singleContent" style="width: 100%;max-width:100%;height: 100px;"></textarea></td>
+                                                <td colspan="3"><textarea id="singleContent" style="width: 100%;max-width:100%;height: 100px;" placeholder="题目内容"></textarea></td>
                                             </tr>
 
                                             <tr>
@@ -226,16 +245,16 @@
                                                 <td><strong>答案:</strong></td>
                                                 <td colspan="3" align="left" >
                                                     <label class="radio inline " style="max-width: 50px;">
-                                                        <input id="singleAnswer" type="radio" name="singleOptionsRadios"value="1" checked> A
+                                                        <input type="radio" name="singleOptionsRadios" value="A" checked> A
                                                     </label>
                                                     <label class="radio inline">
-                                                        <input type="radio" name="singleOptionsRadios" value="2"> B
+                                                        <input type="radio" name="singleOptionsRadios" value="B"> B
                                                     </label>
                                                     <label class="radio inline">
-                                                        <input  type="radio" name="singleOptionsRadios" value="3"> C
+                                                        <input  type="radio" name="singleOptionsRadios" value="C"> C
                                                     </label>
                                                     <label class="radio inline">
-                                                        <input  type="radio" name="singleOptionsRadios" value="4"> D
+                                                        <input  type="radio" name="singleOptionsRadios" value="D"> D
                                                     </label>
                                                 </td>
                                             </tr>
@@ -247,7 +266,7 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" onclick="">提交</button>
+                                    <button type="button" class="btn btn-primary" onclick="addSingle()">提交</button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">返回</button>
                                 </div>
                             </div>
@@ -261,8 +280,13 @@
                     <ul class="inline"><!--操作-->
                         <li>
                             <div class="input-append" style="padding-top: 10px;">
-                                <input class="span2" type="text" placeholder="题目关键字">
-                                <button class="btn" type="button"><span class="icon-search"></span> 查 找 </button>
+                                <c:if test="${mcondi eq '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="mcondi">
+                                </c:if>
+                                <c:if test="${mcondi ne '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="mcondi" value="${mcondi }">
+                                </c:if>
+                                <button class="btn" type="button" id="m" onclick="query(this)"><span class="icon-search"></span> 查 找 </button>
                             </div>
                         </li>
                         <li><button class="btn" type="button" onclick="location.href='questionManageView?ct=2&mpn=${page1.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
@@ -284,6 +308,7 @@
                                 <th style="width: 100px;">注解</th>
                                 <th style="width: 15px;">回答次数（次）</th>
                                 <th style="width: 15px;">正确率（%）</th>
+                                <th >答题限定</th>
                                 <th>&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
@@ -302,6 +327,12 @@
 	                                <td rowspan="4" class="tip">${m.qexplain }</td><!--题目注释-->
 	                                <td rowspan="4">${m.qall_times }</td><!--回答次数-->
 	                                <td rowspan="4">${m.qtrue_times }</td><!--正确率-->
+	                                <td rowspan="4">
+	                                	<select class="${m.qlimit eq '1' ? 'text-error' : '' }" style="width: 65px;">
+										  <option ${m.qlimit eq "0" ? "SELECTED" : ""}>随机</option>
+										  <option ${m.qlimit eq "1" ? "SELECTED" : ""}>必答</option>
+										</select>
+	                                </td><!--答题限定-->
 	                                <td rowspan="4" style="width: 150px;"><!--题目操作->编辑->删除-->
 	                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
 	                                </td>
@@ -317,6 +348,9 @@
 	                            <tr><!--D选项-->
 	                                <td style="max-width: 7px;"><strong>D</strong></td>
 	                                <td class="itemContent">${m.qd }</td>
+	                            </tr>
+	                            <tr><!--间隔-->
+	                                <td colspan="10" style="max-height: 2px; background-color:#cccccc;"></td>
 	                            </tr>
 							</c:forEach>
                             
@@ -403,8 +437,13 @@
                     <ul class="inline"><!--操作-->
                         <li>
                             <div class="input-append" style="padding-top: 10px;">
-                                <input class="span2" type="text" placeholder="题目关键字">
-                                <button class="btn" type="button"><span class="icon-search"></span> 查 找 </button>
+                            	<c:if test="${jcondi eq '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="jcondi">
+                                </c:if>
+                                <c:if test="${jcondi ne '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="jcondi" value="${jcondi }">
+                                </c:if>
+                                <button class="btn" type="button" id="j" onclick="query(this)"><span class="icon-search"></span> 查 找 </button>
                             </div>
                         </li>
                         <li><button class="btn" type="button" onclick="location.href='questionManageView?ct=3&jpn=${page2.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
@@ -425,6 +464,7 @@
                                 <th style="width: 100px;">注解</th>
                                 <th style="width: 15px;">回答次数（次）</th>
                                 <th style="width: 15px;">正确率（%）</th>
+                                <th style="width: 70px;">答题限定</th>
                                 <th>&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
@@ -448,9 +488,19 @@
 	                                <td class="tip" style="width: 210px;">${j.qexplain }</td><!--题目注释-->
 	                                <td >${j.qall_times }</td><!--答题次数-->
 	                                <td >${j.qtrue_times }</td><!--正确率-->
+	                                <td >
+	                                	<select id="${j.qid }Qlimit" class="${j.qlimit eq '1' ? 'text-error' : '' }" style="width: 65px;">
+										  <option ${j.qlimit eq "0" ? "SELECTED" : ""}>随机</option>
+										  <option ${j.qlimit eq "1" ? "SELECTED" : ""}>必答</option>
+										</select>
+										<input class="hidden" id="${j.qid }QlimitValue" value="${j.qlimit }" />
+	                                </td><!--答题限定-->
 	                                <td style="width: 100px;"><!--题目操作->编辑->删除-->
 	                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
 	                                </td>
+	                            </tr>
+	                            <tr><!--间隔-->
+	                                <td colspan="10" style="max-height: 1px; background-color:#cccccc;"></td>
 	                            </tr>
 							</c:forEach>
                             
@@ -513,21 +563,15 @@
             </div>
         </div>
     </div>
-
+	
     <!-- 部件 -->
     <!--公用提示模态框-->
     <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
         <div class="modal-dialog" role="document" >
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">提 示</h4>
-                </div>
-                <div class="modal-body">
-                    <h6 id="tipContent">提示内容</h6>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">确定</button>
+                <div class="modal-body text-center">
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 id="tipContent"></h4>
                 </div>
             </div>
         </div>
@@ -539,13 +583,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">提 示</h4>
+                    <h4 class="modal-title text-center text-info" id="chooseContent">提 示</h4>
                 </div>
-                <div class="modal-body">
-                    <h6 id="chooseContent">提示内容</h6>
-                </div>
+                
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="">确定</button>
+                    <button type="button" class="btn btn-primary" onclick="">确定</button>&nbsp;&nbsp;
                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
                 </div>
             </div>
@@ -568,9 +610,11 @@
                             <a class="btn btn-primary" onclick="$('input[id=chooseFile]').click();">浏览文件</a>
                         </div>
                     </form>
-                    <h6 style="color: #ff150e">**  提示：Excel表格表头必须包含列表头:“内容”、“A”、“B”、“C”、“D”、“注释”、“答案”.  **</h6>
+                    <h6 style="color: #ff150e">**  提示：点击下方链接下载Excel表格模板，正确填充信息然后上传，否则可能导致上传失败.  **</h6>
+                	<a href="#">下载模板</a>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer text-left">
+                	
                     <button type="button" class="btn btn-success" onclick="">确定上传</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
                 </div>
@@ -581,15 +625,11 @@
 
     <script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
     <script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="<%=request.getContextPath()%>/resources/js/admin/questionManage.js" type="text/javascript"></script>
     <script>
         $("#singleModal").on('hidden', function () {
             /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据           单项*/
-            $("#singleContent").val("");
-            $("#singleA").val("");
-            $("#singleB").val("");
-            $("#singleC").val("");
-            $("#singleD").val("");
-            $("#singleTip").val("");
+        	singleClean();
         })
 
         $("#mutilModal").on('hidden', function () {
