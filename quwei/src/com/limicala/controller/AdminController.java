@@ -1,15 +1,18 @@
 package com.limicala.controller;
 
-import java.util.List;
-
 import com.jfinal.aop.Before;
+import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.limicala.config.BaseController;
 import com.limicala.constant.AppTableConstant;
 import com.limicala.model.Admin;
+
+import com.limicala.model.ConfigOS;
+
 import com.limicala.model.Question;
+
 import com.limicala.model.ResponseModel;
 import com.limicala.util.SessionUtil;
 
@@ -53,12 +56,37 @@ public class AdminController extends BaseController{
 		render("questionManage.jsp");
 	}
 	
+	public void configView(){
+		setAttr("configOS", ConfigOS.me.findById(new Integer(1)));
+		render("config.jsp");
+	}
+	
 	public void checkAid(){
-		String aid = getPara("id");//账号
+		String aid = getPara("account");//账号
 		if(Admin.me.checkIdExist(aid)){
 			renderJson(true);
 		}else{
 			renderJson(false);
+		}
+	}
+	/**
+	 * 修改答题间隔时间
+	 */
+	public void update_interval(){
+		ConfigOS configOS = getModel(ConfigOS.class);
+		if(configOS.getInt("cid")!= null){
+			renderJson(configOS.update());
+		}else{
+			renderJson(configOS.save());
+		}
+	}
+	
+	public void update_score(){
+		ConfigOS configOS = getModel(ConfigOS.class);
+		if(configOS.getInt("cid")!= null){
+			renderJson(configOS.update());
+		}else{
+			renderJson(configOS.save());
 		}
 	}
 	
@@ -70,14 +98,17 @@ public class AdminController extends BaseController{
 		ResponseModel rm = new ResponseModel();
 		String aid = getPara("id");//账号
 		String apassword = getPara("password");
-		
-		boolean isPass = Admin.me.checkLogin(aid, apassword);
-		if(isPass){
-			Admin admin = Admin.me.findById(aid);
-			SessionUtil.setAdminUserInfo(getSession(), admin.get("aid"), admin.get("auser_name"));
-			rm.msgSuccess("登录成功!");
+		//检查用户是否存在
+		if(Admin.me.checkIdExist(aid)){
+			boolean isPass = Admin.me.checkLogin(aid, apassword);
+			if(isPass){
+				SessionUtil.setAdminUserInfo(getSession(), aid);
+				rm.msgSuccess("登录成功!");
+			}else{
+				rm.msgFailed("密码错误!");
+			}
 		}else{
-			rm.msgFailed("密码错误!");
+			rm.msgFailed("用户不存在!");
 		}
 		renderJson(rm);
 	}
@@ -113,11 +144,24 @@ public class AdminController extends BaseController{
 		String new_aid = getPara("account");
 		String password = getPara("password");
 		
-		if (Admin.me.updateInfo(old_aid, new_aid, password)) {
-			rm.msgSuccess("修改管理员成功");
-		} else {
-			rm.msgFailed("修改管理员失败");
+		//旧账号为空時为添加用户
+		if(StrKit.isBlank(old_aid)){
+			Admin admin = new Admin();
+			admin.set("aid", new_aid)
+			.set("apassword", password);
+			if(admin.save()){
+				rm.msgSuccess("添加管理员成功");
+			}else{
+				rm.msgFailed("添加管理员失败");
+			}
+		}else{
+			if (Admin.me.updateInfo(old_aid, new_aid, password)) {
+				rm.msgSuccess("修改管理员成功");
+			} else {
+				rm.msgFailed("修改管理员失败");
+			}
 		}
+		
 		
 		renderJson(rm);
 	}

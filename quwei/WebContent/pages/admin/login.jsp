@@ -61,7 +61,7 @@
       <strong id="msg">账号或密码错误</strong>
     </div>
     <div class="container" style="z-index: 0;">
-      <form class="form-signin" action="admin/doLogin" onsubmit="return valid()">
+      <form class="form-signin" >
         <h2 class="form-signin-heading text-center">趣味问答系统</h2>
         <input type="text" name="id" id="id" class="input-block-level" placeholder="用户名">
         <input type="password" name="password" id="password" class="input-block-level" placeholder="密码">

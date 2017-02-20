@@ -57,7 +57,7 @@
                             <li class="active"><a><span class="icon-user"></span> 用户管理</a></li>
                             <li><a href="questionManageView"><span class="icon-list-alt"></span> 题库信息管理</a></li>
                             <li><a href="#contact"><span class="icon-check"></span> 答题记录管理</a></li>
-                            <li><a href="#contact"><span class="icon-wrench"></span> 系统配置</a></li>
+                            <li><a href="configView"><span class="icon-wrench"></span> 系统配置</a></li>
                             <li><a href="#contact"><span class="icon-off"></span> 退出系统</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
@@ -78,20 +78,26 @@
                 <li>
                     <button class="btn" type="button" onclick="location.href='userManageView'"><span class="icon-refresh"></span> 刷 新 </button>
                 </li>
-                <li>
+                
+                <!-- <li>
                     <form class="form-inline">
                         添加新用户 &rsaquo;&rsaquo;
-                        <input type="text" class="input-small" placeholder="新账号">
-                        <input type="password" class="input-small" placeholder="密码">
-                        <button type="submit" class="btn"><span class="icon-arrow-up"></span> 提 交 </button>
+                        <input type="text" id="new_account" class="input-small" placeholder="新账号">
+                        <input type="password" id="new_password" class="input-small" placeholder="密码">
+                        <button type="button" class="btn" onclick="add()"><span class="icon-arrow-up" ></span> 提 交 </button>
                         <button type="reset" class="btn"><span class="icon-minus"></span> 重 置 </button>
                     </form>
-                </li>
+                </li> -->
             </ul>
 
             <div class="container">
                 <table id="table" class="table table-striped text-center" style="max-width: 500px;margin-left: auto;margin-right: auto;">
-                    <caption class="text-left"><h4><strong>管理员信息</strong></h4></caption>
+                    <caption class="text-left">
+                    	<h4>
+                    		<strong>管理员信息</strong>
+                    		<button style="float:right" class="btn btn-link" data-toggle="modal" data-target="#editModal">添加管理员</button>
+                    	</h4>
+                    </caption>
                     <thead>
 	                    <tr>
 	                        <th>账号</th>
@@ -105,18 +111,20 @@
                     <%List<Record> p_list = p.getList(); %>
                     
                     <%if(p_list.size()>0){ %>
-	                    <tbody>
-	                    	<%Integer table_id = 1; %>
-	                    	<%for(Record r : p_list){ %>
-	                    		<tr>
-			                        <td><%=r.getStr("aid") %></td><td><%=r.getStr("apassword") %></td>
-			                        <td>
-			                            <button class="btn btn-link" id="<%=table_id++ %>" data-toggle="modal" data-target="#editModal" onclick="edit(this)">编辑</button><button class="btn btn-link">删除</button>
-			                        </td>
-			                    </tr>
-	                    	<%} %>
-		                    
-						</tbody>
+                    <tbody>
+                    	<%Integer table_id = 1; %>
+                    	<%for(Record r : p_list){ %>
+                    		<tr>
+		                        <td><%=r.getStr("aid") %></td><td><%=r.getStr("apassword") %></td>
+		                        <td>
+		                            <button class="btn btn-link" id="<%=table_id %>" data-toggle="modal" data-target="#editModal" onclick="edit(this)">编辑</button>
+		                            <button class="btn btn-link" id="<%=table_id %>" data-toggle="modal" data-target="#judgeModal" onclick="get_delete_id(this)">删除</button>
+		                        </td>
+		                        <%table_id++; %>
+		                    </tr>
+                    	<%} %>
+	                    
+					</tbody>
 					<%}else{ %>
                     	
 		                
@@ -137,30 +145,69 @@
                     <h4 class="modal-title">编 辑 用 户 信 息</h4>
                 </div>
                 <div class="modal-body text-center">
-                	<ul class="inline">
-                        <li><input  name="oldUserName" id="oldN"/></li>
-                    </ul>
-                	
+                	<input hidden="true" name="oldUserName" id="oldN"/></ul>
                     <ul class="inline">
                         <li><h5>用户名 </h5></li>
-                        <li><input  name="editUserName" id="editN"/></li>
+                        <li><input onchange="check_exsit()" name="editUserName" id="editN"/></li>
+                        <li><p id="check_tip" ></p></li>
                     </ul>
                     <ul class="inline">
                         <li><h5>密&nbsp;&nbsp;&nbsp;&nbsp;码 </h5></li>
                         <li><input name="editPassword" id="editP"/></li>
+                        <li><p></p></li>
                     </ul>
+                
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="update()">确定</button>
+                    <button type="button" id="update_button" class="btn btn-primary" onclick="update()">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
                 </div>
             </div>
         </div>
     </div>
 
+	<!--操作提示模态框-->
+    <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                
+                <div class="modal-body text-center">
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                	<!-- <ul class="inline">
+                        <li><input  name="oldUserName" id="oldN"/></li>
+                    </ul> -->
+                	<h4 class="text-success" id="message"></h4>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--删除用户确定模态框-->
+    <div class="modal hide fade" id="judgeModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">确  定  删  除</h4>
+                    <input hidden="true" id="delete_id"/>
+            
+                    <button type="button" class="btn btn-primary" onclick="delete_admin()">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
     <script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script>
+    
+    	function add(){
+    		alert("nn");
+    		$("#tipModal").modal();
+    	}
+    
     	function edit(obj){
     		
     		var id = $(obj).attr("id"); 
@@ -174,6 +221,22 @@
     	    $('#editP').val(password);  
     	}
     	
+    	function delete_admin(){
+    	    $.ajax({  
+    	        type: "post",  
+    	        url: "<%=request.getContextPath()%>/admin/delete",  
+    	        data: "id=" + $('#delete_id').val(),  
+    	       /*  dataType: 'html',  
+    	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
+    	        success: function(result) {  
+    	            //location.reload();  
+    	        	$("#judgeModal").modal('hide');
+    	        	$("#message").text("删除成功");
+    	        	$("#tipModal").modal();
+    	        }  
+    	    });  
+    	}
+    	
     	function update(){
     		var old_account = $('#oldN').val();  
     	    var account = $('#editN').val();  
@@ -182,22 +245,63 @@
     	        type: "post",  
     	        url: "<%=request.getContextPath()%>/admin/update",  
     	        data: "old_account=" + old_account + "&account=" + account + "&password=" + password,  
-    	        dataType: 'html',  
-    	        contentType: "application/x-www-form-urlencoded; charset=utf-8",  
+    	       /*  dataType: 'html',  
+    	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
     	        success: function(result) {  
     	            //location.reload();  
-    	            alert("xx");
+    	            $("#editModal").modal('hide');
+    	            $("#message").text("修改成功");
+    	            $("#tipModal").modal();
     	        }  
     	    });  
+    	}
+    	
+    	function get_delete_id(obj){
+    		var id = $(obj).attr("id"); 
+    		//alert(id+table_id);
+    	    //获取表格中的一行数据  
+    	    var account = document.getElementById("table").rows[id].cells[0].innerText;
+    	    $('#delete_id').val(account);  
+    	}
+    	
+    	function check_exsit(){
+    		var account = $('#editN').val();
+    		$.ajax({  
+    	        type: "post",  
+    	        url: "<%=request.getContextPath()%>/admin/checkAid",  
+    	        data: "account=" + account,  
+    	       /*  dataType: 'html',  
+    	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
+    	        success: function(result) {  
+    	            //location.reload();  
+    	           /*  $("#editModal").modal('hide');
+    	            $("#message").text("修改成功");
+    	            $("#tipModal").modal(); */
+    	            console.log(result);
+    	            if(result){
+    	            	$("#check_tip").html("<span style='color:red'>用户名已存在</span>");
+    	            	//aaaa = "<span hidden=true style="color:red">用户名已存在</span>";
+    	            	$("#update_button").attr("disabled","disabled");
+    	            }else{
+    	            	$("#check_tip").html("<span style='color:green'>用户名可用</span>");
+    	            	$("#update_button").removeAttr("disabled");
+    	            }
+    	        }  
+    	    }); 
     	}
     	
         $("#editModal").on('hidden', function () {
             /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据     判断*/
             $("#editN").val("");
             $("#editP").val("");
+            
+            $('#oldN').val("");
         })
         
-        
+        /*hidden.bs.modal	此事件在模态框被隐藏（并且同时在 CSS 过渡效果完成）之后被触发。*/
+        $('#tipModal').on('hidden.bs.modal', function () {
+        	location.reload();
+		})
         function search(){
         	account = $("#account").val();
         	//alert(account);
