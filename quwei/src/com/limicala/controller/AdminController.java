@@ -82,7 +82,7 @@ public class AdminController extends BaseController{
 		String b = getPara("b");
 		String c = getPara("c");
 		String d = getPara("d");
-
+		
 		//qid为空时添加题目
 		if(StrKit.isBlank(qid)){
 			Question question = new Question();
@@ -109,6 +109,53 @@ public class AdminController extends BaseController{
 				rm.setType("edit");
 				rm.msgSuccess("修改失败");
 			}
+		}
+		
+		renderJson(rm);
+	}
+	
+	
+	/**
+	 * 删除题库信息
+	 */
+	@Before(Tx.class)
+	public void deleteQuestion(){
+		ResponseModel rm = new ResponseModel();
+		String qid = getPara("id");
+		String delType = getPara("delType");
+		
+		if (delType.trim().equals("s")){
+			
+			if(StrKit.notBlank(qid)){
+				if(Question.me.deleteById(qid)){
+					rm.setSuccess(true);
+					rm.msgSuccess("删除成功");
+				}else{
+					rm.setSuccess(false);
+					rm.msgFailed("删除失败");
+				}
+			}else{
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败");
+			}
+		}else if (delType.trim().equals("m")){
+			int re = Question.me.deleteQuestions(qid);
+			if( 1 == re ){
+				rm.setSuccess(true);
+				rm.msgFailed("删除成功");
+			}else if( 0 == re ){
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败");
+			}else if( 2 == re ){
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败，只删除选中部分数据，请刷新后重试");
+			}else{
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败");
+			}
+		}else{
+			rm.setSuccess(false);
+			rm.msgFailed("删除失败");
 		}
 		
 		renderJson(rm);

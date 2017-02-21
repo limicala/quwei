@@ -42,6 +42,33 @@ public class Question extends BaseModel<Question>{
 	public boolean updateQuestion(String qid, String content, String a, String b, String c, String d, String answer, String explain){
 		return Question.me.findById(qid).set("qcontent", content).set("qa", a).set("qb", b).set("qc", c).set("qd", d)
 				.set("qanswer", answer).set("qexplain", explain).update();
-		
+	}
+	
+	/**
+	 * 返回3个状态：“0”删除失败，一个都没删除成功；“1”删除成功；“2”只删除部分
+	 * @param ids
+	 * @return
+	 */
+	public int deleteQuestions(String ids){
+		/*
+		 * split分隔符总结
+			1.字符"|","*","+"都得加上转义字符，前面加上"\\"。
+			2.而如果是"\"，那么就得写成"\\\\"。
+			3.如果一个字符串中有多个分隔符，可以用"|"作为连字符。
+		 */
+		String[] id = ids.split("\\|");
+		Integer idAllNum = id.length;
+		int idDelNum = 0;
+	
+		for (int i = 0; i < idAllNum; ++i){
+			if(Question.me.deleteById(id[i]))
+				idDelNum++;
+		}
+		if (idAllNum.equals(idDelNum)){
+			return 1;
+		}else if(idAllNum.equals("0")){
+			return 0;
+		}else
+			return 2;
 	}
 }
