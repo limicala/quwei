@@ -71,6 +71,9 @@
     </style>
 </head>
 <body>
+	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
+	
+	<input id="param" class="hidden" value="<%=request.getQueryString()%>"/>
     <!-- 主要内容 -->
     <div class="container">
         <!--顶端图片-->
@@ -108,7 +111,7 @@
             <!-- tab按钮 -->
             <ul class="nav nav-tabs">
                 <li ${ct eq "1" ? "class='active'" : "" } ><a href="#single" data-toggle="tab">单 项 选 择 题</a></li>
-                <li ${ct eq "2" ? "class='active'" : "" } ><a href="#mutil" data-toggle="tab">多 项 选 择 题</a></li>
+                <li ${ct eq "2" ? "class='active'" : "" } ><a href="#multi" data-toggle="tab">多 项 选 择 题</a></li>
                 <li ${ct eq "3" ? "class='active'" : "" } ><a href="#judge" data-toggle="tab">判 断 题</a></li>
             </ul>
             <!-- 对应tab按钮内容 -->
@@ -120,14 +123,20 @@
                     <ul class="inline"><!--操作-->
                         <li>
                             <div class="input-append" style="padding-top: 10px;">
-                                <input class="span2" type="text" placeholder="题目关键字">
-                                <button class="btn" type="button"><span class="icon-search"></span> 查 找 </button>
+                                <c:if test="${scondi eq '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="scondi">
+                                </c:if>
+                                <c:if test="${scondi ne '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="scondi" value="${scondi }">
+                                </c:if>
+                                
+                                <button class="btn" type="button" id="s" onclick="query(this);"><span class="icon-search"></span> 查 找 </button>
                             </div>
                         </li>
-                        <li><button class="btn" type="button" onclick="location.href='questionManageView?ct=1&spn=${page.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
-                        <li><button type="submit" class="btn" data-toggle="modal" data-target="#singleModal"><span class="icon-plus"></span> 添 加 </button></li>
-                        <li><button type="reset" class="btn"><span class="icon-trash"></span> 删除所选 </button></li>
-                        <li><button type="reset" class="btn"  data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
+                        <li><button type="button" class="btn" onclick="location.href='questionManageView?ct=1&spn=${page.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
+                        <li><button type="button" class="btn" data-toggle="modal" data-target="#singleModal"><span class="icon-plus"></span> 添 加 </button></li>
+                        <li><button type="button" class="btn" id="singleDels" onclick="deleteQuestions(this)"><span class="icon-trash"></span> 删除所选 </button></li>
+                        <li><button type="button" class="btn" data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
                     </ul>
                     <!--题库内容（表格显示）-->
                     <div class="container tb-responsive">
@@ -135,7 +144,7 @@
                             <thead style="white-space:nowrap; position: relative;z-index: 1;/*绝对定位 */background:#cccccc;">
                             <tr>
                                 <th style="width: 45px;"> 全 选
-                                    <input type="checkbox" value="">
+                                    <input type="checkbox" id="singleCB"/>
                                 </th>
                                 <th >题 目 内 容</th>
                                 <th colspan="2">选 项</th>
@@ -143,6 +152,7 @@
                                 <th style="width: 100px;">注解</th>
                                 <th style="width: 15px;">回答次数（次）</th>
                                 <th style="width: 15px;">正确率（%）</th>
+                                <th >答题限定</th>
                                 <th>&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
@@ -152,29 +162,40 @@
 
 							<c:forEach items="${page.list }" var="s">
 								<tr>
-	                                <td rowspan="4" style="padding-left: 25px;"><input type="checkbox" value=""></td><!--选择-->
-	                                <td rowspan="4" class="content">${s.qcontent}</td>
+	                                <td rowspan="4" style="padding-left: 25px;"><input type="checkbox" value="${s.qid }" name="singleCB"/></td><!--选择-->
+	                                <td rowspan="4" class="content" id="${s.qid }Content">${s.qcontent}</td>
 	                                <td style="max-width: 7px;"><strong>A</strong></td><!--选项标记-->
-	                                <td class="itemContent">${s.qa }</td><!--选项内容-->
-	                                <td rowspan="4" style="width: 50px;">${s.qanswer }</td><!--答案-->
-	                                <td rowspan="4" class="tip">${s.qexplain }</td><!--题目注释-->
+	                                <td class="itemContent" id="${s.qid }A">${s.qa }</td><!--选项内容-->
+	                                <td rowspan="4" style="width: 50px;" id="${s.qid }Answer">${s.qanswer }</td><!--答案-->
+	                                <td rowspan="4" class="tip" id="${s.qid }Explain">${s.qexplain }</td><!--题目注释-->
 	                                <td rowspan="4">${s.qall_times }</td><!--回答次数-->
 	                                <td rowspan="4">${s.qtrue_times }</td><!--正确率-->
+	                                <td rowspan="4">
+	                                	<input class="hidden" id="o${s.qid }State" value="${s.qlimit }"/>
+	                                	<select id="${s.qid }State" onchange="setState(this)" class="${s.qlimit eq '1' ? 'text-error' : '' }" style="width: 65px;">
+										  <option ${s.qlimit eq "0" ? "SELECTED" : ""} value="0">随机</option>
+										  <option ${s.qlimit eq "1" ? "SELECTED" : ""} value="1">必答</option>
+										</select>
+	                                </td><!--答题限定-->
 	                                <td rowspan="4" style="width: 150px;"><!--题目操作->编辑->删除-->
-	                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
+	                                    <a class="btn btn-link" id="${s.qid }" onclick="editSingle(this)">编辑</a>
+	                                    <a class="btn btn-link" id="${s.qid }del" onclick="deleteQuestion(this)">删除</a>
 	                                </td>
 	                            </tr>
 	                            <tr><!--B选项-->
 	                                <td style="max-width: 7px;"><strong>B</strong></td>
-	                                <td class="itemContent">${s.qb }</td>
+	                                <td class="itemContent" id="${s.qid }B">${s.qb }</td>
 	                            </tr>
 	                            <tr><!--C选项-->
 	                                <td style="max-width: 7px;"><strong>C</strong></td>
-	                                <td class="itemContent">${s.qc }</td>
+	                                <td class="itemContent" id="${s.qid }C">${s.qc }</td>
 	                            </tr>
 	                            <tr><!--D选项-->
 	                                <td style="max-width: 7px;"><strong>D</strong></td>
-	                                <td class="itemContent">${s.qd }</td>
+	                                <td class="itemContent" id="${s.qid }D">${s.qd }</td>
+	                            </tr>
+	                            <tr style="max-height: 1px;"><!--间隔-->
+	                                <td colspan="10" style="max-height: 1px; background-color:#cccccc;"></td>
 	                            </tr>
 							</c:forEach>
 
@@ -187,7 +208,7 @@
                     <!--modal添加单个题目模态框-->
                     <!--
                         Button trigger modal 添加触发按钮，即“添加按钮”
-                        为触发按钮添加属性： data-toggle="modal" data-target="#singleModal"  对应id
+                                                                        为触发按钮添加属性： data-toggle="modal" data-target="#singleModal"  对应id
                         data-backdrop="false" 点击窗口外不会关闭窗口
                     -->
                     <!-- 单项选择题添加Modal -->
@@ -197,13 +218,14 @@
                                 <div class="modal-header red">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <h4 class="modal-title">新 增 单 项 选 择 题 目</h4>
+                                    <input id="singleId" value="" class="hidden"/>
                                 </div>
                                 <div class="modal-body">
                                     <form class="form-horizontal" style="width: 100%;" id="singlePlus">
                                         <table style="width: 90%;">
                                             <tr>
                                                 <td colspan="1"><strong  style="white-space: nowrap">题目:</strong></td>
-                                                <td colspan="3"><textarea id="singleContent" style="width: 100%;max-width:100%;height: 100px;"></textarea></td>
+                                                <td colspan="3"><textarea id="singleContent" style="width: 100%;max-width:100%;height: 100px;" placeholder="题目内容"></textarea></td>
                                             </tr>
 
                                             <tr>
@@ -226,16 +248,16 @@
                                                 <td><strong>答案:</strong></td>
                                                 <td colspan="3" align="left" >
                                                     <label class="radio inline " style="max-width: 50px;">
-                                                        <input id="singleAnswer" type="radio" name="singleOptionsRadios"value="1" checked> A
+                                                        <input type="radio" name="singleOptionsRadios" value="A"> A
                                                     </label>
                                                     <label class="radio inline">
-                                                        <input type="radio" name="singleOptionsRadios" value="2"> B
+                                                        <input type="radio" name="singleOptionsRadios" value="B"> B
                                                     </label>
                                                     <label class="radio inline">
-                                                        <input  type="radio" name="singleOptionsRadios" value="3"> C
+                                                        <input  type="radio" name="singleOptionsRadios" value="C"> C
                                                     </label>
                                                     <label class="radio inline">
-                                                        <input  type="radio" name="singleOptionsRadios" value="4"> D
+                                                        <input  type="radio" name="singleOptionsRadios" value="D"> D
                                                     </label>
                                                 </td>
                                             </tr>
@@ -247,7 +269,7 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" onclick="">提交</button>
+                                    <button type="button" class="btn btn-primary" onclick="addSingle()">提交</button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">返回</button>
                                 </div>
                             </div>
@@ -256,19 +278,24 @@
                 </div>
 
                 <!--多项选择题-->
-                <div class="tab-pane fade ${ct eq '2' ? 'active in' : '' }" id="mutil">
+                <div class="tab-pane fade ${ct eq '2' ? 'active in' : '' }" id="multi">
                     <!--操作按钮-->
                     <ul class="inline"><!--操作-->
                         <li>
                             <div class="input-append" style="padding-top: 10px;">
-                                <input class="span2" type="text" placeholder="题目关键字">
-                                <button class="btn" type="button"><span class="icon-search"></span> 查 找 </button>
+                                <c:if test="${mcondi eq '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="mcondi">
+                                </c:if>
+                                <c:if test="${mcondi ne '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="mcondi" value="${mcondi }">
+                                </c:if>
+                                <button class="btn" type="button" id="m" onclick="query(this)"><span class="icon-search"></span> 查 找 </button>
                             </div>
                         </li>
-                        <li><button class="btn" type="button" onclick="location.href='questionManageView?ct=2&mpn=${page1.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
-                        <li><button type="submit" class="btn" data-toggle="modal" data-target="#mutilModal"><span class="icon-plus"></span> 添 加 </button></li>
-                        <li><button type="reset" class="btn"><span class="icon-trash"></span> 删除所选 </button></li>
-                        <li><button type="reset" class="btn"  data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
+                        <li><button type="button" class="btn" onclick="location.href='questionManageView?ct=2&mpn=${page1.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
+                        <li><button type="button" class="btn" data-toggle="modal" data-target="#multiModal"><span class="icon-plus"></span> 添 加 </button></li>
+                        <li><button type="button" class="btn" id="multiDels" onclick="deleteQuestions(this)"><span class="icon-trash"></span> 删除所选 </button></li>
+                        <li><button type="button" class="btn"  data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
                     </ul>
                     <!--题库内容（表格显示）-->
                     <div class="container tb-responsive">
@@ -276,7 +303,7 @@
                             <thead style="white-space:nowrap; position: relative;z-index: 1;/*绝对定位 */background:#cccccc;">
                             <tr>
                                 <th style="width: 45px;"> 全 选
-                                    <input type="checkbox" value="">
+                                    <input type="checkbox" id="multiCB"/>
                                 </th>
                                 <th >题 目 内 容</th>
                                 <th colspan="2">选 项</th>
@@ -284,6 +311,7 @@
                                 <th style="width: 100px;">注解</th>
                                 <th style="width: 15px;">回答次数（次）</th>
                                 <th style="width: 15px;">正确率（%）</th>
+                                <th >答题限定</th>
                                 <th>&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
@@ -292,31 +320,40 @@
                             <!-- ******************************************默认显示样式****************************************** -->
 							<c:forEach items="${page1.list }" var="m">
 								<tr>
-	                                <td rowspan="4" style="padding-left: 25px;"><input type="checkbox" value=""></td><!--选择-->
-	                                <td rowspan="4" class="content"><!--题目内容-->
-	                                    ${m.qcontent}
-	                                </td>
+	                                <td rowspan="4" style="padding-left: 25px;"><input type="checkbox" value="${m.qid }" name="multiCB"/></td><!--选择-->
+	                                <td rowspan="4" class="content" id="${m.qid }Content">${m.qcontent}</td>
 	                                <td style="max-width: 7px;"><strong>A</strong></td><!--选项标记-->
-	                                <td class="itemContent">${m.qa }</td><!--选项内容-->
-	                                <td rowspan="4" style="width: 50px;">${m.qanswer }</td><!--答案-->
-	                                <td rowspan="4" class="tip">${m.qexplain }</td><!--题目注释-->
+	                                <td class="itemContent" id="${m.qid }A">${m.qa }</td><!--选项内容-->
+	                                <td rowspan="4" style="width: 50px;" id="${m.qid }Answer">${m.qanswer }</td><!--答案-->
+	                                <td rowspan="4" class="tip" id="${m.qid }Explain">${m.qexplain }</td><!--题目注释-->
 	                                <td rowspan="4">${m.qall_times }</td><!--回答次数-->
 	                                <td rowspan="4">${m.qtrue_times }</td><!--正确率-->
+	                                <td rowspan="4">
+	                                	<input class="hidden" id="o${m.qid }State" value="${m.qlimit }"/>
+	                                	<select id="${m.qid }State" onchange="setState(this)" class="${m.qlimit eq '1' ? 'text-error' : '' }" style="width: 70px;">
+										  <option ${m.qlimit eq "0" ? "SELECTED" : ""} value="0">随机</option>
+										  <option ${m.qlimit eq "1" ? "SELECTED" : ""} value="1">必答</option>
+										</select>
+	                                </td><!--答题限定-->
 	                                <td rowspan="4" style="width: 150px;"><!--题目操作->编辑->删除-->
-	                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
+	                                    <a class="btn btn-link" id="${m.qid }" onclick="editMulti(this)">编辑</a>
+	                                    <a class="btn btn-link" id="${m.qid }del" onclick="deleteQuestion(this)">删除</a>
 	                                </td>
 	                            </tr>
 	                            <tr><!--B选项-->
 	                                <td style="max-width: 7px;"><strong>B</strong></td>
-	                                <td class="itemContent">${m.qb }</td>
+	                                <td class="itemContent" id="${m.qid }B">${m.qb }</td>
 	                            </tr>
 	                            <tr><!--C选项-->
 	                                <td style="max-width: 7px;"><strong>C</strong></td>
-	                                <td class="itemContent">${m.qc }</td>
+	                                <td class="itemContent" id="${m.qid }C">${m.qc }</td>
 	                            </tr>
 	                            <tr><!--D选项-->
 	                                <td style="max-width: 7px;"><strong>D</strong></td>
-	                                <td class="itemContent">${m.qd }</td>
+	                                <td class="itemContent" id="${m.qid }D">${m.qd }</td>
+	                            </tr>
+	                            <tr><!--间隔-->
+	                                <td colspan="10" style="max-height: 2px; background-color:#cccccc;"></td>
 	                            </tr>
 							</c:forEach>
                             
@@ -333,63 +370,64 @@
                         data-backdrop="false" 点击窗口外不会关闭窗口
                     -->
                     <!-- 多项选择题添加Modal -->
-                    <div class="modal hide fade" id="mutilModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
+                    <div class="modal hide fade" id="multiModal" tabindex="0" role="dialog"aria-hidden="true" data-backdrop="true">
                         <div class="modal-dialog" role="document" >
                             <div class="modal-content">
                                 <div class="modal-header red">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <h4 class="modal-title">新 增 多 项 选 择 题 目</h4>
+                                    <input id="multiId" value="" class="hidden"/>
                                 </div>
                                 <div class="modal-body">
                                     <form class="form-horizontal" style="width: 100%;" id="mutilPlus">
                                         <table style="width: 90%;">
                                             <tr>
                                                 <td colspan="1"><strong  style="white-space: nowrap">题目:</strong></td>
-                                                <td colspan="3"><textarea id="mutilContent" style="width: 100%;max-width:100%;height: 100px;"></textarea></td>
+                                                <td colspan="3"><textarea id="multiContent" style="width: 100%;max-width:100%;height: 100px;"></textarea></td>
                                             </tr>
 
                                             <tr>
                                                 <td colspan="1"><strong>A. </strong></td>
-                                                <td colspan="3"><input id="mutilA" type="text" style="width: 100%;" name="inputA" placeholder="A选项内容"></td>
+                                                <td colspan="3"><input id="multiA" type="text" style="width: 100%;" placeholder="A选项内容"></td>
                                             </tr>
                                             <tr>
                                                 <td colspan="1"><strong>B. </strong></td>
-                                                <td colspan="3"><input id="mutilB" type="text" style="width: 100%;" name="inputA" placeholder="B选项内容"></td>
+                                                <td colspan="3"><input id="multiB" type="text" style="width: 100%;" placeholder="B选项内容"></td>
                                             </tr>
                                             <tr>
                                                 <td colspan="1"><strong>C. </strong></td>
-                                                <td colspan="3"><input id="mutilC" type="text" style="width: 100%;" name="inputA" placeholder="C选项内容"></td>
+                                                <td colspan="3"><input id="multiC" type="text" style="width: 100%;" placeholder="C选项内容"></td>
                                             </tr>
                                             <tr>
                                                 <td colspan="1"><strong>D. </strong></td>
-                                                <td colspan="3"><input id="mutilD" type="text" style="width: 100%;" name="inputA" placeholder="D选项内容"></td>
+                                                <td colspan="3"><input id="multiD" type="text" style="width: 100%;" placeholder="D选项内容"></td>
                                             </tr>
                                             <tr>
                                                 <td><strong>答案:</strong></td>
                                                 <td colspan="3" align="left" >
                                                     <label class="checkbox inline " style="max-width: 50px;">
-                                                        <input id="mutilAnswer" type="checkbox" name="singleOptionsRadios"value="1" checked> A
+                                                        <input type="checkbox" name="multiOptionsRadios" value="A"> A
                                                     </label>
                                                     <label class="checkbox inline">
-                                                        <input type="checkbox" name="singleOptionsRadios" value="2" checked> B
+                                                        <input type="checkbox" name="multiOptionsRadios" value="B"> B
                                                     </label>
                                                     <label class="checkbox inline">
-                                                        <input  type="checkbox" name="singleOptionsRadios" value="3" checked> C
+                                                        <input  type="checkbox" name="multiOptionsRadios" value="C"> C
                                                     </label>
                                                     <label class="checkbox inline">
-                                                        <input  type="checkbox" name="singleOptionsRadios" value="4" checked> D
+                                                        <input  type="checkbox" name="multiOptionsRadios" value="D"> D
                                                     </label>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td colspan="1"><strong>注释:</strong></td>
-                                                <td colspan="3"><input id="mutilTip" type="text" name="tip" placeholder="题目注释" style="width: 100%;" ></td>
+                                                <td colspan="3"><input id="multiTip" type="text" placeholder="题目注释" style="width: 100%;" ></td>
                                             </tr>
                                         </table>
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" onclick="">提交</button>
+                                    <button type="button" class="btn btn-primary" onclick="addMulti()">提交</button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">返回</button>
                                 </div>
                             </div>
@@ -403,14 +441,19 @@
                     <ul class="inline"><!--操作-->
                         <li>
                             <div class="input-append" style="padding-top: 10px;">
-                                <input class="span2" type="text" placeholder="题目关键字">
-                                <button class="btn" type="button"><span class="icon-search"></span> 查 找 </button>
+                            	<c:if test="${jcondi eq '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="jcondi">
+                                </c:if>
+                                <c:if test="${jcondi ne '' }">
+                                	<input class="span2" type="text" placeholder="题目关键字" id="jcondi" value="${jcondi }">
+                                </c:if>
+                                <button class="btn" type="button" id="j" onclick="query(this)"><span class="icon-search"></span> 查 找 </button>
                             </div>
                         </li>
-                        <li><button class="btn" type="button" onclick="location.href='questionManageView?ct=3&jpn=${page2.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
-                        <li><button type="submit" class="btn" data-toggle="modal" data-target="#judgeModal"><span class="icon-plus"></span> 添 加 </button></li>
-                        <li><button type="reset" class="btn"><span class="icon-trash"></span> 删除所选 </button></li>
-                        <li><button type="reset" class="btn"  data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
+                        <li><button type="button" class="btn" onclick="location.href='questionManageView?ct=3&jpn=${page2.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
+                        <li><button type="button" class="btn" data-toggle="modal" data-target="#judgeModal"><span class="icon-plus"></span> 添 加 </button></li>
+                        <li><button type="button" class="btn" id="judgeDels" onclick="deleteQuestions(this)"><span class="icon-trash"></span> 删除所选 </button></li>
+                        <li><button type="button" class="btn"  data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
                     </ul>
                     <!--题库内容（表格显示）-->
                     <div class="container tb-responsive">
@@ -418,13 +461,14 @@
                             <thead style="white-space:nowrap; position: relative;z-index: 1;/*绝对定位 */background:#cccccc;">
                             <tr>
                                 <th style="width: 45px;"> 全 选
-                                    <input type="checkbox" value="">
+                                    <input type="checkbox" id="judgeCB"/>
                                 </th>
                                 <th style="width: 200px;">题 目 内 容</th>
                                 <th style="width: 50px;">答案</th>
                                 <th style="width: 100px;">注解</th>
                                 <th style="width: 15px;">回答次数（次）</th>
                                 <th style="width: 15px;">正确率（%）</th>
+                                <th style="width: 70px;">答题限定</th>
                                 <th>&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
@@ -433,24 +477,28 @@
                             <!-- ******************************************默认显示样式****************************************** -->
 							<c:forEach items="${page2.list }" var="j">
 								<tr>
-	                                <td style="padding-left: 25px;"><input type="checkbox" value=""></td><!--选择-->
+	                                <td style="padding-left: 25px;"><input type="checkbox" value="${j.qid }" name="judgeCB"/></td><!--选择-->
+	                                <td class="content" id="${j.qid }Content">${j.qcontent }</td><!--题目内容-->
+	                                <td style="width: 50px;font-size:28px;" id="${j.qid }Icon" class="${j.qanswer eq 1 ? 'text-success' : 'text-error'}">${j.qanswer eq 1 ? '√' : '×'}</td><!--答案-->
+									<td class="hidden"><input class="hidden" id="${j.qid }Answer" value="${j.qanswer }" /></td>
 	                                
-	                                <td class="content"><!--题目内容-->${j.qcontent }</td>
-	                                <c:choose>
-									 	<c:when test="${j.qanswer eq 1 }">
-									 		<td style="width: 50px;"><span class="icon-ok"></span></td><!--答案-->
-									 	</c:when>
-									 	<c:otherwise>
-									 		<td style="width: 50px;"><span class="icon-remove"></span></td><!--答案-->
-									 	</c:otherwise>
-									</c:choose>
-	                                
-	                                <td class="tip" style="width: 210px;">${j.qexplain }</td><!--题目注释-->
+	                                <td class="tip" style="width: 210px;" id="${j.qid }Explain" >${j.qexplain }</td><!--题目注释-->
 	                                <td >${j.qall_times }</td><!--答题次数-->
 	                                <td >${j.qtrue_times }</td><!--正确率-->
+	                                <td >
+	                                	<input class="hidden" id="o${j.qid }State" value="${j.qlimit }"/>
+	                                	<select id="${j.qid }State" onchange="setState(this)" class="${j.qlimit eq '1' ? 'text-error' : '' }" style="width: 70px;">
+										  <option ${j.qlimit eq "0" ? "SELECTED" : ""} value="0">随机</option>
+										  <option ${j.qlimit eq "1" ? "SELECTED" : ""} value="1">必答</option>
+										</select>
+	                                </td><!--答题限定-->
 	                                <td style="width: 100px;"><!--题目操作->编辑->删除-->
-	                                    <a class="btn btn-link">编辑</a><a class="btn btn-link">删除</a>
+	                                    <a class="btn btn-link" id="${j.qid }" onclick="editJudge(this)">编辑</a>
+	                                    <a class="btn btn-link" id="${j.qid }del" onclick="deleteQuestion(this)">删除</a>
 	                                </td>
+	                            </tr>
+	                            <tr><!--间隔-->
+	                                <td colspan="10" style="max-height: 1px; background-color:#cccccc;"></td>
 	                            </tr>
 							</c:forEach>
                             
@@ -467,12 +515,13 @@
                         data-backdrop="false" 点击窗口外不会关闭窗口
                     -->
                     <!-- 判断题添加Modal -->
-                    <div class="modal hide fade" id="judgeModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
+                    <div class="modal hide fade" id="judgeModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
                         <div class="modal-dialog" role="document" >
                             <div class="modal-content">
                                 <div class="modal-header red">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <h4 class="modal-title">新 增 判 断 题 目</h4>
+                                    <input class="hidden" id="judgeId" value=""/>
                                 </div>
                                 <div class="modal-body">
                                     <form class="form-horizontal" style="width: 100%;" id="judgePlus">
@@ -486,11 +535,11 @@
                                                 <td><strong>答案:</strong></td>
                                                 <td colspan="3" align="left" >
                                                     <label class="radio inline " style="max-width: 50px;">
-                                                        <input id="judgeAnswer" type="radio" name="singleOptionsRadios"value="1" checked> <span class="icon-ok success"></span>
+                                                        <input type="radio" name="judgeOptionsRadios" value="1"> <span class="icon-ok"></span>
                                                     </label>
                                                     &nbsp;&nbsp;
                                                     <label class="radio inline">
-                                                        <input type="radio" name="singleOptionsRadios" value="2" class="error"> <span class="icon-remove"></span>
+                                                        <input type="radio" name="judgeOptionsRadios" value="0"> <span class="icon-remove"></span>
                                                     </label>
                                                 </td>
                                             </tr>
@@ -502,7 +551,7 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" onclick="">提交</button>
+                                    <button type="button" class="btn btn-primary" onclick="addJudge()">提交</button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">返回</button>
                                 </div>
                             </div>
@@ -513,21 +562,15 @@
             </div>
         </div>
     </div>
-
+	
     <!-- 部件 -->
     <!--公用提示模态框-->
     <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
         <div class="modal-dialog" role="document" >
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">提 示</h4>
-                </div>
-                <div class="modal-body">
-                    <h6 id="tipContent">提示内容</h6>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">确定</button>
+                <div class="modal-body text-center">
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 id="tipContent"></h4>
                 </div>
             </div>
         </div>
@@ -539,13 +582,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">提 示</h4>
+                    <h4 class="modal-title text-center text-info" id="chooseContent">提 示</h4>
                 </div>
-                <div class="modal-body">
-                    <h6 id="chooseContent">提示内容</h6>
-                </div>
+                
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="">确定</button>
+                    <button type="button" class="btn btn-primary" id="chooseOk">确定</button>&nbsp;&nbsp;
                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
                 </div>
             </div>
@@ -568,9 +609,11 @@
                             <a class="btn btn-primary" onclick="$('input[id=chooseFile]').click();">浏览文件</a>
                         </div>
                     </form>
-                    <h6 style="color: #ff150e">**  提示：Excel表格表头必须包含列表头:“内容”、“A”、“B”、“C”、“D”、“注释”、“答案”.  **</h6>
+                    <h6 style="color: #ff150e">**  提示：点击下方链接下载Excel表格模板，正确填充信息然后上传，否则可能导致上传失败.  **</h6>
+                	<a href="#">下载模板</a>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer text-left">
+                	
                     <button type="button" class="btn btn-success" onclick="">确定上传</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
                 </div>
@@ -581,31 +624,24 @@
 
     <script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
     <script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="<%=request.getContextPath()%>/resources/js/admin/questionManage.js" type="text/javascript"></script>
     <script>
         $("#singleModal").on('hidden', function () {
             /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据           单项*/
-            $("#singleContent").val("");
-            $("#singleA").val("");
-            $("#singleB").val("");
-            $("#singleC").val("");
-            $("#singleD").val("");
-            $("#singleTip").val("");
+        	singleClean();
+        	$("#tipModal").modal('hide');
         })
 
-        $("#mutilModal").on('hidden', function () {
+        $("#multiModal").on('hidden', function () {
             /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据           多项*/
-            $("#mutilContent").val("");
-            $("#mutilA").val("");
-            $("#mutilB").val("");
-            $("#mutilC").val("");
-            $("#mutilD").val("");
-            $("#mutilTip").val("");
+        	multiClean();
+        	$("#tipModal").modal('hide');
         })
 
         $("#judgeModal").on('hidden', function () {
             /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据           判断*/
-            $("#judgeContent").val("");
-            $("#judgeTip").val("");
+        	judgeClean();
+        	$("#tipModal").modal('hide');
         })
 
         $("#uploadModal").on('hidden', function () {
@@ -617,6 +653,35 @@
         $('input[id=chooseFile]').change(function() {
             $('#showUrl').val($(this).val());
         });
+        
+        
+        
+        
+        
+        $("#singleCB").click(function(){   
+            if(this.checked){   
+                $("input[name='singleCB'][type=checkbox]").prop("checked", true);  
+            }else{   
+        		$("input[name='singleCB'][type=checkbox]").prop("checked", false);
+            }   
+        });
+        
+        $("#multiCB").click(function(){   
+            if(this.checked){   
+                $("input[name='multiCB'][type=checkbox]").prop("checked", true);  
+            }else{   
+        		$("input[name='multiCB'][type=checkbox]").prop("checked", false);
+            }   
+        });
+        
+        $("#judgeCB").click(function(){   
+            if(this.checked){   
+                $("input[name='judgeCB'][type=checkbox]").prop("checked", true);  
+            }else{   
+        		$("input[name='judgeCB'][type=checkbox]").prop("checked", false);
+            }   
+        });
+    	
     </script>
 </body>
 </html>

@@ -6,6 +6,7 @@ import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.limicala.config.BaseController;
+import com.limicala.constant.AppConstant;
 import com.limicala.constant.AppTableConstant;
 import com.limicala.model.Admin;
 
@@ -45,17 +46,145 @@ public class AdminController extends BaseController{
 		Integer mpn = this.getParaToInt("mpn", 1);//多项选择题
 		Integer type = this.getParaToInt("ct", 1);//当前的tab页面
 		Integer pageSize = 5;
-		Page<Record> page = Question.me.findByParams(spn, pageSize, AppTableConstant.QUESTION_SINGLE);
-		Page<Record> page1 = Question.me.findByParams(mpn, pageSize, AppTableConstant.QUESTION_MUTIL);
-		Page<Record> page2 = Question.me.findByParams(jpn, pageSize, AppTableConstant.QUESTION_JUDGE);
+		String scondi = this.getPara("scondi", "");//单项选择题目查询关键字
+		String mcondi = this.getPara("mcondi", "");//多项选择题目查询关键字
+		String jcondi = this.getPara("jcondi", "");//判断题查询关键字
+		Page<Record> page = Question.me.findByParams(spn, AppConstant.SINGEL_PAGE_SIZE, AppTableConstant.QUESTION_SINGLE, scondi);
+		Page<Record> page1 = Question.me.findByParams(mpn, AppConstant.MUTIL_PAGE_SIZE, AppTableConstant.QUESTION_MUTIL, mcondi);
+		Page<Record> page2 = Question.me.findByParams(jpn, AppConstant.JUDGE_PAGE_SIZE, AppTableConstant.QUESTION_JUDGE, jcondi);
 		
 		setAttr("url", "questionManageView");
 		setAttr("ct", type);
+		setAttr("jcondi", jcondi);
+		setAttr("scondi", scondi);
+		setAttr("mcondi", mcondi);
 		setAttr("page", page);
 		setAttr("page1", page1);
 		setAttr("page2", page2);
 		
 		render("questionManage.jsp");
+	}
+	
+	/**
+	 * 编辑或者添加题库信息
+	 */
+	@Before(Tx.class)
+	public void updateQuestion(){
+		ResponseModel rm = new ResponseModel();
+		
+		String qid = getPara("id");
+		
+		String qcontent = getPara("content");
+		String qanswer = getPara("answer");
+		String qexplain = getPara("explain");
+		
+		String qtype = getPara("qtype");
+
+		String a = getPara("a");
+		String b = getPara("b");
+		String c = getPara("c");
+		String d = getPara("d");
+		
+		//qid为空时添加题目
+		if(StrKit.isBlank(qid)){
+			Question question = new Question();
+			question.set("qtype", qtype)
+			.set("qcontent", qcontent)
+			.set("qa", a).set("qb", b).set("qc", c).set("qd", d)
+			.set("qanswer", qanswer).set("qexplain", qexplain);
+			if(question.save()){
+				rm.setSuccess(true);
+				rm.setType("add");
+				rm.msgSuccess("添加成功,刷新即可看到新增信息");
+			}else{
+				rm.setSuccess(false);
+				rm.setType("add");
+				rm.msgFailed("添加失败");
+			}
+		}else{
+			if (Question.me.updateQuestion(qid, qcontent, a, b, c, d, qanswer, qexplain)) {
+				rm.setSuccess(true);
+				rm.setType("edit");
+				rm.msgSuccess("修改成功");
+			} else {
+				rm.setSuccess(false);
+				rm.setType("edit");
+				rm.msgSuccess("修改失败");
+			}
+		}
+		
+		renderJson(rm);
+	}
+	
+	
+	/**
+	 * 删除题库信息
+	 */
+	@Before(Tx.class)
+	public void deleteQuestion(){
+		ResponseModel rm = new ResponseModel();
+		String qid = getPara("id");
+		String delType = getPara("delType");
+		
+		if (delType.trim().equals("s")){
+			
+			if(StrKit.notBlank(qid)){
+				if(Question.me.deleteById(qid)){
+					rm.setSuccess(true);
+					rm.msgSuccess("删除成功");
+				}else{
+					rm.setSuccess(false);
+					rm.msgFailed("删除失败");
+				}
+			}else{
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败");
+			}
+		}else if (delType.trim().equals("m")){
+			int re = Question.me.deleteQuestions(qid);
+			if( 1 == re ){
+				rm.setSuccess(true);
+				rm.msgFailed("删除成功");
+			}else if( 0 == re ){
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败");
+			}else if( 2 == re ){
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败，只删除选中部分数据，请刷新后重试");
+			}else{
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败");
+			}
+		}else{
+			rm.setSuccess(false);
+			rm.msgFailed("删除失败");
+		}
+		
+		renderJson(rm);
+	}
+	
+	/**
+	 * 设置题目的答题限定情况
+	 */
+	public void setQuestionState(){
+		ResponseModel rm = new ResponseModel();
+		
+		String qid = getPara("id");
+		String state = getPara("state");
+		if (!state.trim().equals("1") && !state.trim().equals("0")){
+			rm.setSuccess(false);
+			rm.msgFailed("状态设置失败");
+			renderJson(rm);
+			return;
+		}
+		if (StrKit.notBlank(state) && StrKit.notBlank(state) && Question.me.findById(qid).set("qlimit", state).update()){
+			rm.setSuccess(true);
+			rm.msgSuccess("设置成功");
+		}else{
+			rm.setSuccess(false);
+			rm.msgFailed("状态设置失败");
+		}
+		renderJson(rm);
 	}
 	
 	public void configView(){

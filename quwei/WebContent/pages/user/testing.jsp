@@ -127,7 +127,7 @@
 
             <div class="text-right" style="padding-top: 10px;">
                 <p>
-                    <small class="text-left">@肇庆学院-陈熹图书馆-技术部</small>
+                    <small class="text-left">@肇庆学院-福慧图书馆-技术部</small>
                 </p>
             </div>
         </div>

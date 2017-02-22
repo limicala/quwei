@@ -58,7 +58,7 @@
 							 <c:forEach begin="${begin }" end="${end }" var="i">
 							 	<c:choose>
 							 		<c:when test="${i eq page1.pageNumber }">
-							 			<li class="active"><a href="#">${i }</a></li>
+							 			<li class="active"><a>${i }</a></li>
 							 		</c:when>
 							 		<c:otherwise>
 							 			<li><a href="${url }?ct=2&mpn=${i}&pageNumber=${i}">${i }</a></li>
