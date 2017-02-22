@@ -40,6 +40,8 @@ public class AdminController extends BaseController{
 		Integer pageSize = 6;
 		String account = getPara("account");
 		Page<Record> page = Admin.me.findByParams(pageNumber, pageSize, account);
+		setAttr("url", "userManageView");
+		setAttr("account", account);
 		setAttr("page", page);
 		render("userManage.jsp");
 	}
@@ -247,6 +249,10 @@ public class AdminController extends BaseController{
 	
 	public void configView(){
 		setAttr("configOS", ConfigOS.me.findById(new Integer(1)));
+		
+		setAttr("single_ness", 3);
+		setAttr("judge_ness", 4);
+		setAttr("multi_ness", 2);
 		render("config.jsp");
 	}
 	

@@ -2,7 +2,7 @@
 <%@page import="com.jfinal.plugin.activerecord.Record"%>
 <%@page import="com.jfinal.plugin.activerecord.Page"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -71,7 +71,7 @@
                 <li>
                     查询 &rsaquo;&rsaquo;
                     <div class="input-append" style="padding-top: 7px;">
-                        <input id="account" class="span2" type="text" placeholder="账号">
+                        <input id="account" value="${account }" class="span2" type="text" placeholder="账号">
                         <button class="btn" type="button" onclick="search()"><span class="icon-search"></span> 查 找 </button>
                     </div>
                 </li>
@@ -95,7 +95,7 @@
                     <caption class="text-left">
                     	<h4>
                     		<strong>管理员信息</strong>
-                    		<button style="float:right" class="btn btn-link" data-toggle="modal" data-target="#editModal">添加管理员</button>
+                    		<button style="float:right" class="btn" data-toggle="modal" data-target="#editModal"><span class="icon-plus"></span> 添 加 </button>
                     	</h4>
                     </caption>
                     <thead>
@@ -106,29 +106,26 @@
 	                    </tr>
                     </thead>
                    
-                    <%Page<Record> p = (Page<Record>)request.getAttribute("page"); %>
-                    
-                    <%List<Record> p_list = p.getList(); %>
-                    
-                    <%if(p_list.size()>0){ %>
+                
                     <tbody>
                     	<%Integer table_id = 1; %>
-                    	<%for(Record r : p_list){ %>
+                    	<c:forEach items="${page.list }" var="s">
+                    	
                     		<tr>
-		                        <td><%=r.getStr("aid") %></td><td><%=r.getStr("apassword") %></td>
+		                        <td>${s.getStr("aid") }</td><td>${s.getStr("apassword") }</td>
 		                        <td>
 		                            <button class="btn btn-link" id="<%=table_id %>" data-toggle="modal" data-target="#editModal" onclick="edit(this)">编辑</button>
 		                            <button class="btn btn-link" id="<%=table_id %>" data-toggle="modal" data-target="#judgeModal" onclick="get_delete_id(this)">删除</button>
 		                        </td>
 		                        <%table_id++; %>
 		                    </tr>
-                    	<%} %>
-	                    
+                    
+	                    </c:forEach>
 					</tbody>
-					<%}else{ %>
+				
                     	
 		                
-                    <%} %>
+               
                 </table>
             </div>
 			<%@include file="../common/page.jsp" %>
@@ -145,22 +142,27 @@
                     <h4 class="modal-title">编 辑 用 户 信 息</h4>
                 </div>
                 <div class="modal-body text-center">
-                	<input hidden="true" name="oldUserName" id="oldN"/></ul>
+                	<input hidden="true" id="oldN"/></ul>
+                	<input hidden="true" id="oldP"/></ul>
                     <ul class="inline">
                         <li><h5>用户名 </h5></li>
                         <li><input onchange="check_exsit()" name="editUserName" id="editN"/></li>
-                        <li><p id="check_tip" ></p></li>
                     </ul>
                     <ul class="inline">
                         <li><h5>密&nbsp;&nbsp;&nbsp;&nbsp;码 </h5></li>
                         <li><input name="editPassword" id="editP"/></li>
-                        <li><p></p></li>
                     </ul>
                 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="update_button" class="btn btn-primary" onclick="update()">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
+                	<ul class="inline">
+                		<li><p id="check_tip"></p></li>
+                		<li><button type="button" id="update_button" class="btn btn-primary" onclick="update()">确定</button></li>
+                		<li><button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button></li>
+                	</ul>
+                	
+                    
+                    
                 </div>
             </div>
         </div>
@@ -203,10 +205,6 @@
     <script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script>
     
-    	function add(){
-    		alert("nn");
-    		$("#tipModal").modal();
-    	}
     
     	function edit(obj){
     		
@@ -218,6 +216,7 @@
     	    //向模态框中传值 
     	    $('#oldN').val(account);  
     	    $('#editN').val(account);  
+    	    $('#oldP').val(password);  
     	    $('#editP').val(password);  
     	}
     	
@@ -240,20 +239,36 @@
     	function update(){
     		var old_account = $('#oldN').val();  
     	    var account = $('#editN').val();  
+    	    var old_password = $('#oldP').val();
     	    var password = $('#editP').val();  
-    	    $.ajax({  
-    	        type: "post",  
-    	        url: "<%=request.getContextPath()%>/admin/update",  
-    	        data: "old_account=" + old_account + "&account=" + account + "&password=" + password,  
-    	       /*  dataType: 'html',  
-    	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
-    	        success: function(result) {  
-    	            //location.reload();  
-    	            $("#editModal").modal('hide');
-    	            $("#message").text("修改成功");
-    	            $("#tipModal").modal();
-    	        }  
-    	    });  
+    	    if(old_account==account&& old_password== password){
+    	    	if(old_account==''){//添加新用户
+    	    		$("#check_tip").html("<span style='color:red'>请填写信息再提交</span>");
+    	    	}else{
+    	    		$("#check_tip").html("<span style='color:red'>请修改信息再提交</span>");
+    	    	}
+    	    	
+    	    }else{
+    	    	$.ajax({  
+        	        type: "post",  
+        	        url: "<%=request.getContextPath()%>/admin/update",  
+        	        data: "old_account=" + old_account + "&account=" + account + "&password=" + password,  
+        	       /*  dataType: 'html',  
+        	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
+        	        success: function(result) {  
+        	            //location.reload();  
+        	            $("#editModal").modal('hide');
+        	            if(old_account==''){//添加新用户
+        	            	$("#message").text("添加成功");
+            	    	}else{
+            	    		$("#message").text("修改成功");
+            	    	}
+        	            
+        	            $("#tipModal").modal();
+        	        }  
+        	    });  
+    	    }
+    	    
     	}
     	
     	function get_delete_id(obj){
@@ -265,37 +280,43 @@
     	}
     	
     	function check_exsit(){
+    		var old_account = $('#oldN').val();
     		var account = $('#editN').val();
-    		$.ajax({  
-    	        type: "post",  
-    	        url: "<%=request.getContextPath()%>/admin/checkAid",  
-    	        data: "account=" + account,  
-    	       /*  dataType: 'html',  
-    	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
-    	        success: function(result) {  
-    	            //location.reload();  
-    	           /*  $("#editModal").modal('hide');
-    	            $("#message").text("修改成功");
-    	            $("#tipModal").modal(); */
-    	            console.log(result);
-    	            if(result){
-    	            	$("#check_tip").html("<span style='color:red'>用户名已存在</span>");
-    	            	//aaaa = "<span hidden=true style="color:red">用户名已存在</span>";
-    	            	$("#update_button").attr("disabled","disabled");
-    	            }else{
-    	            	$("#check_tip").html("<span style='color:green'>用户名可用</span>");
-    	            	$("#update_button").removeAttr("disabled");
-    	            }
-    	        }  
-    	    }); 
+    		if(old_account != account){
+    			$.ajax({  
+        	        type: "post",  
+        	        url: "<%=request.getContextPath()%>/admin/checkAid",  
+        	        data: "account=" + account,  
+        	       /*  dataType: 'html',  
+        	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
+        	        success: function(result) {  
+        	            //location.reload();  
+        	           /*  $("#editModal").modal('hide');
+        	            $("#message").text("修改成功");
+        	            $("#tipModal").modal(); */
+        	            //console.log(result);
+        	            if(result){
+        	            	$("#check_tip").html("<span style='color:red'>用户名已存在</span>");
+        	            	//aaaa = "<span hidden=true style="color:red">用户名已存在</span>";
+        	            	$("#update_button").attr("disabled","disabled");
+        	            }else{
+        	            	$("#check_tip").html("<span style='color:green'>用户名可用</span>");
+        	            	$("#update_button").removeAttr("disabled");
+        	            }
+        	        }  
+        	    }); 
+    		}
+    		
     	}
     	
         $("#editModal").on('hidden', function () {
             /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据     判断*/
             $("#editN").val("");
             $("#editP").val("");
-            
+            $("#check_tip").html("");
+            $("#update_button").removeAttr("disabled");
             $('#oldN').val("");
+            $('#oldP').val("");
         })
         
         /*hidden.bs.modal	此事件在模态框被隐藏（并且同时在 CSS 过渡效果完成）之后被触发。*/
