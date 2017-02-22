@@ -1,6 +1,12 @@
 package com.limicala.controller;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.fileupload.FileUploadException;
+
 import com.jfinal.aop.Before;
+import com.jfinal.kit.PathKit;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
@@ -37,6 +43,8 @@ public class AdminController extends BaseController{
 		setAttr("page", page);
 		render("userManage.jsp");
 	}
+	
+	//***************************************************题库*************************************************************
 	
 	public void questionManageView(){
 		Integer jpn = this.getParaToInt("jpn", 1);//判断题
@@ -164,6 +172,7 @@ public class AdminController extends BaseController{
 	/**
 	 * 设置题目的答题限定情况
 	 */
+	@Before(Tx.class)
 	public void setQuestionState(){
 		ResponseModel rm = new ResponseModel();
 		
@@ -184,6 +193,57 @@ public class AdminController extends BaseController{
 		}
 		renderJson(rm);
 	}
+	
+	public void downloadTemplate(){
+		String templateType = getPara("templateType");
+		//System.out.println(PathKit.getWebRootPath());
+		String path = "";
+		if ( templateType.equals("single") ){
+			path = "/resources/templates/单项选择题上传模板.xlsx";
+			//renderFile(PathKit.getWebRootPath()+"/resources/templates/单项选择题上传模板.xlsx");  
+		}else if ( templateType.equals("multi") ){
+			path = "/resources/templates/多项选择题上传模板.xlsx";
+			//renderFile(PathKit.getWebRootPath()+"/resources/templates/多项选择题上传模板.xlsx");  
+		}else if ( templateType.equals("judge") ){
+			path = "/resources/templates/判断题上传模板.xlsx";
+			//renderFile(PathKit.getWebRootPath()+"/resources/templates/判断题上传模板.xlsx");
+		}else{
+			//转到错误页
+		}
+		File file = new File(PathKit.getWebRootPath()+path);
+		if(file.exists()) {
+			System.out.println("文件存在");
+			renderFile(file);
+		}
+	}
+	
+	/**
+	 * 批量上传问题
+	 */
+	@Before(Tx.class)
+	public void uploadQuestions(){
+		int result = 0;
+		try {
+			result = Question.me.readWriteFileExcel(getRequest());
+		} catch (FileUploadException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//“1”存储成功 “0”存储失败 “2”上传模板出错 “3”数据填充出错，数据丢失 "4"没数据
+		if (result == 1){
+			questionManageView();
+		}else if (result == 0){
+			questionManageView();
+		}else if (result == 2){
+			questionManageView();
+		}else if (result == 3){
+			questionManageView();
+		}else if (result == 4){
+			questionManageView();
+		}
+	}
+	
+	
 	
 	public void configView(){
 		setAttr("configOS", ConfigOS.me.findById(new Integer(1)));

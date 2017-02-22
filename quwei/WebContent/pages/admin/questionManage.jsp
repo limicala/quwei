@@ -136,7 +136,7 @@
                         <li><button type="button" class="btn" onclick="location.href='questionManageView?ct=1&spn=${page.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
                         <li><button type="button" class="btn" data-toggle="modal" data-target="#singleModal"><span class="icon-plus"></span> 添 加 </button></li>
                         <li><button type="button" class="btn" id="singleDels" onclick="deleteQuestions(this)"><span class="icon-trash"></span> 删除所选 </button></li>
-                        <li><button type="button" class="btn" data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
+                        <li><button type="button" class="btn" data-toggle="modal" data-target="#uploadModal" id="single" onclick="changeUpLoadflag(this)"><span class="icon-plus-sign"></span> 批量导入 </button></li>
                     </ul>
                     <!--题库内容（表格显示）-->
                     <div class="container tb-responsive">
@@ -295,7 +295,7 @@
                         <li><button type="button" class="btn" onclick="location.href='questionManageView?ct=2&mpn=${page1.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
                         <li><button type="button" class="btn" data-toggle="modal" data-target="#multiModal"><span class="icon-plus"></span> 添 加 </button></li>
                         <li><button type="button" class="btn" id="multiDels" onclick="deleteQuestions(this)"><span class="icon-trash"></span> 删除所选 </button></li>
-                        <li><button type="button" class="btn"  data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
+                        <li><button type="button" class="btn"  data-toggle="modal" data-target="#uploadModal" id="multi" onclick="changeUpLoadflag(this)"><span class="icon-plus-sign"></span> 批量导入 </button></li>
                     </ul>
                     <!--题库内容（表格显示）-->
                     <div class="container tb-responsive">
@@ -453,7 +453,7 @@
                         <li><button type="button" class="btn" onclick="location.href='questionManageView?ct=3&jpn=${page2.pageNumber}'"><span class="icon-refresh"></span> 刷 新 </button></li>
                         <li><button type="button" class="btn" data-toggle="modal" data-target="#judgeModal"><span class="icon-plus"></span> 添 加 </button></li>
                         <li><button type="button" class="btn" id="judgeDels" onclick="deleteQuestions(this)"><span class="icon-trash"></span> 删除所选 </button></li>
-                        <li><button type="button" class="btn"  data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
+                        <li><button type="button" class="btn"  data-toggle="modal" data-target="#uploadModal" id="judge" onclick="changeUpLoadflag(this)"><span class="icon-plus-sign"></span> 批量导入 </button></li>
                     </ul>
                     <!--题库内容（表格显示）-->
                     <div class="container tb-responsive">
@@ -564,6 +564,35 @@
     </div>
 	
     <!-- 部件 -->
+    
+    <!--公用批量导入模态框-->
+    <div class="modal hide fade" id="uploadModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">选择批量导入Excel文件</h4>
+                </div>
+                <div class="modal-body text-center">
+                    <form id="uploadForm" action="uploadQuestions" method="post" enctype="multipart/form-data" style="padding-top: 10px;">
+                        <input id="chooseFile" type="file" name="doc" style="display:none" accept="application/vnd.ms-excel">
+                        <input id="uploadType" value="" name="uploadType" class="hidden" />
+                        <div class="input-append">
+                            <input id="showUrl"  type="text" readonly>
+                            <a class="btn btn-primary" onclick="$('input[id=chooseFile]').click();">浏览文件</a>
+                        </div>
+                    </form>
+                    <h6 style="color: #ff150e">**  提示：点击下方链接下载Excel表格模板，正确填充信息然后上传，否则可能导致上传失败.  **</h6>
+                	<a id="dlTemplate" onclick="doDownloadTemplate()">下载模板</a>
+                </div>
+                <div class="modal-footer text-left">
+                    <button type="button" class="btn btn-success" onclick="doUpload()">确定上传</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
     <!--公用提示模态框-->
     <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
         <div class="modal-dialog" role="document" >
@@ -593,33 +622,6 @@
         </div>
     </div>
 
-    <!--公用批量导入模态框-->
-    <div class="modal hide fade" id="uploadModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
-        <div class="modal-dialog" role="document" >
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">选择批量导入Excel文件</h4>
-                </div>
-                <div class="modal-body text-center">
-                    <form action="" method="post" enctype="multipart/form-data" style="padding-top: 10px;">
-                        <input id="chooseFile" type="file" style="display:none" accept="application/vnd.ms-excel">
-                        <div class="input-append">
-                            <input id="showUrl"  type="text" readonly>
-                            <a class="btn btn-primary" onclick="$('input[id=chooseFile]').click();">浏览文件</a>
-                        </div>
-                    </form>
-                    <h6 style="color: #ff150e">**  提示：点击下方链接下载Excel表格模板，正确填充信息然后上传，否则可能导致上传失败.  **</h6>
-                	<a href="#">下载模板</a>
-                </div>
-                <div class="modal-footer text-left">
-                	
-                    <button type="button" class="btn btn-success" onclick="">确定上传</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
     <script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
@@ -653,10 +655,6 @@
         $('input[id=chooseFile]').change(function() {
             $('#showUrl').val($(this).val());
         });
-        
-        
-        
-        
         
         $("#singleCB").click(function(){   
             if(this.checked){   

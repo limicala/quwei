@@ -1,9 +1,3 @@
-var flag = false;
-//****************** 修 改 flag**************************
-function changeFlag(){
-	flag = true;
-}
-
 //******************显示错误提示信息**************************
 function showWrongTip(msg){
 	$("#tipContent").text(msg);
@@ -433,4 +427,29 @@ function deleteQuestions(ob){
 			}
 		});
 	});
+}
+
+var templateType = "";
+//****************** 修 改 flag**************************
+function changeUpLoadflag(ob){
+	templateType = ob.id;
+	$("#uploadType").val(ob.id);
+}
+
+/**
+ * 下载上传模板
+ * @returns
+ */
+function doDownloadTemplate(){
+	if (templateType != "")
+		window.location.href = "downloadTemplate?templateType=" + templateType;
+}
+
+
+function doUpload(){
+	if ($("#showUrl").val() == ""){
+		showWrongTip("请选择批量导入文件(Excel)");
+	}else{
+		$("#uploadForm").submit();
+	}
 }
