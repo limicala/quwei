@@ -84,10 +84,6 @@
 			$("#subBtn").removeClass("disabled");
 			$("#wrongTip").addClass("hidden");
 			})
-			
-		function getPath(){
-			return "<%=request.getContextPath()%>";
-		}
 	</script>
   </body>
 </html>

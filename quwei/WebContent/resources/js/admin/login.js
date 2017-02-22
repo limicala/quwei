@@ -19,16 +19,16 @@ $("form").submit(function(e){
 	}
 	if (flag){
 		
-		var path = getPath();
+		//alert("cc");
 		$.ajax({
-			url:path+"/admin/doLogin",
+			url:"admin/doLogin",
 			dataType:"json",
 			data:{"id":id,"password":pwd},
 			success:function(response){
 			
 				if(response.success){
-					//alert("cc");
-					location.href=path+"/admin/mainView";
+					alert("cc");
+					location.href="admin/mainView";
 					
 				}else{
 	//				$("div.tip-text").text(response.msg);
