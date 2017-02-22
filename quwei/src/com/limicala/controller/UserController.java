@@ -10,4 +10,10 @@ public class UserController extends BaseController{
 		render("/index.jsp");
 	}
 	
+	public void contest(){
+		render("testing.jsp");
+	}
+	public void result(){
+		render("result.jsp");
+	}
 }
