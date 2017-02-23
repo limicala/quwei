@@ -1,10 +1,13 @@
 package com.limicala.model;
 
+import java.util.List;
+
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.limicala.config.BaseModel;
+import com.limicala.constant.AppTableConstant;
 /**
  * 问题表的Model类
  * @author red
@@ -18,6 +21,10 @@ public class Question extends BaseModel<Question>{
 	private static final long serialVersionUID = -6174983832181476567L;
 
 	public static Question me = new Question();
+	
+	public String getTableName(){
+		return " "+AppTableConstant.QUESTION+" ";
+	}
 	
 	//问题库列表(初始化和查询结合)
 	public Page<Record> findByParams(Integer pageNumber, Integer pageSize, String qtype, String condit){
@@ -70,5 +77,26 @@ public class Question extends BaseModel<Question>{
 			return 0;
 		}else
 			return 2;
+	}
+	
+	
+	public List<Question> findQuestionByParams(Integer qtype, Integer qlimit){
+		StringBuilder selectSql = new StringBuilder();
+		selectSql.append(" select * ");
+		StringBuilder fromSql = new StringBuilder();
+		fromSql.append("from "+getTableName());
+		StringBuilder whereSql = new StringBuilder();
+		whereSql.append(" where 1 = 1 ");
+		if (qtype > 0) {
+			whereSql.append(" and qtype= "+qtype);
+		}
+		if (qlimit >= 0){
+			whereSql.append(" and qlimit="+qlimit);
+		}
+		return find(selectSql.append(fromSql).append(whereSql).toString());
+	}
+	public Integer findCountByParams(Integer qtype, Integer qlimit){
+		List<Question> temp = findQuestionByParams(qtype, qlimit);
+		return temp.size();
 	}
 }

@@ -13,7 +13,10 @@ public final class AppTableConstant {
 	//问题
 	public static final String QUESTION = "question";
 	public static final String QUESTION_KEY = "qid";
-	public static final String QUESTION_JUDGE = "1";
-	public static final String QUESTION_SINGLE = "2";
-	public static final String QUESTION_MUTIL = "3";
+	public static final Integer QUESTION_JUDGE = 1;
+	public static final Integer QUESTION_SINGLE = 2;
+	public static final Integer QUESTION_MUTIL = 3;
+	
+	public static final Integer QUESTION_UNLIMIT = 0;
+	public static final Integer QUESTION_LIMIT = 1;
 }

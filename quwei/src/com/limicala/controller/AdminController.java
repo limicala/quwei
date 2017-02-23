@@ -40,30 +40,30 @@ public class AdminController extends BaseController{
 		render("userManage.jsp");
 	}
 	
-	public void questionManageView(){
-		Integer jpn = this.getParaToInt("jpn", 1);//判断题
-		Integer spn = this.getParaToInt("spn", 1);//单项选择题
-		Integer mpn = this.getParaToInt("mpn", 1);//多项选择题
-		Integer type = this.getParaToInt("ct", 1);//当前的tab页面
-		Integer pageSize = 5;
-		String scondi = this.getPara("scondi", "");//单项选择题目查询关键字
-		String mcondi = this.getPara("mcondi", "");//多项选择题目查询关键字
-		String jcondi = this.getPara("jcondi", "");//判断题查询关键字
-		Page<Record> page = Question.me.findByParams(spn, AppConstant.SINGEL_PAGE_SIZE, AppTableConstant.QUESTION_SINGLE, scondi);
-		Page<Record> page1 = Question.me.findByParams(mpn, AppConstant.MUTIL_PAGE_SIZE, AppTableConstant.QUESTION_MUTIL, mcondi);
-		Page<Record> page2 = Question.me.findByParams(jpn, AppConstant.JUDGE_PAGE_SIZE, AppTableConstant.QUESTION_JUDGE, jcondi);
-		
-		setAttr("url", "questionManageView");
-		setAttr("ct", type);
-		setAttr("jcondi", jcondi);
-		setAttr("scondi", scondi);
-		setAttr("mcondi", mcondi);
-		setAttr("page", page);
-		setAttr("page1", page1);
-		setAttr("page2", page2);
-		
-		render("questionManage.jsp");
-	}
+//	public void questionManageView(){
+//		Integer jpn = this.getParaToInt("jpn", 1);//判断题
+//		Integer spn = this.getParaToInt("spn", 1);//单项选择题
+//		Integer mpn = this.getParaToInt("mpn", 1);//多项选择题
+//		Integer type = this.getParaToInt("ct", 1);//当前的tab页面
+//		Integer pageSize = 5;
+//		String scondi = this.getPara("scondi", "");//单项选择题目查询关键字
+//		String mcondi = this.getPara("mcondi", "");//多项选择题目查询关键字
+//		String jcondi = this.getPara("jcondi", "");//判断题查询关键字
+//		Page<Record> page = Question.me.findByParams(spn, AppConstant.SINGEL_PAGE_SIZE, AppTableConstant.QUESTION_SINGLE, scondi);
+//		Page<Record> page1 = Question.me.findByParams(mpn, AppConstant.MUTIL_PAGE_SIZE, AppTableConstant.QUESTION_MUTIL, mcondi);
+//		Page<Record> page2 = Question.me.findByParams(jpn, AppConstant.JUDGE_PAGE_SIZE, AppTableConstant.QUESTION_JUDGE, jcondi);
+//		
+//		setAttr("url", "questionManageView");
+//		setAttr("ct", type);
+//		setAttr("jcondi", jcondi);
+//		setAttr("scondi", scondi);
+//		setAttr("mcondi", mcondi);
+//		setAttr("page", page);
+//		setAttr("page1", page1);
+//		setAttr("page2", page2);
+//		
+//		render("questionManage.jsp");
+//	}
 	
 	/**
 	 * 编辑或者添加题库信息
@@ -190,9 +190,9 @@ public class AdminController extends BaseController{
 	public void configView(){
 		setAttr("configOS", ConfigOS.me.findById(new Integer(1)));
 		
-		setAttr("single_ness", 3);
-		setAttr("judge_ness", 4);
-		setAttr("multi_ness", 2);
+		setAttr("single_ness", Question.me.findCountByParams(AppTableConstant.QUESTION_SINGLE, AppTableConstant.QUESTION_LIMIT));
+		setAttr("judge_ness", Question.me.findCountByParams(AppTableConstant.QUESTION_JUDGE, AppTableConstant.QUESTION_LIMIT));
+		setAttr("multi_ness", Question.me.findCountByParams(AppTableConstant.QUESTION_MUTIL, AppTableConstant.QUESTION_LIMIT));
 		render("config.jsp");
 	}
 	
