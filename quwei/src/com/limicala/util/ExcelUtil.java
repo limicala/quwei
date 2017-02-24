@@ -1,5 +1,10 @@
 package com.limicala.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,12 +31,13 @@ public final class ExcelUtil {
 	 * @param excelName
 	 * @return
 	 */
-	public static List<Question> readExcel(InputStream excelInputStream, String excelName){
-		ArrayList<Question> questionList = new ArrayList<Question>();
-		if (excelName.equalsIgnoreCase(".xls")){
-			questionList = (ArrayList<Question>) readQuestionFromExcelXlsx(excelInputStream);
-		}else if(excelName.equalsIgnoreCase(".xlsx")){
-			questionList = (ArrayList<Question>) readQuestionFromExcelXls(excelInputStream);
+	public static  List<Question> readExcel(Workbook workbook, String excelName){
+		ArrayList<Question> questionList = null;
+
+		if (excelName.endsWith(".xls")){
+			questionList = (ArrayList<Question>) readQuestionFromExcelXls(workbook);
+		}else if(excelName.endsWith(".xlsx")){
+			questionList = (ArrayList<Question>) readQuestionFromExcelXlsx(workbook);
 		}
 		return questionList;
 	}
@@ -42,12 +48,10 @@ public final class ExcelUtil {
 	 * @return
 	 */
 	@SuppressWarnings("resource")
-	public static List<Question> readQuestionFromExcelXls(InputStream excelInputStream){
+	public static List<Question> readQuestionFromExcelXls(Workbook workbook){
 		ArrayList<Question> questionList = new ArrayList<Question>();
 		try {
-			
-			HSSFWorkbook workbook = new HSSFWorkbook(excelInputStream);
-			HSSFSheet sheet = workbook.getSheetAt(0);
+			HSSFSheet sheet = (HSSFSheet) workbook.getSheetAt(0);
 			HSSFRow row = sheet.getRow(0);
 			Question nq;
 			if (row.getPhysicalNumberOfCells() == 3){//判断题
@@ -78,7 +82,7 @@ public final class ExcelUtil {
 					questionList.add(i-1, nq);
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println("readQuestionFromExcelXls抛异常。");
 			e.printStackTrace();
 		}
@@ -92,12 +96,11 @@ public final class ExcelUtil {
 	 * @return
 	 */
 	@SuppressWarnings("resource")
-	public static List<Question> readQuestionFromExcelXlsx(InputStream excelInputStream){
+	public static List<Question> readQuestionFromExcelXlsx(Workbook workbook){
 		ArrayList<Question> questionList = new ArrayList<Question>();
 		try {
-			
-			XSSFWorkbook workbook = new XSSFWorkbook(excelInputStream);
-			XSSFSheet sheet = workbook.getSheetAt(0);
+
+			XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
 			XSSFRow row = sheet.getRow(0);
 			Question nq;
 			if (row.getPhysicalNumberOfCells() == 3){//判断题
@@ -128,7 +131,7 @@ public final class ExcelUtil {
 					questionList.add(i-1, nq);
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println("readQuestionFromExcelXlsx抛异常。");
 			e.printStackTrace();
 		}
@@ -140,26 +143,8 @@ public final class ExcelUtil {
 	 * @param excelInputStream
 	 * @return
 	 */
-	public static int excelAllRowNum(InputStream excelInputStream){
-		int num = 0;
-		Workbook workbook;
-		try {
-			workbook = new HSSFWorkbook(excelInputStream);
-			HSSFSheet sheet = (HSSFSheet) workbook.getSheetAt(0);
-			num =  sheet.getPhysicalNumberOfRows();
-		} catch (Exception e) {
-			try {
-				workbook = new XSSFWorkbook(excelInputStream);
-				XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
-				num =  sheet.getPhysicalNumberOfRows();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}finally{
-			System.out.println("excelAllRowNum抛异常。");
-		}
-		return num;
+	public static int excelAllRowNum(Workbook workbook){
+		return workbook.getSheetAt(0).getPhysicalNumberOfRows();
 	}
 	
 	/**
@@ -169,13 +154,12 @@ public final class ExcelUtil {
 	 * @return
 	 */
 	@SuppressWarnings("resource")
-	public static boolean checkTemplateStandard(InputStream excelInputStream, String qtype){
+	public static boolean checkTemplateStandard(Workbook workbook, String qtype){
 		boolean flag = true;
 		int num = 0;
 		
 		try {
-			
-			HSSFRow row = new HSSFWorkbook(excelInputStream).getSheetAt(0).getRow(0);
+			HSSFRow row = (HSSFRow) workbook.getSheetAt(0).getRow(0);
 			num =  row.getPhysicalNumberOfCells();
 			
 			if (num != 3 || num != 7){//上传模板不符合
@@ -201,7 +185,7 @@ public final class ExcelUtil {
 		} catch (Exception e) {
 			try {
 				
-				XSSFRow row = new XSSFWorkbook(excelInputStream).getSheetAt(0).getRow(0);
+				XSSFRow row = (XSSFRow) workbook.getSheetAt(0).getRow(0);
 				num =  row.getPhysicalNumberOfCells();
 				
 				if (num != 3 || num != 7){//上传模板不符合
@@ -224,11 +208,45 @@ public final class ExcelUtil {
 						flag = false;
 					}
 				}
-			} catch (IOException e1) {
+			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
 		return flag;
+	}
+	
+	
+	public static void main(String[] args) throws IOException{
+		try {
+			File ef = new File("D://判断题上传模板.xlsx"); 
+			FileInputStream testExcel = new FileInputStream(ef);
+			System.out.println(testExcel.available());
+			
+			
+			
+			Workbook workbook = null;
+			try{
+				workbook = new HSSFWorkbook(testExcel);
+			}catch(Exception e){
+				workbook = new XSSFWorkbook(testExcel);
+			}
+			
+			
+			ArrayList<Question> ql = (ArrayList<Question>) readQuestionFromExcelXlsx(workbook);
+			for (Question q : ql){
+				System.out.println(q.get("qcontent").toString());
+				System.out.println(q.get("qanswer").toString());
+				System.out.println(q.get("qexplain").toString());
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+		
+		
 	}
 }

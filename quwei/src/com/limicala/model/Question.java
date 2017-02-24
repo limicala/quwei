@@ -2,6 +2,7 @@ package com.limicala.model;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,6 +14,9 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
@@ -156,21 +160,26 @@ public class Question extends BaseModel<Question>{
 				fileName = item.getName();
 				//System.out.println(fileName);
 				//获取item中的上传文件的输入流
-				fileExcelInput = item.getInputStream();
-				
+				fileExcelInput = new BufferedInputStream(item.getInputStream());
+				Workbook workbook = null;
+				try{
+					workbook = new HSSFWorkbook(item.getInputStream()); 
+				}catch(Exception e){
+					workbook = new XSSFWorkbook(item.getInputStream()); 
+				}
 				//System.out.println(fileExcelInput.available());
 				
 				
 				if (fileName.trim().equals("")){//判断文件名是否为空，为空即当做失败
 					flag = 0;
-				}else if (ExcelUtil.excelAllRowNum(fileExcelInput) == 1){//判断上传Excel文件是否有数据
+				}else if (ExcelUtil.excelAllRowNum(workbook) == 1){//判断上传Excel文件是否有数据
 					flag = 4;
-				}else if (!ExcelUtil.checkTemplateStandard(fileExcelInput, qtype)){//判断上传Excel内容格式和题型是否符合
+				}else if (!ExcelUtil.checkTemplateStandard(workbook, qtype)){//判断上传Excel内容格式和题型是否符合
 					flag = 2;
 				}else{
-					int allNum = ExcelUtil.excelAllRowNum(fileExcelInput) - 1;//获取表格有效总记录数目
+					int allNum = ExcelUtil.excelAllRowNum(workbook) - 1;//获取表格有效总记录数目
 					
-					ArrayList<Question> questionList = (ArrayList<Question>)ExcelUtil.readExcel(fileExcelInput, fileName);
+					ArrayList<Question> questionList = (ArrayList<Question>)ExcelUtil.readExcel(workbook, fileName);
 				
 					int insertNum = 0;
 					

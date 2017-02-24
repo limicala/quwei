@@ -110,7 +110,7 @@
         <div class="container text-center">
             <!-- tab按钮 -->
             <ul class="nav nav-tabs">
-                <li ${ct eq "1" ? "class='active'" : "" } ><a href="#single" data-toggle="tab">单 项 选 择 题</a></li>
+                <li ${ct eq "1" ? "class='active'" : "" } ><a href="#single" data-toggle="tab" id="">单 项 选 择 题</a></li>
                 <li ${ct eq "2" ? "class='active'" : "" } ><a href="#multi" data-toggle="tab">多 项 选 择 题</a></li>
                 <li ${ct eq "3" ? "class='active'" : "" } ><a href="#judge" data-toggle="tab">判 断 题</a></li>
             </ul>
@@ -575,14 +575,14 @@
                 </div>
                 <div class="modal-body text-center">
                     <form id="uploadForm" action="uploadQuestions" method="post" enctype="multipart/form-data" style="padding-top: 10px;">
-                        <input id="chooseFile" type="file" name="doc" style="display:none" accept="application/vnd.ms-excel">
+                        <input id="chooseFile" type="file" name="doc" style="display:none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
                         <input id="uploadType" value="" name="uploadType" class="hidden" />
                         <div class="input-append">
                             <input id="showUrl"  type="text" readonly>
                             <a class="btn btn-primary" onclick="$('input[id=chooseFile]').click();">浏览文件</a>
                         </div>
                     </form>
-                    <h6 style="color: #ff150e">**  提示：点击下方链接下载Excel表格模板，正确填充信息然后上传，否则可能导致上传失败.  **</h6>
+                    <h6 style="color: #ff150e">提示：点击下方链接下载Excel表格模板，正确填充信息然后上传，否则可能导致上传失败.</h6>
                 	<a id="dlTemplate" onclick="doDownloadTemplate()">下载模板</a>
                 </div>
                 <div class="modal-footer text-left">
