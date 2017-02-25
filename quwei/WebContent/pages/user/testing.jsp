@@ -21,7 +21,7 @@
             <h1>图书馆小常识测试</h1>
         </div>
         <div>
-            <h5 class="text-success">测试人：×××</h5>
+            <h5 class="text-success">测试人：${student.sname }</h5>
             <h5 class="text-info">说明：满分一百分！！</h5>
             <h5 id="test_time" class="text-error">剩余答题时间：30:00</h5>
         </div>

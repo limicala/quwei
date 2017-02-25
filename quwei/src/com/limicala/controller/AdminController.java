@@ -21,6 +21,7 @@ import com.limicala.model.ConfigOS;
 import com.limicala.model.Question;
 
 import com.limicala.model.ResponseModel;
+import com.limicala.model.Student;
 import com.limicala.util.SessionUtil;
 
 public class AdminController extends BaseController{
@@ -368,5 +369,110 @@ public class AdminController extends BaseController{
 			
 		}
 		this.renderJson(rm);
+	}
+	
+	//************************学生管理*****************//
+	public void stuManageView(){
+		Integer pageNumber = this.getParaToInt("pageNumber", 1);
+		Integer search_type = getParaToInt("search_type", 1);
+		Integer pageSize = 10;
+		String condit = this.getPara("condit", "");//单项选择题目查询关键字
+		Page<Record> page = Student.me.findByParams(pageNumber, pageSize, search_type, condit);
+		
+		setAttr("search_type", search_type);
+		setAttr("condit", condit);
+		setAttr("page", page);
+		render("studentManage.jsp");
+	}
+	
+	//添加或编辑学生
+	@Before(Tx.class)
+	public void updateStudent(){
+		ResponseModel rm = new ResponseModel();
+		
+		String old_sid = getPara("old_sid");
+		
+		Student student = getModel(Student.class);
+		
+		//qid为空时添加题目
+		if(StrKit.isBlank(old_sid)){
+			if(student.save()){
+				rm.setSuccess(true);
+				rm.setType("add");
+				rm.msgSuccess("添加成功,刷新即可看到新增信息");
+			}else{
+				rm.setSuccess(false);
+				rm.setType("add");
+				rm.msgFailed("添加失败");
+			}
+		}else{
+			if (Student.me.deleteById(old_sid) && student.save()) {
+				rm.setSuccess(true);
+				rm.setType("edit");
+				rm.msgSuccess("修改成功");
+			} else {
+				rm.setSuccess(false);
+				rm.setType("edit");
+				rm.msgSuccess("修改失败");
+			}
+		}
+		
+		renderJson(rm);
+	}
+	
+	public void checkExsitStudent(){
+		String sid = getPara("sid");//账号
+		Student student = Student.me.findById(sid);
+		if(student != null){
+			renderJson(true);
+		}else{
+			renderJson(false);
+		}
+	}
+	
+	/**
+	 * 删除学生信息
+	 */
+	@Before(Tx.class)
+	public void deleteStudent(){
+		ResponseModel rm = new ResponseModel();
+		String sid = getPara("id");
+		String delType = getPara("delType");
+		
+		if (delType.trim().equals("s")){
+			
+			if(StrKit.notBlank(sid)){
+				if(Student.me.deleteById(sid)){
+					rm.setSuccess(true);
+					rm.msgSuccess("删除成功");
+				}else{
+					rm.setSuccess(false);
+					rm.msgFailed("删除失败");
+				}
+			}else{
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败");
+			}
+		}else if (delType.trim().equals("m")){
+			int re = Student.me.deleteStudents(sid);
+			if( 1 == re ){
+				rm.setSuccess(true);
+				rm.msgFailed("删除成功");
+			}else if( 0 == re ){
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败");
+			}else if( 2 == re ){
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败，只删除选中部分数据，请刷新后重试");
+			}else{
+				rm.setSuccess(false);
+				rm.msgFailed("删除失败");
+			}
+		}else{
+			rm.setSuccess(false);
+			rm.msgFailed("删除失败");
+		}
+		
+		renderJson(rm);
 	}
 }

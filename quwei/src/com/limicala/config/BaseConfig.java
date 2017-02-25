@@ -19,6 +19,7 @@ import com.limicala.model.Admin;
 import com.limicala.model.ConfigOS;
 import com.limicala.model.History;
 import com.limicala.model.Question;
+import com.limicala.model.Student;
 
 /**
  * JFinal框架总配置类（继承JFinalConfig类）
@@ -86,6 +87,7 @@ public class BaseConfig extends JFinalConfig{
 		arp.addMapping(AppTableConstant.CONFIG_OS,AppTableConstant.CONFIG_OS_KEY, ConfigOS.class);
 		arp.addMapping(AppTableConstant.QUESTION,AppTableConstant.QUESTION_KEY, Question.class);
 		arp.addMapping(AppTableConstant.HISTORY, History.class);
+		arp.addMapping(AppTableConstant.STUDENT, AppTableConstant.STUDENT_KEY, Student.class);
 	}
 
 	@Override

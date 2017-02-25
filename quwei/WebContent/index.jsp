@@ -23,37 +23,80 @@
 	</style>
 </head>
 <body>
+	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
+	
   <div class="container">
 
-    <div class="container text-center">
-      <img src="resources/images/index.jpg" class="">
-    </div>
-    <div class="container ">
-
-      <legend class="text-center"><h3>趣味问答</h3></legend>
-	 
-      <div class="text-center">
-        昵 称 <input type="text" name="stu_id" class="input-medium search-query" placeholder="学号是最美美的昵称哦">
-      </div>
-      <div class="text-center" style="padding-top: 15px;">
-        <button class="btn btn-success" onclick="jump()">开始答题</button>
-      </div>
-     
-    </div>
-
-  <div class="text-right" style="padding-top: 35px;">
-    <a href="admin"><span class="icon-user"></span>管理员登录</a>
-    <p>
-      <small class="text-left">@肇庆学院-福慧图书馆-技术部</small>
-    </p>
+	    <div class="container text-center">
+	      <img src="resources/images/index.jpg" class="">
+	    </div>
+	    <div class="container ">
+	
+	      <legend class="text-center"><h3>趣味问答</h3></legend>
+		 
+	      <div class="text-center">
+	        昵 称 <input type="text" id="stu_id" class="input-medium search-query" placeholder="学号是最美美的昵称哦">
+	      </div>
+	      <div class="text-center" style="padding-top: 15px;">
+	        <button class="btn btn-success" onclick="jump()">开始答题</button>
+	      </div>
+	     
+	    </div>
+	
+	  <div class="text-right" style="padding-top: 35px;">
+	    <a href="admin"><span class="icon-user"></span>管理员登录</a>
+	    <p>
+	      <small class="text-left">@肇庆学院-福慧图书馆-技术部</small>
+	    </p>
+	  </div>
+	
   </div>
-
-  </div>
+   <!--公用提示模态框-->
+    <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 id="tipContent"></h4>
+                </div>
+            </div>
+        </div>
+    </div>
   	<script src="frame/jquery/js/jquery.js" type="text/javascript"></script>
 	<script src="frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 	<script>
 		function jump(){
-			window.location.href = "<%=request.getContextPath() %>/contest"
+			var sid = $("#stu_id").val();
+			$.ajax({  
+		        type: "post",  
+		        url: $("#url").val()+"/checkExsitStudent",  
+		        data: "sid=" + sid,  
+		       /*  dataType: 'html',  
+		        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
+		        success: function(result) {  
+		        	
+		            //location.reload();  
+		           /*  $("#editModal").modal('hide');
+		            $("#message").text("修改成功");
+		            $("#tipModal").modal(); */
+		            //console.log(result);
+		        	
+		            if(result){
+		            	showWrongTip("您输入的学号有误，或者您未参与本次活动");
+		            }else{
+		            	window.location.href = $("#url").val()+"/contest";
+		            }
+		        }
+		    }); 
+			
+		}
+		
+		//******************显示错误提示信息**************************
+		function showWrongTip(msg){
+			$("#tipContent").text(msg);
+			$("#tipContent").addClass("text-error");
+			$("#tipContent").removeClass("text-success");
+			$("#tipModal").modal('show');
 		}
 	</script>
   </body>

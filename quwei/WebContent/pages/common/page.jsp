@@ -25,11 +25,17 @@
 								<c:otherwise>
 									<li>
 										<c:choose>
-										 	<c:when test="${empty scondi}">
-										 		<a href="${url }?ct=1&spn=${page.pageNumber - 1 }&pageNumber=${page.pageNumber - 1 }">&lsaquo;&lsaquo;</a>
+										 	<c:when test="${!empty scondi}">
+										 		<a href="${url }?ct=1&spn=${page.pageNumber - 1 }&pageNumber=${page.pageNumber - 1 }&scondi=${scondi }">&lsaquo;&lsaquo;</a>
+										 	</c:when>
+										 	<c:when test="${!empty condit}">
+										 		<a href="${url }?ct=1&spn=${page.pageNumber - 1 }&pageNumber=${page.pageNumber - 1 }&condi=${condit }">&lsaquo;&lsaquo;</a>
+										 	</c:when>
+										 	<c:when test="${!empty account}">
+										 		<a href="${url }?ct=1&spn=${page.pageNumber - 1 }&pageNumber=${page.pageNumber - 1 }&account=${account }">&lsaquo;&lsaquo;</a>
 										 	</c:when>
 										 	<c:otherwise>
-										 		<a href="${url }?ct=1&spn=${page.pageNumber - 1 }&pageNumber=${page.pageNumber - 1 }&scondi=${scondi }">&lsaquo;&lsaquo;</a>
+										 		<a href="${url }?ct=1&spn=${page.pageNumber - 1 }&pageNumber=${page.pageNumber - 1 }">&lsaquo;&lsaquo;</a>
 										 	</c:otherwise>
 										 </c:choose>
 									</li>
@@ -72,11 +78,17 @@
 							 		<c:otherwise>
 							 			<li>
 							 				<c:choose>
-											 	<c:when test="${empty scondi}">
-											 		<a href="${url }?ct=1&spn=${i}&pageNumber=${i}">${i }</a>
+											 	<c:when test="${!empty scondi}">
+											 		<a href="${url }?ct=1&spn=${i }&pageNumber=${i }&scondi=${scondi }">${i }</a>
+											 	</c:when>
+											 	<c:when test="${!empty condit}">
+											 		<a href="${url }?pageNumber=${i }&condit=${condit }">${i }</a>
+											 	</c:when>
+											 	<c:when test="${!empty account}">
+											 		<a href="${url }?pageNumber=${i }&account=${account }">${i }</a>
 											 	</c:when>
 											 	<c:otherwise>
-											 		<a href="${url }?ct=1&spn=${i }&pageNumber=${i }&scondi=${scondi }">${i }</a>
+											 		<a href="${url }?ct=1&spn=${i}&pageNumber=${i}">${i }</a>
 											 	</c:otherwise>
 											 </c:choose>
 							 			</li>

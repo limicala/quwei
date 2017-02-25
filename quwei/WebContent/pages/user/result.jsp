@@ -22,7 +22,7 @@
 	    <div>
 	        <ul class="inline">
 	            <li>
-	                <h5 class="text-success">恭喜您，×××，你的分数为:</h5>
+	                <h5 class="text-success">恭喜您，${student.sname }，你的分数为:</h5>
 	            </li>
 	            <li><h3 class="text-error">${total_score }分</h3></li>
 	        </ul>

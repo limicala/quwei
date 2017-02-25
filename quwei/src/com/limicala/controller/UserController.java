@@ -10,6 +10,8 @@ import com.limicala.config.BaseController;
 import com.limicala.constant.AppTableConstant;
 import com.limicala.model.ConfigOS;
 import com.limicala.model.Question;
+import com.limicala.model.Student;
+import com.limicala.util.SessionUtil;
 import com.limicala.util.ShuffleUtil;
 import com.sun.javafx.collections.MappingChange.Map;
 
@@ -20,17 +22,32 @@ public class UserController extends BaseController{
 	public void index(){
 		render("/index.jsp");
 	}
+	/**
+	 * 检查账号是否存在
+	 */
+	public void checkExsitStudent(){
+		String sid = getPara("sid");//账号
+		Student student = Student.me.findById(sid);
+		if(student != null){
+			SessionUtil.setFrontedLoginUserId(getSession(), sid);
+			renderJson(false);
+		}else{
+			renderJson(true);
+		}
+	}
 	
 	//答题
 	public void contest(){
 		//学生账号
-		String stu_id = getPara("stu_id");
+		String sid = SessionUtil.getFrontedLoginedUserId(getSession());
+		Student student = Student.me.findById(sid);
 		
 		ConfigOS configOS = ConfigOS.me.findById(1);
 		
 		Integer judge_total_num = configOS.getInt("cjudge_num");
 		Integer single_total_num =  configOS.getInt("csingle_num");
 		Integer multi_total_num = configOS.getInt("cmulti_num");
+		setAttr("student", student);
 		setAttr("judge_total_num", judge_total_num);
 		setAttr("single_total_num", single_total_num);
 		setAttr("multi_total_num", multi_total_num);
@@ -42,6 +59,8 @@ public class UserController extends BaseController{
 	}
 	//答题结果
 	public void result(){
+		String sid = SessionUtil.getFrontedLoginedUserId(getSession());
+		Student student = Student.me.findById(sid);
 		//将三种题型的答案都分别放在一个Map对象里面
 		Integer judge_total_num = getParaToInt("judge_total_num");
 		Integer single_total_num = getParaToInt("single_total_num");
@@ -56,7 +75,7 @@ public class UserController extends BaseController{
 		
 		//求分数
 		int total_score = getTotalScore(judgeList, singleList, multiList);
-		
+		setAttr("student", student);
 		setAttr("total_score", total_score);
 		setAttr("judgeList", judgeList);
 		setAttr("singleList", singleList);

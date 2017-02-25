@@ -19,4 +19,8 @@ public final class AppTableConstant {
 	
 	public static final Integer QUESTION_UNLIMIT = 0;
 	public static final Integer QUESTION_LIMIT = 1;
+	
+	//学生
+	public static final String STUDENT = "student";
+	public static final String STUDENT_KEY = "sid";
 }

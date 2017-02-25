@@ -54,7 +54,8 @@
 
                     <div class="nav-collapse collapse text-center">
                         <ul class="nav" style="padding-top:1px;">
-                            <li class="active"><a><span class="icon-user"></span> 用户管理</a></li>
+                            <li class="active"><a><span class="icon-user"></span> 管理员管理</a></li>
+                            <li><a href="stuManageView"><span class="icon-user"></span> 学生管理</a></li>
                             <li><a href="questionManageView"><span class="icon-list-alt"></span> 题库信息管理</a></li>
                             <li><a href="#contact"><span class="icon-check"></span> 答题记录管理</a></li>
                             <li><a href="configView"><span class="icon-wrench"></span> 系统配置</a></li>
@@ -238,10 +239,13 @@
     	
     	function update(){
     		var old_account = $('#oldN').val();  
-    	    var account = $('#editN').val();  
-    	    var old_password = $('#oldP').val();
-    	    var password = $('#editP').val();  
-    	    if(old_account==account&& old_password== password){
+    	    var account = $('#editN').val().trim();  
+    	    var old_password = $('#oldP').val().trim();
+    	    var password = $('#editP').val().trim();  
+    	    if(account == '' || password == ''){
+    	    	$("#check_tip").html("<span style='color:red'>请填写信息再提交</span>");
+    	    }
+    	    else if(old_account==account&& old_password== password){
     	    	if(old_account==''){//添加新用户
     	    		$("#check_tip").html("<span style='color:red'>请填写信息再提交</span>");
     	    	}else{
