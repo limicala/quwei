@@ -21,4 +21,16 @@ public final class AppConstant {
 	
 	public static final String IMPORT_EXCEL_DIR = "import_excel_dir";
 	
+	
+	
+	//上传Excle表格列表头
+	public static final String QCONTENT = "*内容";
+	public static final String QA = "*A选项";
+	public static final String QB = "*B选项";
+	public static final String QC = "*C选项";
+	public static final String QD = "*D选项";
+	public static final String QANSWER = "*答案";
+	public static final String QEXPLAIN = "注解";
+			
+	
 }

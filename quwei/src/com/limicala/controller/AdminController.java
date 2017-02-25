@@ -224,6 +224,7 @@ public class AdminController extends BaseController{
 	 */
 	@Before(Tx.class)
 	public void uploadQuestions(){
+		ResponseModel re = new ResponseModel();
 		int result = 0;
 		try {
 			result = Question.me.readWriteFileExcel(getRequest());
@@ -231,28 +232,18 @@ public class AdminController extends BaseController{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		//“1”存储成功 “0”存储失败 “2”上传模板出错 “3”数据填充出错，数据丢失 "4"没数据
-		if (result == 1){
-			questionManageView();
-		}else if (result == 0){
-			questionManageView();
-		}else if (result == 2){
-			questionManageView();
-		}else if (result == 3){
-			questionManageView();
-		}else if (result == 4){
-			questionManageView();
-		}
+		
+		renderHtml("<script>window.parent.afterUpload(" + result + ");</script>");
 	}
-	
-	
 	
 	public void configView(){
 		setAttr("configOS", ConfigOS.me.findById(new Integer(1)));
 		
-		setAttr("single_ness", 3);
-		setAttr("judge_ness", 4);
-		setAttr("multi_ness", 2);
+		setAttr("single_ness", Question.me.findCountByParams(AppTableConstant.QUESTION_SINGLE, AppTableConstant.QUESTION_LIMIT));
+		setAttr("judge_ness", Question.me.findCountByParams(AppTableConstant.QUESTION_JUDGE, AppTableConstant.QUESTION_LIMIT));
+		setAttr("multi_ness", Question.me.findCountByParams(AppTableConstant.QUESTION_MUTIL, AppTableConstant.QUESTION_LIMIT));
 		render("config.jsp");
 	}
 	

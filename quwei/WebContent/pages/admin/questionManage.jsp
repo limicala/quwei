@@ -71,6 +71,7 @@
     </style>
 </head>
 <body>
+
 	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
 	
 	<input id="param" class="hidden" value="<%=request.getQueryString()%>"/>
@@ -566,7 +567,7 @@
     <!-- 部件 -->
     
     <!--公用批量导入模态框-->
-    <div class="modal hide fade" id="uploadModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
+    <div class="modal hide fade" id="uploadModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
         <div class="modal-dialog" role="document" >
             <div class="modal-content">
                 <div class="modal-header">
@@ -574,7 +575,7 @@
                     <h4 class="modal-title">选择批量导入Excel文件</h4>
                 </div>
                 <div class="modal-body text-center">
-                    <form id="uploadForm" action="uploadQuestions" method="post" enctype="multipart/form-data" style="padding-top: 10px;">
+                    <form id="uploadForm" action="uploadQuestions" method="post" enctype="multipart/form-data" style="padding-top: 10px;" target="frameFile">
                         <input id="chooseFile" type="file" name="doc" style="display:none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
                         <input id="uploadType" value="" name="uploadType" class="hidden" />
                         <div class="input-append">
@@ -583,7 +584,7 @@
                         </div>
                     </form>
                     <h6 style="color: #ff150e">提示：点击下方链接下载Excel表格模板，正确填充信息然后上传，否则可能导致上传失败.</h6>
-                	<a id="dlTemplate" onclick="doDownloadTemplate()">下载模板</a>
+                	<a id="dlTemplate" onclick="doDownloadTemplate()" style="cursor:pointer;">下载模板</a>
                 </div>
                 <div class="modal-footer text-left">
                     <button type="button" class="btn btn-success" onclick="doUpload()">确定上传</button>
@@ -592,6 +593,7 @@
             </div>
         </div>
     </div>
+    
  
     <!--公用提示模态框-->
     <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
@@ -679,7 +681,29 @@
         		$("input[name='judgeCB'][type=checkbox]").prop("checked", false);
             }   
         });
+        
+
+		//“1”存储成功 “0”存储失败 “2”上传模板出错 “3”数据填充出错，数据丢失 "4"没数据
+		function afterUpload(respMsg){
+			if (respMsg == "0"){
+				$("#uploadModal").modal('hide');
+				showWrongTip("上传失败");
+			}else if (respMsg == "1"){
+				$("#uploadModal").modal('hide');
+				showRightTip("上传成功，刷新页面后即可查看上传内容");
+			}else if (respMsg == "2"){
+				$("#uploadModal").modal('hide');
+				showWrongTip("上传失败,上传模板错误");
+			}else if (respMsg == "3"){
+				$("#uploadModal").modal('hide');
+				showWrongTip("上传文件含不完整数据，上传未完成");
+			}else if (respMsg == "4"){
+				$("#uploadModal").modal('hide');
+				showWrongTip("上传失败，上传文件不含有效数据");
+			}
+		}
     	
     </script>
+    <iframe id='frameFile' name='frameFile' style='display: none;'></iframe>
 </body>
 </html>

@@ -429,6 +429,9 @@ function deleteQuestions(ob){
 	});
 }
 
+/**
+ * 模板类型
+ */
 var templateType = "";
 //****************** 修 改 flag**************************
 function changeUpLoadflag(ob){
@@ -445,7 +448,10 @@ function doDownloadTemplate(){
 		window.location.href = "downloadTemplate?templateType=" + templateType;
 }
 
-
+/**
+ * 执行上传文件
+ * @returns
+ */
 function doUpload(){
 	if ($("#showUrl").val() == ""){
 		showWrongTip("请选择批量导入文件(Excel)");
@@ -453,3 +459,4 @@ function doUpload(){
 		$("#uploadForm").submit();
 	}
 }
+

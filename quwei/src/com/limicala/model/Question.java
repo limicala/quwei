@@ -1,5 +1,7 @@
 package com.limicala.model;
 
+
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.BufferedInputStream;
@@ -8,21 +10,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
 
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.limicala.config.BaseModel;
+
+import com.limicala.constant.AppTableConstant;
 import com.limicala.util.ExcelUtil;
 /**
  * 问题表的Model类
@@ -38,18 +45,19 @@ public class Question extends BaseModel<Question>{
 
 	public static Question me = new Question();
 	
+	public String getTableName(){
+		return " "+AppTableConstant.QUESTION+" ";
+	}
+	
 	//问题库列表(初始化和查询结合)
-	public Page<Record> findByParams(Integer pageNumber, Integer pageSize, String qtype, String condit){
+	public Page<Record> findByParams(Integer pageNumber, Integer pageSize, int qtype, String condit){
 		// TODO Auto-generated method stub
 		StringBuilder selectSql = new StringBuilder();
 		selectSql.append(" select * ");
 		StringBuilder fromSql = new StringBuilder();
 		fromSql.append("from question");
 		StringBuilder whereSql = new StringBuilder();
-		whereSql.append(" where 1 = 1 ");
-		if (StrKit.notBlank(qtype)) {
-			whereSql.append(" and qtype = ").append(qtype);
-		}
+		whereSql.append(" where 1 = 1 ").append(" and qtype = ").append(qtype);
 		if (StrKit.notBlank(condit)) {
 			whereSql.append(" and qcontent like ").append("'%").append(condit).append("%'");
 		}
@@ -91,6 +99,25 @@ public class Question extends BaseModel<Question>{
 			return 2;
 	}
 	
+	public List<Question> findQuestionByParams(Integer qtype, Integer qlimit){
+		StringBuilder selectSql = new StringBuilder();
+		selectSql.append(" select * ");
+		StringBuilder fromSql = new StringBuilder();
+		fromSql.append("from "+getTableName());
+		StringBuilder whereSql = new StringBuilder();
+		whereSql.append(" where 1 = 1 ");
+		if (qtype > 0) {
+			whereSql.append(" and qtype= "+qtype);
+		}
+		if (qlimit >= 0){
+			whereSql.append(" and qlimit="+qlimit);
+		}
+		return find(selectSql.append(fromSql).append(whereSql).toString());
+	}
+	public Integer findCountByParams(Integer qtype, Integer qlimit){
+		List<Question> temp = findQuestionByParams(qtype, qlimit);
+		return temp.size();
+	}
 	/**
 	 * 接受请求，读取Excel表格然后存储
 	 * 
@@ -120,9 +147,8 @@ public class Question extends BaseModel<Question>{
 		//4、使用ServletFileUpload解析器解析上传数据，解析结果返回的是一个List<FileItem>集合，每一个FileItem对应一个Form表单的输入项
 		List<FileItem> list = upload.parseRequest(req);
 		
-		InputStream fileExcelInput;//定义输入流接受Excel文件
-		String qtype = "";
-		String fileName = "";
+		String qtype = "";//题型
+		String fileName = "";//上传文件名字
 		FileItem tempItem;
 		
 		//先遍历获取到题型
@@ -154,36 +180,33 @@ public class Question extends BaseModel<Question>{
 			//System.out.println("接受参数");
 			//如果fileitem中封装的是普通输入项的数据
 			if(!item.isFormField()){
-				//System.out.println("抓取到图片");
+				
 				//如果fileitem中封装的是上传文件
 				//得到上传的文件名称，
 				fileName = item.getName();
-				//System.out.println(fileName);
-				//获取item中的上传文件的输入流
-				fileExcelInput = new BufferedInputStream(item.getInputStream());
+
 				Workbook workbook = null;
 				try{
 					workbook = new HSSFWorkbook(item.getInputStream()); 
 				}catch(Exception e){
 					workbook = new XSSFWorkbook(item.getInputStream()); 
 				}
-				//System.out.println(fileExcelInput.available());
-				
-				
+				//“1”存储成功 “0”存储失败 “2”上传模板出错 “3”数据填充出错，数据丢失 "4"没数据
 				if (fileName.trim().equals("")){//判断文件名是否为空，为空即当做失败
 					flag = 0;
-				}else if (ExcelUtil.excelAllRowNum(workbook) == 1){//判断上传Excel文件是否有数据
-					flag = 4;
 				}else if (!ExcelUtil.checkTemplateStandard(workbook, qtype)){//判断上传Excel内容格式和题型是否符合
 					flag = 2;
+				}else if (ExcelUtil.excelAllRowNum(workbook) == 1){//判断上传Excel文件是否有数据
+					flag = 4;
 				}else{
 					int allNum = ExcelUtil.excelAllRowNum(workbook) - 1;//获取表格有效总记录数目
 					
 					ArrayList<Question> questionList = (ArrayList<Question>)ExcelUtil.readExcel(workbook, fileName);
-				
+					
 					int insertNum = 0;
 					
 					if (qtype.trim().equals("1")){//判断题
+						System.out.println("判断题");
 						for (Question q : questionList){
 							if ((!q.get("qcontent").toString().trim().equals("")) && (!q.get("qanswer").toString().trim().equals(""))){
 								if (q.set("qtype", 1).save())
@@ -191,6 +214,7 @@ public class Question extends BaseModel<Question>{
 							}
 						}
 					}else if(qtype.trim().equals("2") || qtype.trim().equals("3")){//选择题
+						System.out.println("选择题 -->" + questionList.size() + "条记录");
 						for (Question q : questionList){
 							if (q.get("qcontent").toString().trim().equals("") || 
 									q.get("qa").toString().trim().equals("") ||
@@ -214,9 +238,7 @@ public class Question extends BaseModel<Question>{
 						flag = 0;
 					}
 				}
-				
-				//关闭输入流
-				fileExcelInput.close();
+
 				//删除处理文件上传时生成的临时文件
 				item.delete();
 				//tempItem = item;

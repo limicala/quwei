@@ -31,13 +31,14 @@
     <div class="container ">
 
       <legend class="text-center"><h3>趣味问答</h3></legend>
-
+	 
       <div class="text-center">
-        昵 称 <input type="text"  class="input-medium search-query" placeholder="学号是最美美的昵称哦">
+        昵 称 <input type="text" name="stu_id" class="input-medium search-query" placeholder="学号是最美美的昵称哦">
       </div>
       <div class="text-center" style="padding-top: 15px;">
-        <button type="submit" class="btn btn-success ">开始答题</button>
+        <button class="btn btn-success" onclick="jump()">开始答题</button>
       </div>
+     
     </div>
 
   <div class="text-right" style="padding-top: 35px;">
@@ -50,5 +51,10 @@
   </div>
   	<script src="frame/jquery/js/jquery.js" type="text/javascript"></script>
 	<script src="frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+	<script>
+		function jump(){
+			window.location.href = "<%=request.getContextPath() %>/contest"
+		}
+	</script>
   </body>
 </html>

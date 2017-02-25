@@ -23,7 +23,16 @@
 								</c:when>
 								
 								<c:otherwise>
-									<li><a href="${url }?ct=2&mpn=${page1.pageNumber - 1 }&pageNumber=${page1.pageNumber - 1 }">&lsaquo;&lsaquo;</a></li>
+									<li>
+										<c:choose>
+										 	<c:when test="${empty scondi}">
+										 		<a href="${url }?ct=2&mpn=${page1.pageNumber - 1 }&pageNumber=${page1.pageNumber - 1 }">&lsaquo;&lsaquo;</a>
+										 	</c:when>
+										 	<c:otherwise>
+										 		<a href="${url }?ct=2&mpn=${page1.pageNumber - 1 }&pageNumber=${page1.pageNumber - 1 }&mcondi=${mcondi }">&lsaquo;&lsaquo;</a>
+										 	</c:otherwise>
+										 </c:choose>
+									</li>
 								</c:otherwise>
 							</c:choose>
 
@@ -61,7 +70,16 @@
 							 			<li class="active"><a>${i }</a></li>
 							 		</c:when>
 							 		<c:otherwise>
-							 			<li><a href="${url }?ct=2&mpn=${i}&pageNumber=${i}">${i }</a></li>
+							 			<li>
+							 				<c:choose>
+											 	<c:when test="${empty scondi}">
+											 		<a href="${url }?ct=2&mpn=${i}&pageNumber=${i}">${i }</a>
+											 	</c:when>
+											 	<c:otherwise>
+											 		<a href="${url }?ct=2&mpn=${i }&pageNumber=${i }&mcondi=${mcondi }">${i }</a>
+											 	</c:otherwise>
+											 </c:choose>
+							 			</li>
 							 		</c:otherwise>
 							 	</c:choose>
 							 </c:forEach>
@@ -82,7 +100,16 @@
 									<li class="active"><a href="#">&rsaquo;&rsaquo;</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="${url }?ct=2&mpn=${page1.pageNumber+1 }&pageNumber=${page1.pageNumber+1 }">&rsaquo;&rsaquo;</a></li>
+									<li>
+										<c:choose>
+										 	<c:when test="${empty mcondi}">
+										 		<a href="${url }?ct=2&mpn=${page1.pageNumber + 1 }&pageNumber=${page1.pageNumber + 1 }">&rsaquo;&rsaquo;</a>
+										 	</c:when>
+										 	<c:otherwise>
+										 		<a href="${url }?ct=2&mpn=${page1.pageNumber + 1 }&pageNumber=${page1.pageNumber + 1 }&mcondi=${mcondi }">&rsaquo;&rsaquo;</a>
+										 	</c:otherwise>
+										 </c:choose>
+									</li>
 								</c:otherwise>
 							</c:choose>
                        </ul>

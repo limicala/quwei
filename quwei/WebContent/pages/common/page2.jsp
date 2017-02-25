@@ -23,7 +23,16 @@
 								</c:when>
 								
 								<c:otherwise>
-									<li><a href="${url }?ct=3&jpn=${page2.pageNumber - 1 }&pageNumber=${page2.pageNumber - 1 }">&lsaquo;&lsaquo;</a></li>
+									<li>
+										<c:choose>
+										 	<c:when test="${empty jcondi}">
+										 		<a href="${url }?ct=3&jpn=${page2.pageNumber - 1 }&pageNumber=${page2.pageNumber - 1 }">&lsaquo;&lsaquo;</a>
+										 	</c:when>
+										 	<c:otherwise>
+										 		<a href="${url }?ct=3&jpn=${page2.pageNumber - 1 }&pageNumber=${page2.pageNumber - 1 }&jcondi=${jcondi }">&lsaquo;&lsaquo;</a>
+										 	</c:otherwise>
+										 </c:choose>
+									</li>
 								</c:otherwise>
 							</c:choose>
 
@@ -61,7 +70,16 @@
 							 			<li class="active"><a>${i }</a></li>
 							 		</c:when>
 							 		<c:otherwise>
-							 			<li><a href="${url }?ct=3&jpn=${i }&pageNumber=${i}">${i }</a></li>
+							 			<li>
+							 				<c:choose>
+											 	<c:when test="${empty jcondi}">
+											 		<a href="${url }?ct=3&jpn=${i}&pageNumber=${i}">${i }</a>
+											 	</c:when>
+											 	<c:otherwise>
+											 		<a href="${url }?ct=3&jpn=${i }&pageNumber=${i }&jcondi=${jcondi }">${i }</a>
+											 	</c:otherwise>
+											 </c:choose>
+							 			</li>
 							 		</c:otherwise>
 							 	</c:choose>
 							 </c:forEach>
@@ -76,13 +94,22 @@
                  
                            <c:choose>
 								<c:when test="${page2.totalPage eq 0 }">
-									<li class="active"><a href="#">&rsaquo;&rsaquo;</a></li>
+									<li class="active"><a>&rsaquo;&rsaquo;</a></li>
 								</c:when>
 								<c:when test="${page2.pageNumber eq page2.totalPage }">
-									<li class="active"><a href="#">&rsaquo;&rsaquo;</a></li>
+									<li class="active"><a>&rsaquo;&rsaquo;</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="${url }?ct=3&jpn=${page2.pageNumber+1 }&pageNumber=${page2.pageNumber+1 }">&rsaquo;&rsaquo;</a></li>
+									<li>
+										<c:choose>
+										 	<c:when test="${empty jcondi}">
+										 		<a href="${url }?ct=3&jpn=${page2.pageNumber + 1 }&pageNumber=${page2.pageNumber + 1 }">&rsaquo;&rsaquo;</a>
+										 	</c:when>
+										 	<c:otherwise>
+										 		<a href="${url }?ct=3&jpn=${page2.pageNumber + 1 }&pageNumber=${page2.pageNumber + 1 }&jcondi=${jcondi }">&rsaquo;&rsaquo;</a>
+										 	</c:otherwise>
+										 </c:choose>
+									</li>
 								</c:otherwise>
 							</c:choose>
                        </ul>

@@ -13,11 +13,13 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.limicala.constant.AppConstant;
 import com.limicala.model.Question;
 
 public final class ExcelUtil {
@@ -68,17 +70,17 @@ public final class ExcelUtil {
 					}
 					questionList.add(i-1, nq);
 				}
-			}else if (row.getFirstCellNum() == 7){//单选题和多选题
+			}else if (row.getPhysicalNumberOfCells() == 7){//单选题和多选题
 				for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++ ){
 					row = sheet.getRow(i);
 					nq = new Question();
 					nq.set("qcontent", row.getCell(0).getStringCellValue());//获取题目内容
-					nq.set("qa", row.getCell(0).getStringCellValue());//A内容
-					nq.set("qb", row.getCell(0).getStringCellValue());//B内容
-					nq.set("qc", row.getCell(0).getStringCellValue());//C内容
-					nq.set("qd", row.getCell(0).getStringCellValue());//D内容
-					nq.set("qanswer", row.getCell(0).getStringCellValue());//答案内容
-					nq.set("qexplain", row.getCell(2).getStringCellValue());//获取题目注释
+					nq.set("qa", row.getCell(1).getStringCellValue());//A内容
+					nq.set("qb", row.getCell(2).getStringCellValue());//B内容
+					nq.set("qc", row.getCell(3).getStringCellValue());//C内容
+					nq.set("qd", row.getCell(4).getStringCellValue());//D内容
+					nq.set("qanswer", row.getCell(5).getStringCellValue());//答案内容
+					nq.set("qexplain", row.getCell(6).getStringCellValue());//获取题目注释
 					questionList.add(i-1, nq);
 				}
 			}
@@ -117,17 +119,17 @@ public final class ExcelUtil {
 					}
 					questionList.add(i-1, nq);
 				}
-			}else if (row.getFirstCellNum() == 7){//单选题和多选题
+			}else if (row.getPhysicalNumberOfCells() == 7){//单选题和多选题
 				for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++ ){
 					row = sheet.getRow(i);
 					nq = new Question();
 					nq.set("qcontent", row.getCell(0).getStringCellValue());//获取题目内容
-					nq.set("qa", row.getCell(0).getStringCellValue());//A内容
-					nq.set("qb", row.getCell(0).getStringCellValue());//B内容
-					nq.set("qc", row.getCell(0).getStringCellValue());//C内容
-					nq.set("qd", row.getCell(0).getStringCellValue());//D内容
-					nq.set("qanswer", row.getCell(0).getStringCellValue());//答案内容
-					nq.set("qexplain", row.getCell(2).getStringCellValue());//获取题目注释
+					nq.set("qa", row.getCell(1).getStringCellValue());//A内容
+					nq.set("qb", row.getCell(2).getStringCellValue());//B内容
+					nq.set("qc", row.getCell(3).getStringCellValue());//C内容
+					nq.set("qd", row.getCell(4).getStringCellValue());//D内容
+					nq.set("qanswer", row.getCell(5).getStringCellValue());//答案内容
+					nq.set("qexplain", row.getCell(6).getStringCellValue());//获取题目注释
 					questionList.add(i-1, nq);
 				}
 			}
@@ -153,65 +155,41 @@ public final class ExcelUtil {
 	 * @param qtype
 	 * @return
 	 */
-	@SuppressWarnings("resource")
 	public static boolean checkTemplateStandard(Workbook workbook, String qtype){
 		boolean flag = true;
-		int num = 0;
-		
+		int num = workbook.getSheetAt(0).getRow(0).getPhysicalNumberOfCells();
 		try {
-			HSSFRow row = (HSSFRow) workbook.getSheetAt(0).getRow(0);
+			Row row = workbook.getSheetAt(0).getRow(0);
 			num =  row.getPhysicalNumberOfCells();
-			
-			if (num != 3 || num != 7){//上传模板不符合
+			if (num != 3 && num != 7){//上传模板不符合
 				flag = false;
 			}else if (num == 3 && qtype.trim().equals("1")){
-				if(!row.getCell(0).toString().matches("内容") || !row.getCell(1).toString().matches("答案") )
+				if(!row.getCell(0).toString().equals(AppConstant.QCONTENT) 
+						|| !row.getCell(1).toString().equals(AppConstant.QANSWER) 
+						|| !row.getCell(1).toString().equals(AppConstant.QEXPLAIN))
 					flag = false;
 			}else if (num == 7 && (qtype.trim().equals("2") || qtype.trim().equals("3"))){
-				if(!row.getCell(0).toString().matches("内容")){
+				if(!row.getCell(0).toString().equals(AppConstant.QCONTENT)){
 					flag = false;
-				}else if ( !row.getCell(1).toString().matches("A")){
+				}else if ( !row.getCell(1).toString().equals(AppConstant.QA)){
 					flag = false;
-				}else if ( !row.getCell(2).toString().matches("B")){
+				}else if ( !row.getCell(2).toString().equals(AppConstant.QB)){
 					flag = false;
-				}else if ( !row.getCell(3).toString().matches("C")){
+				}else if ( !row.getCell(3).toString().equals(AppConstant.QC)){
 					flag = false;
-				}else if ( !row.getCell(4).toString().matches("D")){
+				}else if ( !row.getCell(4).toString().equals(AppConstant.QD)){
 					flag = false;
-				}else if ( !row.getCell(5).toString().matches("答案")){
+				}else if ( !row.getCell(5).toString().equals(AppConstant.QANSWER)){
+					flag = false;
+				}else if ( !row.getCell(6).toString().equals(AppConstant.QEXPLAIN)){
 					flag = false;
 				}
+				
+			}else{
+				flag = false;
 			}
 		} catch (Exception e) {
-			try {
-				
-				XSSFRow row = (XSSFRow) workbook.getSheetAt(0).getRow(0);
-				num =  row.getPhysicalNumberOfCells();
-				
-				if (num != 3 || num != 7){//上传模板不符合
-					flag = false;
-				}else if (num == 3 && qtype.trim().equals("1")){
-					if(!row.getCell(0).toString().matches("内容") || !row.getCell(1).toString().matches("答案") )
-						flag = false;
-				}else if (num == 7 && (qtype.trim().equals("2") || qtype.trim().equals("3"))){
-					if(!row.getCell(0).toString().matches("内容")){
-						flag = false;
-					}else if ( !row.getCell(1).toString().matches("A")){
-						flag = false;
-					}else if ( !row.getCell(2).toString().matches("B")){
-						flag = false;
-					}else if ( !row.getCell(3).toString().matches("C")){
-						flag = false;
-					}else if ( !row.getCell(4).toString().matches("D")){
-						flag = false;
-					}else if ( !row.getCell(5).toString().matches("答案")){
-						flag = false;
-					}
-				}
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			e.printStackTrace();
 		}
 		return flag;
 	}

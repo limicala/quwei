@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -23,20 +24,22 @@
 	            <li>
 	                <h5 class="text-success">恭喜您，×××，你的分数为:</h5>
 	            </li>
-	            <li><h3 class="text-error">99分</h3></li>
+	            <li><h3 class="text-error">${total_score }分</h3></li>
 	        </ul>
 	
 	        <h5 class="text-info">快来瞧瞧自己的答题结果吧！！魅力体现在细节，千万别错过注释哦。</h5>
 	    </div>
 	    <!--内容-->
 	    <div class="container">
+	    	<%int q_id = 1; %>
 	        <!-- 判断题 -->
 	        <div class="container">
 	            <h4 style="margin: 0px;padding: 0px;">一、判断题：</h4>
+	            <c:forEach items="${judgeList }" var="s">
 	            <!-- 第一题 -->
 	            <div class="row">
 	                <div class="span12 text-left">
-	                    <p><h5>1.阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？阅览室的男孩很帅？</h5></p>
+	                    <p><h5><%=q_id %>.${s.qcontent }</h5></p>
 	                </div>
 	
 	            </div>
@@ -46,104 +49,151 @@
 	                <div class="span4">
 	                    <ul class="inline">
 	                        <li><h6>结果：</h6></li>
-	                        <li><h6 class="text-error">错误</h6></li>
+	                        <li>
+	                        	<c:if test="${s.u_answer eq s.qanswer}">
+	                        		<h6 class="text-success">正确</h6>
+	                        	</c:if>
+	                        	<c:if test="${s.u_answer ne s.qanswer}">
+	                        		<h6 class="text-error">错误</h6>
+	                        	</c:if>
+	                        	
+	                        </li>
 	                    </ul>
 	                </div>
 	                <div class="span4">
-	                    <h6 class="text-success">正确答案： √</h6>
+	                    <h6 class="text-success">正确答案：${s.qanswer eq '1' ? '√' : '×' }</h6>
 	                </div>
 	                <div class="span4 ">
-	                    <h6 class="text-error">你的答案： ×</h6>
+	                	<c:if test="${s.u_answer eq s.qanswer}">
+                       		<h6 class="text-success">你的答案：${s.u_answer eq '1' ? '√' : '×' }</h6>
+                       	</c:if>
+                       	<c:if test="${s.u_answer ne s.qanswer}">
+                       		<h6 class="text-error">你的答案： ${s.u_qanswer eq '1' ? '√' : '×' }</h6>
+                       	</c:if>
+	                    
 	                </div>
 	            </div>
-	            <h6 class="text-info">注释: 技术部男生必须帅</h6>
-	
+	            <h6 class="text-info">注释: ${s.qexplain }</h6>
+				<!-- 第一题结束 -->
+				<%q_id++; %>
+				</c:forEach>
 	        </div>
-	
+			<% q_id = 1; %>
 	        <!-- 单选题 -->
 	        <div class="container">
 	            <h4 style="margin-bottom: 0px;padding-bottom: 0px;">二、单项选择题：</h4>
-	
-	            <!-- 第一题 -->
-	            <div class="row text-left" style="margin-top: 0px;margin-bottom:0px;padpadding-top: 0px;">
-	                <div class="span">
-	                    <h5>1. 阅览室是否可以自带手提电脑？阅览室是否可以自带手提电脑？阅览室是否可以自带手提电脑？阅览室是否可以自带手提电脑？阅览室是否可以自带手提电脑？阅览室是否可以自带手提电脑？阅览室是否可以自带手提电脑？阅览室是否可以自带手提电脑？阅览室是否可以自带手提电脑？阅览室是否可以自带手提电脑？</h5>
-	                </div>
-	            </div>
-	            <div class="row" style="margin-top: 0px;padding-top: 0px;">
-	                <div class="span3 text-left">
-	                    <h6> A. 当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以当然可以</h6>
-	                </div>
-	                <div class="span3 text-left">
-	                    <h6>B. 你说呢</h6>
-	                </div>
-	                <div class="span3 text-left">
-	                    <h6>C. 哦呵</h6>
-	                </div>
-	                <div class="span3 text-left">
-	                    <h6>D. 绝对不行？</h6>
-	                </div>
-	            </div>
-	            <!-- 结果注释 -->
-	            <div class="row">
-	                <div class="span4">
-	                    <ul class="inline">
-	                        <li><h5>结果：</h5></li>
-	                        <li><h5 class="text-success">正确</h5></li>
-	                    </ul>
-	                </div>
-	                <div class="span4">
-	                    <h6 class="text-success">正确答案： B</h6>
-	                </div>
-	                <div class="span4 ">
-	                    <h6 class="text-success">你的答案： B</h6>
-	                </div>
-	            </div>
-	            <h6 class="text-info">注释: 不可以带哦哦</h6>
-	
+				<c:forEach items="${singleList }" var="s">
+					<!-- 第一题 -->
+		            <div class="row text-left" style="margin-top: 0px;margin-bottom:0px;padpadding-top: 0px;">
+		                <div class="span">
+		                    <h5><%=q_id %>. ${s.qcontent }</h5>
+		                </div>
+		            </div>
+		            <div class="row" style="margin-top: 0px;padding-top: 0px;">
+		                <div class="span3 text-left">
+		                    <h6> A. ${s.qa }</h6>
+		                </div>
+		                <div class="span3 text-left">
+		                    <h6>B. ${s.qb }</h6>
+		                </div>
+		                <div class="span3 text-left">
+		                    <h6>C. ${s.qc }</h6>
+		                </div>
+		                <div class="span3 text-left">
+		                    <h6>D. ${s.qd }</h6>
+		                </div>
+		            </div>
+		            <!-- 结果注释 -->
+		            <div class="row">
+		                <div class="span4">
+		                    <ul class="inline">
+		                        <li><h5>结果：</h5></li>
+		                        <li>
+		                        	<c:if test="${s.u_answer eq s.qanswer}">
+		                        		<h6 class="text-success">正确</h6>
+		                        	</c:if>
+		                        	<c:if test="${s.u_answer ne s.qanswer}">
+		                        		<h6 class="text-error">错误</h6>
+		                        	</c:if>
+		                        </li>
+		                    </ul>
+		                </div>
+		                <div class="span4">
+		                    <h6 class="text-success">正确答案： ${s.qanswer }</h6>
+		                </div>
+		                <div class="span4 ">
+		                	<c:if test="${s.u_answer eq s.qanswer}">
+	                       		<h6 class="text-success">你的答案：${s.u_answer}</h6>
+	                       	</c:if>
+	                       	<c:if test="${s.u_answer ne s.qanswer}">
+	                       		<h6 class="text-error">你的答案： ${s.u_answer}</h6>
+	                       	</c:if>
+		                </div>
+		            </div>
+		            <h6 class="text-info">注释: ${s.qexplain }</h6>
+					<!-- 第一题结束 -->
+					<%q_id++; %>
+				</c:forEach>
+	            
 	        </div>
-	
+			<% q_id = 1; %>
 	        <!-- 多选题 -->
 	        <div class="container">
 	            <h4 style="margin-bottom: 0px;padding-bottom: 0px;">三、多项选择题：</h4>
-	
-	            <!-- 第一题 -->
-	            <div class="row text-left">
-	                <div class="span">
-	                    <h5>1. 阅览室是否可以自带手提电脑？</h5>
-	                </div>
-	            </div>
-	            <div class="row">
-	                <div class="span3 text-left">
-	                    <h6> A. 当然可以</h6>
-	                </div>
-	                <div class="span3 text-left">
-	                    <h6> B. 你说呢</h6>
-	                </div>
-	                <div class="span3 text-left">
-	                    <h6> C. 哦呵</h6>
-	                </div>
-	                <div class="span3 text-left">
-	                    <h6> D. 绝对不行？</h6>
-	                </div>
-	            </div>
-	
-	            <!-- 结果注释 -->
-	            <div class="row">
-	                <div class="span4">
-	                    <ul class="inline">
-	                        <li><h6>结果：</h6></li>
-	                        <li><h6 class="text-success">正确</h6></li>
-	                    </ul>
-	                </div>
-	                <div class="span4">
-	                    <h6 class="text-success">正确答案： BC</h6>
-	                </div>
-	                <div class="span4 ">
-	                    <h6 class="text-success">你的答案： BC</h6>
-	                </div>
-	            </div>
-	            <h6 class="text-info">注释: 不可以带哦哦不可以带哦哦不可以带哦哦不可以带哦哦不可以带哦哦不可以带哦哦不可以带哦哦不可以带哦哦不可以带哦哦不可以带哦哦不可以带哦哦不可以带哦哦不可以带哦哦不可以带哦哦</h6>
+				<c:forEach items="${multiList }" var="s">
+					<!-- 第一题 -->
+		            <div class="row text-left">
+		                <div class="span">
+		                    <h5><%=q_id %>. ${s.qcontent }</h5>
+		                </div>
+		            </div>
+		            <div class="row">
+		                <div class="span3 text-left">
+		                    <h6> A. ${s.qa }</h6>
+		                </div>
+		                <div class="span3 text-left">
+		                    <h6> B. ${s.qb }</h6>
+		                </div>
+		                <div class="span3 text-left">
+		                    <h6> C. ${s.qc }</h6>
+		                </div>
+		                <div class="span3 text-left">
+		                    <h6> D. ${s.qd }</h6>
+		                </div>
+		            </div>
+		
+		            <!-- 结果注释 -->
+		            <div class="row">
+		                <div class="span4">
+		                    <ul class="inline">
+		                        <li><h6>结果：</h6></li>
+		                        <li>
+		                        	<c:if test="${s.u_answer eq s.qanswer}">
+		                        		<h6 class="text-success">正确</h6>
+		                        	</c:if>
+		                        	<c:if test="${s.u_answer ne s.qanswer}">
+		                        		<h6 class="text-error">错误</h6>
+		                        	</c:if>
+		                        </li>
+		                    </ul>
+		                </div>
+		                <div class="span4">
+		                    <h6 class="text-success">正确答案： ${s.qanswer}</h6>
+		                </div>
+		                <div class="span4 ">
+		                    <c:if test="${s.u_answer eq s.qanswer}">
+	                       		<h6 class="text-success">你的答案：${s.u_answer}</h6>
+	                       	</c:if>
+	                       	<c:if test="${s.u_answer ne s.qanswer}">
+	                       		<h6 class="text-error">你的答案： ${s.u_answer}</h6>
+	                       	</c:if>
+		                </div>
+		            </div>
+		            <h6 class="text-info">注释: ${s.qexplain }</h6>
+	            	<!-- 第一题结束 -->
+	            	<% q_id++; %>
+				</c:forEach>
+	            
 	        </div>
 	
 	
