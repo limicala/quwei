@@ -9,6 +9,7 @@ import com.jfinal.kit.StrKit;
 import com.limicala.config.BaseController;
 import com.limicala.constant.AppTableConstant;
 import com.limicala.model.ConfigOS;
+import com.limicala.model.History;
 import com.limicala.model.Question;
 import com.limicala.model.Student;
 import com.limicala.util.SessionUtil;
@@ -47,6 +48,10 @@ public class UserController extends BaseController{
 		Integer judge_total_num = configOS.getInt("cjudge_num");
 		Integer single_total_num =  configOS.getInt("csingle_num");
 		Integer multi_total_num = configOS.getInt("cmulti_num");
+		if(configOS != null){
+			setAttr("answer_time", configOS.getInt("canswertime"));
+			setAttr("startword", configOS.getStr("startword"));
+		}
 		setAttr("student", student);
 		setAttr("judge_total_num", judge_total_num);
 		setAttr("single_total_num", single_total_num);
@@ -61,6 +66,7 @@ public class UserController extends BaseController{
 	public void result(){
 		String sid = SessionUtil.getFrontedLoginedUserId(getSession());
 		Student student = Student.me.findById(sid);
+		ConfigOS configOS = ConfigOS.me.findById(1);
 		//将三种题型的答案都分别放在一个Map对象里面
 		Integer judge_total_num = getParaToInt("judge_total_num");
 		Integer single_total_num = getParaToInt("single_total_num");
@@ -75,6 +81,16 @@ public class UserController extends BaseController{
 		
 		//求分数
 		int total_score = getTotalScore(judgeList, singleList, multiList);
+		History history = new History();
+		history.set("hstuNum", student.getStr("sid"))
+		.set("hname", student.getStr("sname"))
+		.set("hcollege", student.getStr("scollege"))
+		.set("hscore", total_score)
+		.save();
+		
+		if(configOS != null){
+			setAttr("endword", configOS.getStr("cendword"));
+		}
 		setAttr("student", student);
 		setAttr("total_score", total_score);
 		setAttr("judgeList", judgeList);

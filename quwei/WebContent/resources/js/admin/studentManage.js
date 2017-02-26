@@ -141,9 +141,13 @@ function deleteStudent(obj){
 		});
 	});
 }
+//************************** 清空学生表  **************************
+function emptyStudent(){
+	
+}
 
 //************************** 删 除 选 择 题 目  **************************
-function deleteQuestions(ob){
+function deleteStudents(ob){
 	var delId = "";
 	
 	//根据点击相应所属页面“删除所选”按钮获取相应题目的选中编号

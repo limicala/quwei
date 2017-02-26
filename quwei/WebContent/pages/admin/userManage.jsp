@@ -80,15 +80,6 @@
                     <button class="btn" type="button" onclick="location.href='userManageView'"><span class="icon-refresh"></span> 刷 新 </button>
                 </li>
                 
-                <!-- <li>
-                    <form class="form-inline">
-                        添加新用户 &rsaquo;&rsaquo;
-                        <input type="text" id="new_account" class="input-small" placeholder="新账号">
-                        <input type="password" id="new_password" class="input-small" placeholder="密码">
-                        <button type="button" class="btn" onclick="add()"><span class="icon-arrow-up" ></span> 提 交 </button>
-                        <button type="reset" class="btn"><span class="icon-minus"></span> 重 置 </button>
-                    </form>
-                </li> -->
             </ul>
 
             <div class="container">
@@ -329,9 +320,12 @@
 		})
         function search(){
         	account = $("#account").val();
-        	//alert(account);
-        	url="userManageView?account="+account;
-        	window.location.href = url;
+        	if (account.trim() == ""){
+        		$("#message").text("请输入账号");
+        		$("#tipModal").modal();
+	    		return;
+	    	}
+	    	location.href = "userManageView?account="+account;
         }
     </script>
 </body>

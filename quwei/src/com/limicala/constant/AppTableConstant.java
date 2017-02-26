@@ -11,6 +11,7 @@ public final class AppTableConstant {
 	//答题历史
 	public static final String HISTORY = "history";
 	public static final String HISTORY_KEY = "hid"; 
+
 	//问题
 	public static final String QUESTION = "question";
 	public static final String QUESTION_KEY = "qid";

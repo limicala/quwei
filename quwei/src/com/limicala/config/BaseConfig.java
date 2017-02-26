@@ -84,9 +84,11 @@ public class BaseConfig extends JFinalConfig{
 		//把表和一个对象对应起来
 		
 		arp.addMapping(AppTableConstant.ADMIN, AppTableConstant.ADMIN_KEY, Admin.class);
+
 		arp.addMapping(AppTableConstant.CONFIG_OS, AppTableConstant.CONFIG_OS_KEY, ConfigOS.class);
 		arp.addMapping(AppTableConstant.QUESTION, AppTableConstant.QUESTION_KEY, Question.class);
 		arp.addMapping(AppTableConstant.HISTORY, AppTableConstant.HISTORY_KEY ,History.class);
+
 		arp.addMapping(AppTableConstant.STUDENT, AppTableConstant.STUDENT_KEY, Student.class);
 	}
 

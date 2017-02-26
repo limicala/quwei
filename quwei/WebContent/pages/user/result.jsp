@@ -27,7 +27,7 @@
 	            <li><h3 class="text-error">${total_score }分</h3></li>
 	        </ul>
 	
-	        <h5 class="text-info">快来瞧瞧自己的答题结果吧！！魅力体现在细节，千万别错过注释哦。</h5>
+	        <h5 class="text-info">${endword }</h5>
 	    </div>
 	    <!--内容-->
 	    <div class="container">
@@ -73,7 +73,10 @@
 	                    
 	                </div>
 	            </div>
-	            <h6 class="text-info">注释: ${s.qexplain }</h6>
+              	<c:if test="${not empty s.qexplain}">
+              		<h6 class="text-info">注释: ${s.qexplain }</h6>
+              	</c:if>
+	            
 				<!-- 第一题结束 -->
 				<%q_id++; %>
 				</c:forEach>
@@ -130,7 +133,9 @@
 	                       	</c:if>
 		                </div>
 		            </div>
-		            <h6 class="text-info">注释: ${s.qexplain }</h6>
+		            <c:if test="${not empty s.qexplain}">
+	              		<h6 class="text-info">注释: ${s.qexplain }</h6>
+	              	</c:if>
 					<!-- 第一题结束 -->
 					<%q_id++; %>
 				</c:forEach>
@@ -189,7 +194,9 @@
 	                       	</c:if>
 		                </div>
 		            </div>
-		            <h6 class="text-info">注释: ${s.qexplain }</h6>
+		            <c:if test="${not empty s.qexplain}">
+	              		<h6 class="text-info">注释: ${s.qexplain }</h6>
+	              	</c:if>
 	            	<!-- 第一题结束 -->
 	            	<% q_id++; %>
 				</c:forEach>

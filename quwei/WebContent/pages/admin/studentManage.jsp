@@ -89,9 +89,9 @@
                 
             </ul>
 			<ul class="inline"><!--操作-->
-				<li><button type="button" class="btn" id="singleDels" onclick="deleteQuestions(this)"><span class="icon-trash"></span> 删除所选 </button></li>
+				<li><button type="button" class="btn" id="singleDels" onclick="deleteStudents(this)"><span class="icon-trash"></span> 删除所选 </button></li>
                 
-                <li><button type="button" class="btn"><span class="icon-trash"></span> 清空数据 </button></li>
+                <li><button type="button" class="btn"  onclick="emptyStudent(this)"><span class="icon-trash"></span> 清空数据 </button></li>
 			</ul>
             <div class="container">
                 <table id="table" class="table table-striped text-center" style="max-width: 700px;margin-left: auto;margin-right: auto;">
@@ -233,7 +233,13 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title text-center text-info" id="chooseContent">提 示</h4>
                 </div>
-                
+                <!-- <div id="confirm_password" class="modal-body text-center">
+                	
+                    <ul class="inline">
+                        <li><h5>姓名</h5></li>
+                        <li><input type="text" id="sname"/></li>
+                    </ul>
+                </div> -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="chooseOk">确定</button>&nbsp;&nbsp;
                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
@@ -241,6 +247,7 @@
             </div>
         </div>
     </div>
+    
     
     <script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
     <script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
