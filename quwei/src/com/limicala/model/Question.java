@@ -30,6 +30,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.limicala.config.BaseModel;
 
 import com.limicala.constant.AppTableConstant;
+import com.limicala.util.AnswerUtil;
 import com.limicala.util.ExcelUtil;
 /**
  * 问题表的Model类
@@ -221,7 +222,9 @@ public class Question extends BaseModel<Question>{
 									q.get("qb").toString().trim().equals("") ||
 									q.get("qc").toString().trim().equals("") ||
 									q.get("qd").toString().trim().equals("") ||
-									q.get("qanswer").toString().trim().equals("")){
+									q.get("qanswer").toString().trim().equals("") ||
+									!AnswerUtil.checkAnswer(Integer.parseInt(qtype), q.getStr("qanswer")) 
+									){
 								continue;
 							}else{
 								if (q.set("qtype", qtype).save())
@@ -247,4 +250,6 @@ public class Question extends BaseModel<Question>{
 		
 		return flag;
 	}
+	
+	
 }

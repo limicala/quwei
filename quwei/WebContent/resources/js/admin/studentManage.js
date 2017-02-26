@@ -26,7 +26,7 @@ function clean(){
 	$("#old_sid").val("");
 	$("#sid").val("");
     $("#sname").val("");
-    $("#spro").val("");
+ //   $("#spro").val("");
     $("#scollege").val("");
     $("#check_tip").html("");
     $("#update_button").removeAttr("disabled");
@@ -49,14 +49,14 @@ function editStudent(obj){
 	var table_row = document.getElementById("table").rows[id];
     var sid = table_row.cells[1].innerText;  
     var sname = table_row.cells[2].innerText;
-    var spro = table_row.cells[3].innerText;
-    var scollege = table_row.cells[4].innerText;
+  //  var spro = table_row.cells[3].innerText;
+    var scollege = table_row.cells[3].innerText;
     //向模态框中传值
     $("#table_id").val(id);
     $("#old_sid").val(sid);
 	$("#sid").val(sid);
     $("#sname").val(sname);
-    $("#spro").val(spro);
+ //   $("#spro").val(spro);
     $("#scollege").val(scollege);
 
     $("#singleModal").modal('show');
@@ -69,9 +69,9 @@ function addStudent(){
 	var old_sid = $("#old_sid").val();
 	var sid = $("#sid").val().trim();
 	var sname = $("#sname").val().trim();
-	var spro = $("#spro").val().trim();
+//	var spro = $("#spro").val().trim();
 	var scollege = $("#scollege").val().trim();
-	if (sid == "" || sname == "" || spro == "" || scollege == ""){
+	if (sid == "" || sname == "" || scollege == ""){
 		showWrongTip("学生信息不能为空");
 		return;
 	}
@@ -81,7 +81,7 @@ function addStudent(){
 	$.ajax({
         type: "post",  
         url: $("#url").val()+"/admin/updateStudent",
-        data: "old_sid=" + old_sid + "&student.sid=" + sid + "&student.sname=" + sname + "&student.sprofession=" + spro + "&student.scollege=" + scollege,
+        data: "old_sid=" + old_sid + "&student.sid=" + sid + "&student.sname=" + sname + "&student.scollege=" + scollege,
         success: function(resp) {
         	if (resp.type == "add"){//添加类型
         		if (resp.success){
@@ -96,12 +96,12 @@ function addStudent(){
             		//alert(table_id);
             		var table_row = document.getElementById("table").rows[table_id];
             		//学号
-            		var input_str = "<input type='checkbox' value='"+sid+"'/>";
+            		var input_str = "<input type='checkbox' name='stu_list' value='"+sid+"'/>";
             	    table_row.cells[0].innerHTML = input_str;  
             		table_row.cells[1].innerText = sid;  
             	    table_row.cells[2].innerText = sname;
-            	    table_row.cells[3].innerText = spro;
-            	    table_row.cells[4].innerText = scollege;
+            	   // table_row.cells[3].innerText = spro;
+            	    table_row.cells[3].innerText = scollege;
             		console.log(table_row);
             	}else{
             		showWrongTip(resp.msg);
@@ -213,4 +213,25 @@ function check_exsit(){
 	    }); 
 	}
 	
+}
+
+
+/**
+ * 下载上传模板
+ * @returns
+ */
+function doDownloadTemplate(){
+	window.location.href = "downloadStudentTemplate";
+}
+
+/**
+ * 执行上传文件
+ * @returns
+ */
+function doUpload(){
+	if ($("#showUrl").val() == ""){
+		showWrongTip("请选择批量导入文件(Excel)");
+	}else{
+		$("#uploadForm").submit();
+	}
 }
