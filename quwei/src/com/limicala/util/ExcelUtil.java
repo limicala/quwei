@@ -157,6 +157,8 @@ public final class ExcelUtil {
 	 */
 	public static boolean checkTemplateStandard(Workbook workbook, String qtype){
 		boolean flag = true;
+		if (workbook.getSheetAt(0).getRow(0) == null )
+			return false;
 		int num = workbook.getSheetAt(0).getRow(0).getPhysicalNumberOfCells();
 		try {
 			Row row = workbook.getSheetAt(0).getRow(0);

@@ -69,8 +69,8 @@
          	<button class="btn btn-large btn-success" id="subBtn" type="submit">登录</button>
         	
         </div>
-        <div class="text-right">
-        	<small class="text-right">@技术部</small>
+        <div class="text-right " style="padding-top:15px;">
+        	<small class="text-right">@肇庆学院-福慧图书馆-技术部</small>
         </div>
       </form>
       
