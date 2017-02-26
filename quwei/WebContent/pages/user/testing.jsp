@@ -15,6 +15,8 @@
 
 </head>
 <body style="background-color: #f5f5f5">
+	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
+	<input id="answer_time" type="number" class="hidden"  value="${answer_time }"/>
     <div class="container">
         <!--顶端图片-->
         <div class="text-center" style="padding-top: 5px;">
@@ -22,7 +24,7 @@
         </div>
         <div>
             <h5 class="text-success">测试人：${student.sname }</h5>
-            <h5 class="text-info">说明：满分一百分！！</h5>
+            <h5 class="text-info">说明：${startword }</h5>
             <h5 id="test_time" class="text-error">剩余答题时间：30:00</h5>
         </div>
         <!--内容-->
@@ -180,8 +182,8 @@
             $("#chooseFile").val("");
             $("#showUrl").val("");
         })
-		
-        var i = 30 * 60;
+        
+        var i = $("#answer_time").val() * 60;
         var timer = window.setInterval ("showTime()", 1000);
 
 		function showTime(){

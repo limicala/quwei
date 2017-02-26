@@ -257,9 +257,9 @@ public class AdminController extends BaseController{
 		}
 	}
 	/**
-	 * 修改答题间隔时间
+	 * 修改配置信息
 	 */
-	public void update_interval(){
+	public void update_config(){
 		ConfigOS configOS = getModel(ConfigOS.class);
 		if(configOS.getInt("cid")!= null){
 			renderJson(configOS.update());
@@ -268,14 +268,6 @@ public class AdminController extends BaseController{
 		}
 	}
 	
-	public void update_score(){
-		ConfigOS configOS = getModel(ConfigOS.class);
-		if(configOS.getInt("cid")!= null){
-			renderJson(configOS.update());
-		}else{
-			renderJson(configOS.save());
-		}
-	}
 	
 	/**
 	 * ajax判断登录是否合法
