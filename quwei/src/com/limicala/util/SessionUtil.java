@@ -68,7 +68,7 @@ public final class SessionUtil {
 	}
 	
 	
-	public static void setFrontedLoginUserId(HttpSession httpSession,Integer userId){
+	public static void setFrontedLoginUserId(HttpSession httpSession,String userId){
 		if(httpSession != null && userId != null){
 			httpSession.setAttribute(AppConstant.frontedUserId, userId);
 		}
@@ -80,9 +80,9 @@ public final class SessionUtil {
 	 * @param httpSession
 	 * @return
 	 */
-	public static Integer getFrontedLoginedUserId(HttpSession httpSession){
+	public static String getFrontedLoginedUserId(HttpSession httpSession){
 		if(httpSession != null ){
-			Integer userId = (Integer)httpSession.getAttribute(AppConstant.frontedUserId);
+			String userId = httpSession.getAttribute(AppConstant.frontedUserId).toString();
 			return userId;
 		}
 		return null;
