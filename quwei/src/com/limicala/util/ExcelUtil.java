@@ -1,26 +1,29 @@
 package com.limicala.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.limicala.constant.AppConstant;
 import com.limicala.model.Question;
+import com.limicala.model.Student;
 
 public final class ExcelUtil {
 	
@@ -45,6 +48,88 @@ public final class ExcelUtil {
 	}
 	
 	/**
+	 * 接受文件输入流和文件名，判断版本并且调用相应的读取方式
+	 * 
+	 * 注意：此处只是简单的将数据全部读入容器，不会检测数据是否符合规范
+	 * 
+	 * @param excelInputStream
+	 * @param excelName
+	 * @return
+	 */
+	public static  List<Student> readStudentExcel(Workbook workbook, String excelName){
+		List<Student> studentList = null;
+
+		if (excelName.endsWith(".xls")){
+			studentList = (ArrayList<Student>) readStudentFromExcelXls(workbook);
+		}else if(excelName.endsWith(".xlsx")){
+			studentList = (ArrayList<Student>) readStudentFromExcelXlsx(workbook);
+		}
+		return studentList;
+	}
+	
+	/**
+	 * 读取后缀为“xls”的Excel文件(2003版本)
+	 * @param excelInputStream
+	 * @return
+	 */
+	@SuppressWarnings("resource")
+	public static List<Student> readStudentFromExcelXls(Workbook workbook) {
+		// TODO Auto-generated method stub
+		List<Student> studentList = new ArrayList<Student>();
+		try {
+			HSSFSheet sheet = (HSSFSheet) workbook.getSheetAt(0);
+			HSSFRow row = sheet.getRow(0);
+			for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++ ){
+				Student student = new Student();
+				row = sheet.getRow(i);
+				student.set("sid", handleHSSFCell(row.getCell(0)));//获取学生学号
+				student.set("sname", handleHSSFCell(row.getCell(1)));//获取学生姓名
+				student.set("scollege", handleHSSFCell(row.getCell(2)));//获取学生学院
+				
+				studentList.add(student);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("readStudentFromExcelXls抛异常。");
+			e.printStackTrace();
+		}
+		return studentList;
+	}
+	
+	/**
+	 * 读取后缀为“xlsx”的Excel文件(2007版本)
+	 * @param excelInputStream
+	 * @return
+	 */
+	@SuppressWarnings("resource")
+	public static List<Student> readStudentFromExcelXlsx(Workbook workbook) {
+		// TODO Auto-generated method stub
+		List<Student> studentList = new ArrayList<Student>();
+		XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
+		XSSFRow row = null;
+		Student student = null;
+		try {
+			//System.out.println("读取的行数"+sheet.getPhysicalNumberOfRows());
+			 Iterator rows = sheet.rowIterator();
+			 rows.next();
+			while(rows.hasNext()){
+				row = (XSSFRow) rows.next();
+				student = new Student();
+				System.out.println(row.getCell(0).toString());
+				student.set("sid", handleXSSFCell(row.getCell(0)));//获取学生学号
+				student.set("sname", handleXSSFCell(row.getCell(1)));//获取学生姓名
+				student.set("scollege", handleXSSFCell(row.getCell(2)));//获取学生学院
+				studentList.add( student);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("readStudentFromExcelXlsx抛异常。");
+			e.printStackTrace();
+		}
+		return studentList;
+	}
+
+	/**
 	 * 读取后缀为“xls”的Excel文件(2003版本)
 	 * @param excelInputStream
 	 * @return
@@ -60,13 +145,13 @@ public final class ExcelUtil {
 				for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++ ){
 					row = sheet.getRow(i);
 					nq = new Question();
-					nq.set("qcontent", row.getCell(0).getStringCellValue());//获取题目内容
-					nq.set("qexplain", row.getCell(2).getStringCellValue());//获取题目注释
-					String answer = row.getCell(1).getStringCellValue();//获取答案
+					nq.set("qcontent", handleHSSFCell(row.getCell(0)));//获取题目内容
+					nq.set("qexplain", handleHSSFCell(row.getCell(2)));//获取题目注释
+					String answer = handleHSSFCell(row.getCell(1));//获取答案
 					if (answer.equals("对")){
-						nq.set("qanswer", 1);//获取题目注释
+						nq.set("qanswer", 1);
 					}else if(answer.equals("错")){
-						nq.set("qexplain", 0);//获取题目注释
+						nq.set("qanswer", 0);
 					}
 					questionList.add(i-1, nq);
 				}
@@ -74,13 +159,13 @@ public final class ExcelUtil {
 				for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++ ){
 					row = sheet.getRow(i);
 					nq = new Question();
-					nq.set("qcontent", row.getCell(0).getStringCellValue());//获取题目内容
-					nq.set("qa", row.getCell(1).getStringCellValue());//A内容
-					nq.set("qb", row.getCell(2).getStringCellValue());//B内容
-					nq.set("qc", row.getCell(3).getStringCellValue());//C内容
-					nq.set("qd", row.getCell(4).getStringCellValue());//D内容
-					nq.set("qanswer", row.getCell(5).getStringCellValue());//答案内容
-					nq.set("qexplain", row.getCell(6).getStringCellValue());//获取题目注释
+					nq.set("qcontent", handleHSSFCell(row.getCell(0)));//获取题目内容
+					nq.set("qa", handleHSSFCell(row.getCell(1)));//A内容
+					nq.set("qb", handleHSSFCell(row.getCell(2)));//B内容
+					nq.set("qc", handleHSSFCell(row.getCell(3)));//C内容
+					nq.set("qd", handleHSSFCell(row.getCell(4)));//D内容
+					nq.set("qanswer", handleHSSFCell(row.getCell(5)));//答案内容
+					nq.set("qexplain", handleHSSFCell(row.getCell(6)));//获取题目注释
 					questionList.add(i-1, nq);
 				}
 			}
@@ -109,13 +194,13 @@ public final class ExcelUtil {
 				for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++ ){
 					row = sheet.getRow(i);
 					nq = new Question();
-					nq.set("qcontent", row.getCell(0).getStringCellValue());//获取题目内容
-					nq.set("qexplain", row.getCell(2).getStringCellValue());//获取题目注释
-					String answer = row.getCell(1).getStringCellValue();//获取答案
+					nq.set("qcontent", handleXSSFCell(row.getCell(0)));//获取题目内容
+					nq.set("qexplain", handleXSSFCell(row.getCell(2)));//获取题目注释
+					String answer = handleXSSFCell(row.getCell(1));//获取答案
 					if (answer.equals("对")){
-						nq.set("qanswer", 1);//获取题目注释
+						nq.set("qanswer", 1);
 					}else if(answer.equals("错")){
-						nq.set("qexplain", 0);//获取题目注释
+						nq.set("qanswer", 0);
 					}
 					questionList.add(i-1, nq);
 				}
@@ -123,13 +208,13 @@ public final class ExcelUtil {
 				for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++ ){
 					row = sheet.getRow(i);
 					nq = new Question();
-					nq.set("qcontent", row.getCell(0).getStringCellValue());//获取题目内容
-					nq.set("qa", row.getCell(1).getStringCellValue());//A内容
-					nq.set("qb", row.getCell(2).getStringCellValue());//B内容
-					nq.set("qc", row.getCell(3).getStringCellValue());//C内容
-					nq.set("qd", row.getCell(4).getStringCellValue());//D内容
-					nq.set("qanswer", row.getCell(5).getStringCellValue());//答案内容
-					nq.set("qexplain", row.getCell(6).getStringCellValue());//获取题目注释
+					nq.set("qcontent", handleXSSFCell(row.getCell(0)));//获取题目内容
+					nq.set("qa", handleXSSFCell(row.getCell(1)));//A内容
+					nq.set("qb", handleXSSFCell(row.getCell(2)));//B内容
+					nq.set("qc", handleXSSFCell(row.getCell(3)));//C内容
+					nq.set("qd", handleXSSFCell(row.getCell(4)));//D内容
+					nq.set("qanswer", handleXSSFCell(row.getCell(5)));//答案内容
+					nq.set("qexplain", handleXSSFCell(row.getCell(6)));//获取题目注释
 					questionList.add(i-1, nq);
 				}
 			}
@@ -168,7 +253,7 @@ public final class ExcelUtil {
 			}else if (num == 3 && qtype.trim().equals("1")){
 				if(!row.getCell(0).toString().equals(AppConstant.QCONTENT) 
 						|| !row.getCell(1).toString().equals(AppConstant.QANSWER) 
-						|| !row.getCell(1).toString().equals(AppConstant.QEXPLAIN))
+						|| !row.getCell(2).toString().equals(AppConstant.QEXPLAIN))
 					flag = false;
 			}else if (num == 7 && (qtype.trim().equals("2") || qtype.trim().equals("3"))){
 				if(!row.getCell(0).toString().equals(AppConstant.QCONTENT)){
@@ -197,36 +282,133 @@ public final class ExcelUtil {
 	}
 	
 	
+	/**
+	 * 判断学生适合和上传的表格内容表头相同
+	 * @param excelInputStream
+	 * @param qtype
+	 * @return
+	 */
+	public static boolean checkStudentStandard(Workbook workbook){
+		boolean flag = true;
+		int num = workbook.getSheetAt(0).getRow(0).getPhysicalNumberOfCells();
+		try {
+			Row row = workbook.getSheetAt(0).getRow(0);
+			num =  row.getPhysicalNumberOfCells();
+			System.out.println("表格列数为"+num);
+			if (num != 3){//上传模板不符合
+				flag = false;
+			}else{
+				
+				if(!row.getCell(0).toString().equals(AppConstant.SID) 
+						|| !row.getCell(1).toString().equals(AppConstant.SNAME) 
+						|| !row.getCell(2).toString().equals(AppConstant.SCOLLEGE))
+					flag = false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
 	public static void main(String[] args) throws IOException{
 		try {
-			File ef = new File("D://判断题上传模板.xlsx"); 
-			FileInputStream testExcel = new FileInputStream(ef);
-			System.out.println(testExcel.available());
+//			File ef = new File("D://学生信息上传模板.xlsx"); 
+//			FileInputStream testExcel = new FileInputStream(ef);
+//			System.out.println(testExcel.available());
+//			
+			OPCPackage pkg = OPCPackage.open(new File("D://学生信息上传模板.xlsx"));
+			Workbook wb = new XSSFWorkbook(pkg);
 			
-			
-			
-			Workbook workbook = null;
-			try{
-				workbook = new HSSFWorkbook(testExcel);
-			}catch(Exception e){
-				workbook = new XSSFWorkbook(testExcel);
+//			Workbook workbook = null;
+//			try{
+//				workbook = new HSSFWorkbook(testExcel);
+//			}catch(Exception e){
+//				workbook = new XSSFWorkbook(testExcel);
+//			}
+			List<Student> students = readStudentFromExcelXlsx(wb);
+			for(Student student : students){
+				System.out.println(student.getStr("sid"));
+				System.out.println(student.getStr("sname"));
 			}
 			
+//			ArrayList<Question> ql = (ArrayList<Question>) readQuestionFromExcelXlsx(workbook);
+//			for (Question q : ql){
+//				System.out.println(q.get("qcontent").toString());
+//				System.out.println(q.get("qanswer").toString());
+//				System.out.println(q.get("qexplain").toString());
+//			}
 			
-			ArrayList<Question> ql = (ArrayList<Question>) readQuestionFromExcelXlsx(workbook);
-			for (Question q : ql){
-				System.out.println(q.get("qcontent").toString());
-				System.out.println(q.get("qanswer").toString());
-				System.out.println(q.get("qexplain").toString());
-			}
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	}
+	
+	/**
+	 * 处理单元格数据(2003)
+	 * @param cell
+	 * @return
+	 */
+	private static String handleHSSFCell(HSSFCell cell){
+		String value = "";
+		if(cell != null){
+			switch(cell.getCellType()){
+				case HSSFCell.CELL_TYPE_STRING ://字符串类型
+					value = cell.getStringCellValue();
+					break;
+				case HSSFCell.CELL_TYPE_NUMERIC ://数字类型
+					value = String.valueOf(cell.getNumericCellValue());
+					break;
+				case HSSFCell.CELL_TYPE_FORMULA ://公式类型
+					cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);      
+		            value = String.valueOf(cell.getNumericCellValue()); 
+					break;
+				case HSSFCell.CELL_TYPE_BLANK :
+					value = " ";
+					break;
+				case HSSFCell.CELL_TYPE_BOOLEAN :
+					break;
+				case HSSFCell.CELL_TYPE_ERROR :
+					break;
+				default:
+					break;
+			}
+		}
+		return value;
+	}
+	
+	/**
+	 * 处理单元格数据(2007)
+	 * @param cell
+	 * @return
+	 */
+	private static String handleXSSFCell(XSSFCell cell) {
+		String value = "";
+		if(cell != null){
+			switch(cell.getCellType()){
+				case XSSFCell.CELL_TYPE_STRING ://字符串类型
+					value = cell.getStringCellValue();
+					break;
+				case XSSFCell.CELL_TYPE_NUMERIC ://数字类型
+					value = String.valueOf(cell.getNumericCellValue());
+					break;
+				case XSSFCell.CELL_TYPE_FORMULA ://公式类型
+					cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);      
+		            value = String.valueOf(cell.getNumericCellValue()); 
+					break;
+				case XSSFCell.CELL_TYPE_BLANK :
+					value = " ";
+					break;
+				case XSSFCell.CELL_TYPE_BOOLEAN :
+					break;
+				case XSSFCell.CELL_TYPE_ERROR :
+					break;
+				default:
+					break;
+			}
+		}
 		
-		
-		
+		return value;
 	}
 }

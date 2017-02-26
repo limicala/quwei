@@ -32,5 +32,7 @@ public final class AppConstant {
 	public static final String QANSWER = "*答案";
 	public static final String QEXPLAIN = "注解";
 			
-	
+	public static final String SID = "*学号";
+	public static final String SNAME = "*姓名";
+	public static final String SCOLLEGE = "学院";
 }

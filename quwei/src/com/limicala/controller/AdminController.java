@@ -475,4 +475,36 @@ public class AdminController extends BaseController{
 		
 		renderJson(rm);
 	}
+	/**
+	 * 下载学生上传模板
+	 */
+	public void downloadStudentTemplate(){
+		String path = "/resources/templates/学生信息上传模板.xlsx";
+		File file = new File(PathKit.getWebRootPath()+path);
+		if(file.exists()) {
+			System.out.println("文件存在");
+			renderFile(file);
+		}else{
+			renderText("文件不存在");
+		}
+	}
+	
+	/**
+	 * 批量上传学生信息
+	 */
+	@Before(Tx.class)
+	public void uploadStudents(){
+		ResponseModel re = new ResponseModel();
+		int result = 0;
+		try {
+			result = Student.me.readWriteFileExcel(getRequest());
+		} catch (FileUploadException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		//“1”存储成功 “0”存储失败 “2”上传模板出错 “3”数据填充出错，数据丢失 "4"没数据
+		
+		renderHtml("<script>window.parent.afterUpload(" + result + ");</script>");
+	}
 }

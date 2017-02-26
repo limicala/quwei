@@ -32,6 +32,11 @@
         table td {
             vertical-align: middle !important;
         }
+        
+        .content{
+            /* max-width: 200px; */
+            word-break:break-all;
+        }
     </style>
 </head>
 <body>
@@ -80,11 +85,14 @@
                     </div>
                 </li>
                 <li><button type="button" class="btn" onclick="location.href='stuManageView'"><span class="icon-refresh"></span> 刷 新 </button></li>
-                <li><button type="button" class="btn" id="singleDels" onclick="deleteQuestions(this)"><span class="icon-trash"></span> 删除所选 </button></li>
-                <li><button type="button" class="btn" data-toggle="modal" data-target="#uploadModal" id="single" onclick="changeUpLoadflag(this)"><span class="icon-plus-sign"></span> 批量导入 </button></li>
-                <li><button type="button" class="btn"><span class="icon-trash"></span> 清空数据 </button></li>
+                <li><button type="button" class="btn" data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
+                
             </ul>
-
+			<ul class="inline"><!--操作-->
+				<li><button type="button" class="btn" id="singleDels" onclick="deleteQuestions(this)"><span class="icon-trash"></span> 删除所选 </button></li>
+                
+                <li><button type="button" class="btn"><span class="icon-trash"></span> 清空数据 </button></li>
+			</ul>
             <div class="container">
                 <table id="table" class="table table-striped text-center" style="max-width: 700px;margin-left: auto;margin-right: auto;">
                     <caption class="text-left">
@@ -95,13 +103,12 @@
                     </caption>
                     <thead>
 	                    <tr>
-	                    	<th style="width: 45px;"> 全 选
-                                <input type="checkbox" id="select_all"/>
+	                    	<th style="width: 50px;"> 
+                                <input type="checkbox" id="select_all"/>全 选
                             </th>
-	                        <th>学号</th>
-	                        <th>姓名</th>
-	                        <th>专业</th>
-	                        <th>学院</th>
+	                        <th style="width:30%">学号</th>
+	                        <th style="width:20%">姓名</th>
+	                        <th style="width:20%">学院</th>
 	                        <th>&nbsp;&nbsp;&nbsp;编辑</th>
 	                    </tr>
                     </thead>
@@ -112,11 +119,12 @@
                     	<c:forEach items="${page.list }" var="s">
                     	
                     		<tr>
+                    			
                     			<td><input type="checkbox" name="stu_list" value="${s.sid }"/></td><!--选择-->
-		                        <td>${s.sid }</td>
-		                        <td>${s.sname }</td>
-		                        <td>${s.sprofession }</td>
-		                        <td>${s.scollege }</td>
+		                        <td class="content">${s.sid }</td>
+		                        <td class="content">${s.sname }</td>
+		                       <%--  <td>${s.sprofession }</td> --%>
+		                        <td class="content">${s.scollege }</td>
 		                        <td>
 		                            <button class="btn btn-link" id="<%=table_id %>" data-toggle="modal" data-target="#editModal" onclick="editStudent(this)">编辑</button>
 		                            <button class="btn btn-link" id="<%=table_id %>" data-toggle="modal" data-target="#judgeModal" onclick="deleteStudent(this)">删除</button>
@@ -137,9 +145,36 @@
 
     </div>
     
+    <!--公用批量导入模态框-->
+    <div class="modal hide fade" id="uploadModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">选择批量导入Excel文件</h4>
+                </div>
+                <div class="modal-body text-center">
+                    <form id="uploadForm" action=uploadStudents method="post" enctype="multipart/form-data" style="padding-top: 10px;" target="frameFile">
+                        <input id="chooseFile" type="file" name="doc" style="display:none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                        
+                        <div class="input-append">
+                            <input id="showUrl"  type="text" readonly>
+                            <a class="btn btn-primary" onclick="$('input[id=chooseFile]').click();">浏览文件</a>
+                        </div>
+                    </form>
+                    <h6 style="color: #ff150e">提示：点击下方链接下载Excel表格模板，正确填充信息然后上传，否则可能导致上传失败.</h6>
+                	<a id="dlTemplate" onclick="doDownloadTemplate()" style="cursor:pointer;">下载模板</a>
+                </div>
+                <div class="modal-footer text-left">
+                    <button type="button" class="btn btn-success" onclick="doUpload()">确定上传</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!--编辑用户信息模态框-->
     
-    <------
     <div class="modal hide fade" id="editModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
         <div class="modal-dialog" role="document" >
             <div class="modal-content">
@@ -158,10 +193,6 @@
                     <ul class="inline">
                         <li><h5>姓名</h5></li>
                         <li><input type="text" id="sname"/></li>
-                    </ul>
-                	<ul class="inline">
-                        <li><h5>专业 </h5></li>
-                        <li><input type="text"  id="spro"/></li>
                     </ul>
                     <ul class="inline">
                         <li><h5>学院</h5></li>
@@ -246,6 +277,29 @@
             }   
         });
 	    
+	    $('input[id=chooseFile]').change(function() {
+            $('#showUrl').val($(this).val());
+        });
+	    
+	  //“1”存储成功 “0”存储失败 “2”上传模板出错 “3”数据填充出错，数据丢失 "4"没数据
+		function afterUpload(respMsg){
+			if (respMsg == "0"){
+				$("#uploadModal").modal('hide');
+				showWrongTip("上传失败");
+			}else if (respMsg == "1"){
+				$("#uploadModal").modal('hide');
+				showRightTip("上传成功，刷新页面后即可查看上传内容");
+			}else if (respMsg == "2"){
+				$("#uploadModal").modal('hide');
+				showWrongTip("上传失败,上传模板错误");
+			}else if (respMsg == "3"){
+				$("#uploadModal").modal('hide');
+				showWrongTip("上传文件含不完整数据，上传未完成");
+			}else if (respMsg == "4"){
+				$("#uploadModal").modal('hide');
+				showWrongTip("上传失败，上传文件不含有效数据");
+			}
+		}
 	    
 	  //**************************关键字查询题目信息**************************
 	    function query(ob){
@@ -259,5 +313,6 @@
 	    }	
     
     </script>
+    <iframe id='frameFile' name='frameFile' style='display: none;'></iframe>
 </body>
 </html>
