@@ -25,6 +25,16 @@
 								<c:otherwise>
 									<li>
 										<c:choose>
+											<c:when test="${empty ct}">
+												<c:choose>
+													<c:when test="${empty condi}">
+												 		<a href="${url }?hpn=${page1.pageNumber - 1 }">&lsaquo;&lsaquo;</a>
+												 	</c:when>
+												 	<c:otherwise>
+												 		<a href="${url }?hpn=${page1.pageNumber - 1 }&condi=${condi }&condiValue=${condiValue }">&lsaquo;&lsaquo;</a>
+												 	</c:otherwise>
+										 		</c:choose>
+										 	</c:when>
 										 	<c:when test="${empty scondi}">
 										 		<a href="${url }?ct=2&mpn=${page1.pageNumber - 1 }&pageNumber=${page1.pageNumber - 1 }">&lsaquo;&lsaquo;</a>
 										 	</c:when>
@@ -72,6 +82,17 @@
 							 		<c:otherwise>
 							 			<li>
 							 				<c:choose>
+							 					<c:when test="${empty ct}">
+											 		
+											 		<c:choose>
+											 		<c:when test="${empty condi}">
+												 		<a href="${url }?hpn=${i }">${i }</a>
+												 	</c:when>
+												 	<c:otherwise>
+												 		<a href="${url }?hpn=${i }&condi=${condi }&condiValue=${condiValue }">${i }</a>
+												 	</c:otherwise>
+											 	</c:choose>
+											 	</c:when>
 											 	<c:when test="${empty scondi}">
 											 		<a href="${url }?ct=2&mpn=${i}&pageNumber=${i}">${i }</a>
 											 	</c:when>
@@ -102,6 +123,16 @@
 								<c:otherwise>
 									<li>
 										<c:choose>
+											<c:when test="${empty ct}">
+												<c:choose>
+											 		<c:when test="${empty condi}">
+												 		<a href="${url }?hpn=${page1.pageNumber + 1 }">&rsaquo;&rsaquo;</a>
+												 	</c:when>
+												 	<c:otherwise>
+												 		<a href="${url }?hpn=${page1.pageNumber + 1 }&condi=${condi }&condiValue=${condiValue }">&rsaquo;&rsaquo;</a>
+												 	</c:otherwise>
+											 	</c:choose>
+										 	</c:when>
 										 	<c:when test="${empty mcondi}">
 										 		<a href="${url }?ct=2&mpn=${page1.pageNumber + 1 }&pageNumber=${page1.pageNumber + 1 }">&rsaquo;&rsaquo;</a>
 										 	</c:when>

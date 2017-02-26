@@ -17,7 +17,7 @@ import com.limicala.constant.AppTableConstant;
 import com.limicala.model.Admin;
 
 import com.limicala.model.ConfigOS;
-
+import com.limicala.model.History;
 import com.limicala.model.Question;
 
 import com.limicala.model.ResponseModel;
@@ -25,6 +25,7 @@ import com.limicala.model.Student;
 import com.limicala.util.SessionUtil;
 
 public class AdminController extends BaseController{
+	
 	/**
 	 * 管理员首页
 	 */
@@ -36,6 +37,37 @@ public class AdminController extends BaseController{
 		render("index.jsp");
 	}
 	
+	
+	/**
+	 * ajax判断登录是否合法
+	 */
+	public void doLogin(){
+		System.out.println("done");
+		ResponseModel rm = new ResponseModel();
+		String aid = getPara("id");//账号
+		String apassword = getPara("password");
+		//检查用户是否存在
+		if(Admin.me.checkIdExist(aid)){
+			boolean isPass = Admin.me.checkLogin(aid, apassword);
+			if(isPass){
+				SessionUtil.setAdminUserInfo(getSession(), aid);
+				rm.msgSuccess("登录成功!");
+			}else{
+				rm.msgFailed("密码错误!");
+			}
+		}else{
+			rm.msgFailed("用户不存在!");
+		}
+		renderJson(rm);
+	}
+	
+	//******************************************************************************************
+	//******************************************************************************************
+	//**************************************** 管 理 员 管 理 **************************************
+	//******************************************************************************************
+	//******************************************************************************************
+	
+	
 	public void userManageView(){
 		Integer pageNumber = this.getParaToInt("pageNumber", 1);
 		Integer pageSize = 6;
@@ -46,15 +78,90 @@ public class AdminController extends BaseController{
 		setAttr("page", page);
 		render("userManage.jsp");
 	}
+
+	/**
+	 * 添加
+	 * @param aid
+	 * @param apassword
+	 */
+	@Before(Tx.class)
+	public void save(){
+		ResponseModel rm = new ResponseModel();
+		Admin admin = getModel(Admin.class);
+		if (admin.save()) {
+			rm.msgSuccess("添加管理员成功");
+		} else {
+			rm.msgFailed("添加管理员失败");
+		}
+		
+		renderJson(rm);
+	}
 	
-	//***************************************************题库*************************************************************
+	/**
+	 * 修改
+	 * @param aid
+	 * @param apassword
+	 */
+	@Before(Tx.class)
+	public void update(){
+		ResponseModel rm = new ResponseModel();
+		String old_aid = getPara("old_account");
+		String new_aid = getPara("account");
+		String password = getPara("password");
+		
+		//旧账号为空時为添加用户
+		if(StrKit.isBlank(old_aid)){
+			Admin admin = new Admin();
+			admin.set("aid", new_aid)
+			.set("apassword", password);
+			if(admin.save()){
+				rm.msgSuccess("添加管理员成功");
+			}else{
+				rm.msgFailed("添加管理员失败");
+			}
+		}else{
+			if (Admin.me.updateInfo(old_aid, new_aid, password)) {
+				rm.msgSuccess("修改管理员成功");
+			} else {
+				rm.msgFailed("修改管理员失败");
+			}
+		}
+		
+		
+		renderJson(rm);
+	}
+	/**
+	 * 删除管理员
+	 */
+	@Before(Tx.class)
+	public void delete(){
+		ResponseModel rm = new ResponseModel();
+		String id = this.getPara("id");
+//		String id = "111";
+		boolean result = Admin.me.deleteById(id);
+		if (result == true) {
+			rm.msgSuccess("删除管理员成功");
+			
+		} else{
+			rm.msgFailed("删除管理员失败");
+			
+		}
+		this.renderJson(rm);
+	}
+	
+	
+	//******************************************************************************************
+	//******************************************************************************************
+	//****************************************** 题 库 管 理 **************************************
+	//******************************************************************************************
+	//******************************************************************************************
+	
 	
 	public void questionManageView(){
 		Integer jpn = this.getParaToInt("jpn", 1);//判断题
 		Integer spn = this.getParaToInt("spn", 1);//单项选择题
 		Integer mpn = this.getParaToInt("mpn", 1);//多项选择题
 		Integer type = this.getParaToInt("ct", 1);//当前的tab页面
-		Integer pageSize = 5;
 		String scondi = this.getPara("scondi", "");//单项选择题目查询关键字
 		String mcondi = this.getPara("mcondi", "");//多项选择题目查询关键字
 		String jcondi = this.getPara("jcondi", "");//判断题查询关键字
@@ -239,6 +346,75 @@ public class AdminController extends BaseController{
 		renderHtml("<script>window.parent.afterUpload(" + result + ");</script>");
 	}
 	
+	//******************************************************************************************
+	//******************************************************************************************
+	//************************************* 答 题 记 录  管 理 ************************************
+	//******************************************************************************************
+	//******************************************************************************************
+	
+	public void historyManageView(){
+		Integer hpn = this.getParaToInt("hpn", 1);//当前页码
+		String condi = this.getPara("condi", "");//条件类型
+		String condiValue = this.getPara("condiValue", "");//条件值
+
+		Page<Record> page = History.me.findByParams(hpn, AppConstant.HISTORY_PAGE_SIZE, condi, condiValue);
+	
+		setAttr("url", "historyManageView");
+		setAttr("condi", condi);
+		setAttr("condiValue", condiValue);
+		setAttr("page1", page);
+
+		render("historyManage.jsp");
+	}
+	
+	
+	/**
+	 * 删除题库信息
+	 */
+	@Before(Tx.class)
+	public void deleteHistory(){
+		ResponseModel rm = new ResponseModel();
+		String hid = getPara("hid");
+		
+		//返回3个状态：“0”删除失败，一个都没删除成功；“1”删除成功；“2”只删除部分
+		int re = History.me.deleteHistories(hid);
+		System.out.println("?????????????????????a a a a ---->"+re);
+		if( 1 == re ){
+			rm.setSuccess(true);
+			rm.msgFailed("删除成功");
+		}else if( 0 == re ){
+			rm.setSuccess(false);
+			rm.msgFailed("删除失败");
+		}else if( 2 == re ){
+			rm.setSuccess(false);
+			rm.msgFailed("删除失败，只删除选中部分数据，请刷新后重试");
+		}else{
+			rm.setSuccess(false);
+			rm.msgFailed("删除失败");
+		}
+		System.out.println("?????????????????????---->"+re);
+		renderJson(rm);
+	}
+	
+	public void downloadHistories(){
+		String path = "/resources/templates/学生信息上传模板.xlsx";
+		File file = new File(PathKit.getWebRootPath()+path);
+		if(file.exists()) {
+			System.out.println("文件存在");
+			renderFile(file);
+		}else{
+			renderText("文件不存在");
+		}
+	}
+	
+	
+	
+	//******************************************************************************************
+	//******************************************************************************************
+	//****************************************** 系 统 配 置 **************************************
+	//******************************************************************************************
+	//******************************************************************************************
+	
 	public void configView(){
 		setAttr("configOS", ConfigOS.me.findById(new Integer(1)));
 		
@@ -277,101 +453,15 @@ public class AdminController extends BaseController{
 		}
 	}
 	
-	/**
-	 * ajax判断登录是否合法
-	 */
-	public void doLogin(){
-		System.out.println("done");
-		ResponseModel rm = new ResponseModel();
-		String aid = getPara("id");//账号
-		String apassword = getPara("password");
-		//检查用户是否存在
-		if(Admin.me.checkIdExist(aid)){
-			boolean isPass = Admin.me.checkLogin(aid, apassword);
-			if(isPass){
-				SessionUtil.setAdminUserInfo(getSession(), aid);
-				rm.msgSuccess("登录成功!");
-			}else{
-				rm.msgFailed("密码错误!");
-			}
-		}else{
-			rm.msgFailed("用户不存在!");
-		}
-		renderJson(rm);
-	}
 	
-
-	/**
-	 * 添加
-	 * @param aid
-	 * @param apassword
-	 */
-	@Before(Tx.class)
-	public void save(){
-		ResponseModel rm = new ResponseModel();
-		Admin admin = getModel(Admin.class);
-		if (admin.save()) {
-			rm.msgSuccess("添加管理员成功");
-		} else {
-			rm.msgFailed("添加管理员失败");
-		}
-		
-		renderJson(rm);
-	}
 	
-	/**
-	 * 修改
-	 * @param aid
-	 * @param apassword
-	 */
-	@Before(Tx.class)
-	public void update(){
-		ResponseModel rm = new ResponseModel();
-		String old_aid = getPara("old_account");
-		String new_aid = getPara("account");
-		String password = getPara("password");
-		
-		//旧账号为空時为添加用户
-		if(StrKit.isBlank(old_aid)){
-			Admin admin = new Admin();
-			admin.set("aid", new_aid)
-			.set("apassword", password);
-			if(admin.save()){
-				rm.msgSuccess("添加管理员成功");
-			}else{
-				rm.msgFailed("添加管理员失败");
-			}
-		}else{
-			if (Admin.me.updateInfo(old_aid, new_aid, password)) {
-				rm.msgSuccess("修改管理员成功");
-			} else {
-				rm.msgFailed("修改管理员失败");
-			}
-		}
-		
-		
-		renderJson(rm);
-	}
-	/**
-	 * 删除管理员
-	 */
-	@Before(Tx.class)
-	public void delete(){
-		ResponseModel rm = new ResponseModel();
-		String id = this.getPara("id");
-//		String id = "111";
-		boolean result = Admin.me.deleteById(id);
-		if (result == true) {
-			rm.msgSuccess("删除管理员成功");
-			
-		} else{
-			rm.msgFailed("删除管理员失败");
-			
-		}
-		this.renderJson(rm);
-	}
+	//******************************************************************************************
+	//******************************************************************************************
+	//****************************************** 学 生 管 理 **************************************
+	//******************************************************************************************
+	//******************************************************************************************
 	
-	//************************学生管理*****************//
+	
 	public void stuManageView(){
 		Integer pageNumber = this.getParaToInt("pageNumber", 1);
 		Integer search_type = getParaToInt("search_type", 1);

@@ -309,6 +309,113 @@ public final class ExcelUtil {
 		}
 		return flag;
 	}
+
+	
+	/**
+	 * 处理单元格数据(2003)
+	 * @param cell
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	private static String handleHSSFCell(HSSFCell cell){
+		String value = "";
+		if(cell != null){
+			switch(cell.getCellType()){
+				case HSSFCell.CELL_TYPE_STRING ://字符串类型
+					value = cell.getStringCellValue();
+					break;
+				case HSSFCell.CELL_TYPE_NUMERIC ://数字类型
+					value = String.valueOf(cell.getNumericCellValue());
+					break;
+				case HSSFCell.CELL_TYPE_FORMULA ://公式类型
+					cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);      
+		            value = String.valueOf(cell.getNumericCellValue()); 
+					break;
+				case HSSFCell.CELL_TYPE_BLANK :
+					value = " ";
+					break;
+				case HSSFCell.CELL_TYPE_BOOLEAN :
+					break;
+				case HSSFCell.CELL_TYPE_ERROR :
+					break;
+				default:
+					break;
+			}
+		}
+		return value;
+	}
+	
+	/**
+	 * 处理单元格数据(2007)
+	 * @param cell
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	private static String handleXSSFCell(XSSFCell cell) {
+		String value = "";
+		if(cell != null){
+			switch(cell.getCellType()){
+				case XSSFCell.CELL_TYPE_STRING ://字符串类型
+					value = cell.getStringCellValue();
+					break;
+				case XSSFCell.CELL_TYPE_NUMERIC ://数字类型
+					value = String.valueOf(cell.getNumericCellValue());
+					break;
+				case XSSFCell.CELL_TYPE_FORMULA ://公式类型
+					cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);      
+		            value = String.valueOf(cell.getNumericCellValue()); 
+					break;
+				case XSSFCell.CELL_TYPE_BLANK :
+					value = " ";
+					break;
+				case XSSFCell.CELL_TYPE_BOOLEAN :
+					break;
+				case XSSFCell.CELL_TYPE_ERROR :
+					break;
+				default:
+					break;
+			}
+		}
+		return value;
+	}
+	
+	
+	/**
+	 * 处理单元格数据
+	 * @param cell
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	private static String handleCell(Cell cell) {
+		String value = "";
+		if(cell != null){
+			switch(cell.getCellType()){
+				case Cell.CELL_TYPE_STRING ://字符串类型
+					value = cell.getStringCellValue();
+					break;
+				case Cell.CELL_TYPE_NUMERIC ://数字类型
+					value = String.valueOf(cell.getNumericCellValue());
+					break;
+				case Cell.CELL_TYPE_FORMULA ://公式类型
+					cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);      
+		            value = String.valueOf(cell.getNumericCellValue()); 
+					break;
+				case Cell.CELL_TYPE_BLANK :
+					value = " ";
+					break;
+				case Cell.CELL_TYPE_BOOLEAN :
+					break;
+				case Cell.CELL_TYPE_ERROR :
+					break;
+				default:
+					break;
+			}
+		}
+		return value;
+	}
+	
+	
+	
 	
 	public static void main(String[] args) throws IOException{
 		try {
@@ -343,72 +450,5 @@ public final class ExcelUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	/**
-	 * 处理单元格数据(2003)
-	 * @param cell
-	 * @return
-	 */
-	private static String handleHSSFCell(HSSFCell cell){
-		String value = "";
-		if(cell != null){
-			switch(cell.getCellType()){
-				case HSSFCell.CELL_TYPE_STRING ://字符串类型
-					value = cell.getStringCellValue();
-					break;
-				case HSSFCell.CELL_TYPE_NUMERIC ://数字类型
-					value = String.valueOf(cell.getNumericCellValue());
-					break;
-				case HSSFCell.CELL_TYPE_FORMULA ://公式类型
-					cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);      
-		            value = String.valueOf(cell.getNumericCellValue()); 
-					break;
-				case HSSFCell.CELL_TYPE_BLANK :
-					value = " ";
-					break;
-				case HSSFCell.CELL_TYPE_BOOLEAN :
-					break;
-				case HSSFCell.CELL_TYPE_ERROR :
-					break;
-				default:
-					break;
-			}
-		}
-		return value;
-	}
-	
-	/**
-	 * 处理单元格数据(2007)
-	 * @param cell
-	 * @return
-	 */
-	private static String handleXSSFCell(XSSFCell cell) {
-		String value = "";
-		if(cell != null){
-			switch(cell.getCellType()){
-				case XSSFCell.CELL_TYPE_STRING ://字符串类型
-					value = cell.getStringCellValue();
-					break;
-				case XSSFCell.CELL_TYPE_NUMERIC ://数字类型
-					value = String.valueOf(cell.getNumericCellValue());
-					break;
-				case XSSFCell.CELL_TYPE_FORMULA ://公式类型
-					cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);      
-		            value = String.valueOf(cell.getNumericCellValue()); 
-					break;
-				case XSSFCell.CELL_TYPE_BLANK :
-					value = " ";
-					break;
-				case XSSFCell.CELL_TYPE_BOOLEAN :
-					break;
-				case XSSFCell.CELL_TYPE_ERROR :
-					break;
-				default:
-					break;
-			}
-		}
-		
-		return value;
 	}
 }

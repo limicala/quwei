@@ -56,7 +56,7 @@
                             <li><a href="userManageView"><span class="icon-user"></span> 管理员管理</a></li>
                             <li><a href="stuManageView"><span class="icon-user"></span> 学生管理</a></li>
                             <li><a href="questionManageView"><span class="icon-list-alt"></span> 题库信息管理</a></li>
-                            <li><a href="#contact"><span class="icon-check"></span> 答题记录管理</a></li>
+                            <li><a href="historyManageView"><span class="icon-check"></span> 答题记录管理</a></li>
                             <li class="active"><a><span class="icon-wrench"></span> 系统配置</a></li>
                             <li><a href="#contact"><span class="icon-off"></span> 退出系统</a></li>
                         </ul>

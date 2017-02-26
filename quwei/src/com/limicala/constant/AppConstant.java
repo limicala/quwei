@@ -9,6 +9,8 @@ public final class AppConstant {
 	public static final Integer MUTIL_PAGE_SIZE = 10;
 	public static final Integer JUDGE_PAGE_SIZE = 10;
 	
+	public static final Integer HISTORY_PAGE_SIZE = 3;
+	
 	public static final String adminUserId = "adminUserId";
 	public static final String adminUserName = "adminUserName";
 	

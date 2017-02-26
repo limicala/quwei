@@ -26,7 +26,7 @@ public final class QrcodeUtil {
 		try {
 //			bitMatrix = new MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, width, height,hints);
 			bitMatrix = new MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, width, height,hints);
-			File outputFile = new File("D://birthday.png");
+			File outputFile = new File("D://quwei.png");
 	        try {
 				MatrixToImageWriter.writeToFile(bitMatrix, format, outputFile);
 			} catch (IOException e) {
