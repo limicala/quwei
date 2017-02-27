@@ -16,12 +16,12 @@
         body{
             background-color: #f5f5f5;
         }
-        img{
+        .top{
             width:100%;
             max-height:200px;
         }
         @media (min-width: 950px) {
-            img{
+            .top{
                 height:200px;
             }
         }
@@ -31,7 +31,7 @@
 <body>
 	<div class="container">
         <div class="jumbotron text-center" style="padding-top: 5px;">
-            <img src="<%=request.getContextPath()%>/resources/images/main.jpg" class="img-rounded">
+            <img class="top" src="<%=request.getContextPath()%>/resources/images/main.jpg" class="img-rounded">
         </div>
 
         <div class="navbar" style="padding-top: 4px;">
@@ -64,7 +64,30 @@
             <h3 class="text-warning">欢迎使用</h3>
             <h1 style="font-size: 40px;">趣味问答系统</h1>
         </div>
+        <div class="container text-center">
+        	<button class="btn btn-info"  data-toggle="modal" data-target="#qrcodeModal"><span class="icon-qrcode"></span> 二 维 码</button>
+        </div>
 	</div>
+	
+	<!--公用批量导入模态框-->
+    <div class="modal hide fade" id="qrcodeModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">二 维 码</h4>
+                </div>
+                <div class="modal-body text-center">
+					<img data-src="holder.js/360x360" src="getQrcode" style="width: 360px; height: 360px;">
+                    <!--<img src="images/birthday.png" class="img-rounded">-->
+                </div>
+                <div class="modal-footer text-center ">
+                    <button type="button" class="btn btn-success" onclick="location.href = 'downloadQrcode'"> 下 载 </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 	<script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
 	<script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 </body>

@@ -2,8 +2,11 @@ package com.limicala.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,14 +17,19 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.limicala.constant.AppConstant;
+import com.limicala.model.History;
 import com.limicala.model.Question;
 import com.limicala.model.Student;
 
@@ -415,6 +423,47 @@ public final class ExcelUtil {
 	}
 	
 	
+	@SuppressWarnings("deprecation")
+	public static XSSFWorkbook getHistoryExcel(ArrayList<History> hlist){
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("答题记录_"+(new SimpleDateFormat("yyyy_MM_dd-hh_mm")).format(new Date()));
+		
+		XSSFCellStyle style = workbook.createCellStyle();
+		sheet.setDefaultColumnWidth(20);
+		
+		
+//		style.setFillBackgroundColor(new XSSFColor(IndexedColors.LIGHT_ORANGE));//橙色背景
+//		style.setFillForegroundColor(new XSSFColor(IndexedColors.BLACK));
+//
+//		//生成一个字体  
+//        XSSFFont font = workbook.createFont();  
+//        font.setColor(new XSSFColor(IndexedColors.BLUE));  
+//        font.setBold(true);
+//        style.setFont(font);
+		
+		
+		XSSFRow row = sheet.createRow(0);
+		row.createCell(0).setCellValue(AppConstant.HSTU_NUM);
+		row.createCell(1).setCellValue(AppConstant.HNAME);
+		row.createCell(2).setCellValue(AppConstant.HCOLLEGE);
+		row.createCell(3).setCellValue(AppConstant.HSCORE);
+		row.createCell(4).setCellValue(AppConstant.HTIME);
+		
+		int i = 1;
+		for (History h : hlist){
+			row = sheet.createRow(i);
+			row.createCell(0).setCellValue(h.get("hstuNum").toString());
+			row.createCell(1).setCellValue(h.get("hname").toString());
+			row.createCell(2).setCellValue(h.get("hcollege").toString());
+			row.createCell(3).setCellValue(h.get("hscore").toString());
+			row.createCell(4).setCellValue(h.get("htime").toString().substring(0, 16));
+			++i;
+		}
+		
+		return workbook;
+	}
+	
+	
 	
 	
 	public static void main(String[] args) throws IOException{
@@ -423,8 +472,8 @@ public final class ExcelUtil {
 //			FileInputStream testExcel = new FileInputStream(ef);
 //			System.out.println(testExcel.available());
 //			
-			OPCPackage pkg = OPCPackage.open(new File("D://学生信息上传模板.xlsx"));
-			Workbook wb = new XSSFWorkbook(pkg);
+//			OPCPackage pkg = OPCPackage.open(new File("D://学生信息上传模板.xlsx"));
+//			Workbook wb = new XSSFWorkbook(pkg);
 			
 //			Workbook workbook = null;
 //			try{
@@ -432,11 +481,11 @@ public final class ExcelUtil {
 //			}catch(Exception e){
 //				workbook = new XSSFWorkbook(testExcel);
 //			}
-			List<Student> students = readStudentFromExcelXlsx(wb);
-			for(Student student : students){
-				System.out.println(student.getStr("sid"));
-				System.out.println(student.getStr("sname"));
-			}
+//			List<Student> students = readStudentFromExcelXlsx(wb);
+//			for(Student student : students){
+//				System.out.println(student.getStr("sid"));
+//				System.out.println(student.getStr("sname"));
+//			}
 			
 //			ArrayList<Question> ql = (ArrayList<Question>) readQuestionFromExcelXlsx(workbook);
 //			for (Question q : ql){
@@ -445,6 +494,22 @@ public final class ExcelUtil {
 //				System.out.println(q.get("qexplain").toString());
 //			}
 			
+			ArrayList<History> hl = new ArrayList<History>();
+			for (int i = 0; i < 5; i++){
+				hl.add(new History()
+						.set("hstuNum", "201424132133")
+						.set("hname", "二狗")
+						.set("hcollege", "计算机学院")
+						.set("hscore", "59.9")
+						.set("htime", new SimpleDateFormat("yyyy.MM.dd-hh:mm").format(new Date())));
+			}
+			
+			XSSFWorkbook workbook = getHistoryExcel(hl);
+			
+			FileOutputStream fOut  =   new  FileOutputStream("D://记录.xlsx");
+            workbook.write(fOut);
+            fOut.flush();
+            fOut.close();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

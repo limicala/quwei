@@ -13,6 +13,31 @@ import com.google.zxing.common.BitMatrix;
 
 public final class QrcodeUtil {
 	
+	
+	public static BitMatrix getQrcode(String url){
+		int width = 400;   
+        int height = 400;   
+        Hashtable hints= new Hashtable();   
+        hints.put(EncodeHintType.CHARACTER_SET, "utf-8");   
+        BitMatrix bitMatrix = null;
+		try {
+//			bitMatrix = new MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, width, height,hints);
+			bitMatrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, width, height,hints);
+			//File outputFile = new File("D://quwei.png");
+//	        try {
+//				MatrixToImageWriter.writeToFile(bitMatrix, "png", outputFile);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+		} catch (WriterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return bitMatrix;
+		
+	}
+	
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args){
 		 

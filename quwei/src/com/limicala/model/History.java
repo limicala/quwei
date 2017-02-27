@@ -1,5 +1,8 @@
 package com.limicala.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
@@ -47,7 +50,6 @@ public class History extends BaseModel<History>{
 	 * @return
 	 */
 	public int deleteHistories(String hid) {
-		System.out.println("?????????????????????????here");
 		/*
 		 * split分隔符总结
 			1.字符"|","*","+"都得加上转义字符，前面加上"\\"。
@@ -69,5 +71,28 @@ public class History extends BaseModel<History>{
 			return 0;
 		}else
 			return 2;
+	}
+
+
+	public ArrayList<History> findByCondi(String condi) {
+		// TODO Auto-generated method stub
+		StringBuilder selectSql = new StringBuilder();
+		selectSql.append(" select * ");
+		StringBuilder fromSql = new StringBuilder();
+		fromSql.append("from history");
+		StringBuilder whereSql = new StringBuilder();
+		whereSql.append(" where 1 = 1 ");
+		
+		
+		if (StrKit.notBlank(condi) && !condi.equals("defalut")) {
+			if (condi.trim().equals("score"))
+				whereSql.append("order by hscore desc");
+			else if (condi.trim().equals("college"))
+				whereSql.append("order by hcollege desc");
+			else
+				whereSql.append("order by htime desc");
+		}
+		System.out.println(selectSql.toString()+fromSql.toString()+whereSql.toString());
+		return (ArrayList<History>) History.me.find(selectSql.toString()+fromSql.toString()+whereSql.toString());
 	}
 }

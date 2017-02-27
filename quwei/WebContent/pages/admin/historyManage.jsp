@@ -122,7 +122,7 @@
 			</ul>
 			<div class="container tb-responsive">
 				<table class="table table-condensed">
-					<thead  style="white-space:nowrap; position: relative;z-index: 1;background:#AFEEEE;">
+					<thead  style="white-space:nowrap; position: relative;z-index: 1;background:#ddd;">
 						<tr>
 							<th style="width: 50px;"> 全 选
 								<input type="checkbox" id="recordCB" value="${h.hid }">
@@ -144,7 +144,7 @@
 								<td>${h.hscore }</td><!--分数-->
 								<td style="padding-left: 25px;">${fn:substring(h.htime, 0, 19) }</td><!--答题时间-->
 							</tr>
-							<tr class="success" style="max-height: 1px;"><!--间隔--><td colspan="6" style="max-height: 1px;"></td></tr>
+							<tr style="max-height: 1px;background:#ddd;"><!--间隔--><td colspan="6" style="max-height: 1px;"></td></tr>
 						</c:forEach>
 					</tbody>
 				</table>
@@ -156,19 +156,37 @@
 	
     <!-- 部件 -->
     
-    
- 
-    <!--公用提示模态框-->
-    <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
+	<!--导出模态框-->
+    <div class="modal hide fade" id="downloadModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
         <div class="modal-dialog" role="document" >
             <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-center text-info" id="downloadContent">选 择 导 出 条 件</h4>
+                </div>
                 <div class="modal-body text-center">
-                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 id="tipContent"></h4>
+					<div style="margin-bottom:15px;">
+						<label class="radio inline " >
+							<input type="radio" name="dlCB" value="default" checked> 默认
+						</label>
+						<label class="radio inline " >
+							<input type="radio" name="dlCB" value="score"> 按分数从高到低
+						</label>
+						<label class="radio inline">
+							<input  type="radio" name="dlCB" value="college"> 按学院分组
+						</label>
+					</div>
+					
+					<small style="margin-top:20px;" class="text-error">提示：默认为按答题时间先后顺序排列导出</small>
+				</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="downloadOk" onclick="downloadHistory()">确定</button>&nbsp;&nbsp;
+                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
                 </div>
             </div>
         </div>
     </div>
+    
 
     <!--公用选择模态框-->
     <div class="modal hide fade" id="chooseModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
@@ -186,33 +204,15 @@
             </div>
         </div>
     </div>
-
-	<!--导出模态框-->
-    <div class="modal hide fade" id="downloadModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
+    
+    
+    <!--公用提示模态框-->
+    <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
         <div class="modal-dialog" role="document" >
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title text-center text-info" id="downloadContent">选 择 导 出 条 件</h4>
-                </div>
                 <div class="modal-body text-center">
-					<div style="margin-bottom:15px;">
-						<label class="radio inline " >
-							<input type="radio" name="recordCB" value="default" checked> 默认
-						</label>
-						<label class="radio inline " >
-							<input type="radio" name="recordCB" value="record"> 按分数从高到低
-						</label>
-						<label class="radio inline">
-							<input  type="radio" name="recordCB" value="college"> 按学院分组
-						</label>
-					</div>
-					
-					<small style="margin-top:20px;" class="text-error">提示：默认为按答题时间先后顺序排列导出</small>
-				</div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="downloadOk">确定</button>&nbsp;&nbsp;
-                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 id="tipContent"></h4>
                 </div>
             </div>
         </div>
@@ -231,7 +231,7 @@
         });
 
 		$("#downloadModal").on('hidden', function () {
-			$(":radio[name='recordCB'][value='default']").prop("checked", "checked");
+			$(":radio[name='dlCB'][value='default']").prop("checked", "checked");
         	$("#tipModal").modal('hide');
         })
     </script>

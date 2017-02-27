@@ -37,4 +37,11 @@ public final class AppConstant {
 	public static final String SID = "*学号";
 	public static final String SNAME = "*姓名";
 	public static final String SCOLLEGE = "学院";
+	
+	//记录导出表头
+	public static final String HSTU_NUM = "学号";
+	public static final String HNAME = "姓名";
+	public static final String HCOLLEGE = "学院";
+	public static final String HSCORE = "分数";
+	public static final String HTIME = "答题时间";
 }

@@ -37,6 +37,7 @@ function queryRecord(){
 	
 }
 
+//******************删除所选记录**************************
 function deleteHistory(){
 	var delId = "";
 	
@@ -68,4 +69,9 @@ function deleteHistory(){
 			}
 		});
 	});
+}
+
+function downloadHistory(){
+	var dlCondi = $("input[name='dlCB']:CHECKED").val();
+	location.href = "downloadHistories?dlCondi=" + dlCondi;
 }

@@ -2,9 +2,15 @@ package com.limicala.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.jfinal.aop.Before;
 import com.jfinal.kit.PathKit;
 import com.jfinal.kit.StrKit;
@@ -22,6 +28,8 @@ import com.limicala.model.Question;
 
 import com.limicala.model.ResponseModel;
 import com.limicala.model.Student;
+import com.limicala.util.ExcelUtil;
+import com.limicala.util.QrcodeUtil;
 import com.limicala.util.SessionUtil;
 
 public class AdminController extends BaseController{
@@ -31,6 +39,51 @@ public class AdminController extends BaseController{
 	 */
 	public void index(){
 		render("login.jsp");
+	}
+	
+	public void getQrcode(){
+		String url = getRequest().getScheme()
+				+"://"+getRequest().getServerName()
+				+":"+getRequest().getServerPort()
+				+getRequest().getContextPath();
+		try {
+			MatrixToImageWriter.writeToStream(QrcodeUtil.getQrcode(url), "png", getResponse().getOutputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void downloadQrcode(){
+		String url = getRequest().getScheme()
+				+"://"+getRequest().getServerName()
+				+":"+getRequest().getServerPort()
+				+getRequest().getContextPath();
+		String qrname = "二维码";
+		try {//设置格式
+			getResponse().addHeader("Content-Disposition", "attachment;filename=" + new String( qrname.getBytes("utf-8"), "ISO8859-1" )+".png");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
+			MatrixToImageWriter.writeToStream(QrcodeUtil.getQrcode(url), "png", getResponse().getOutputStream());
+		} catch (IOException e) {
+			System.out.println("二维码下载失败");
+			e.printStackTrace();
+		}finally{
+			try {
+				getResponse().getOutputStream().flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				getResponse().getOutputStream().close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void mainView(){
@@ -378,7 +431,6 @@ public class AdminController extends BaseController{
 		
 		//返回3个状态：“0”删除失败，一个都没删除成功；“1”删除成功；“2”只删除部分
 		int re = History.me.deleteHistories(hid);
-		System.out.println("?????????????????????a a a a ---->"+re);
 		if( 1 == re ){
 			rm.setSuccess(true);
 			rm.msgFailed("删除成功");
@@ -392,23 +444,48 @@ public class AdminController extends BaseController{
 			rm.setSuccess(false);
 			rm.msgFailed("删除失败");
 		}
-		System.out.println("?????????????????????---->"+re);
 		renderJson(rm);
 	}
 	
+	
 	public void downloadHistories(){
-		String path = "/resources/templates/学生信息上传模板.xlsx";
-		File file = new File(PathKit.getWebRootPath()+path);
-		if(file.exists()) {
-			System.out.println("文件存在");
-			renderFile(file);
-		}else{
-			renderText("文件不存在");
+		String condi = getPara("dlCondi");
+		XSSFWorkbook workbook = null;
+		String excelName = "答题记录_"+(new SimpleDateFormat("yyyy.MM.dd")).format(new Date());
+		ArrayList<History> hlist = History.me.findByCondi(condi);
+
+		if (hlist.size() != 0){
+			workbook = ExcelUtil.getHistoryExcel(hlist);
+			//转码防止乱码
+	        try {
+				getResponse().addHeader("Content-Disposition", "attachment;filename=" + new String( excelName.getBytes("utf-8"), "ISO8859-1" )+".xlsx");
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}  
+			try {
+				workbook.write(getResponse().getOutputStream());
+			} catch (IOException e) {
+				System.out.println("记录统计导出失败");
+				e.printStackTrace();
+			}finally{
+				try {
+					getResponse().getOutputStream().flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					getResponse().getOutputStream().close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
+		
 	}
-	
-	
-	
+
 	//******************************************************************************************
 	//******************************************************************************************
 	//****************************************** 系 统 配 置 **************************************
