@@ -8,6 +8,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import com.jfinal.aop.Before;
 import com.jfinal.kit.PathKit;
 import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
@@ -37,6 +38,13 @@ public class AdminController extends BaseController{
 		render("index.jsp");
 	}
 	
+	/**
+	 * 注销
+	 */
+	public void loginout(){
+		this.getSession().invalidate();
+		redirect("/admin");
+	}
 	
 	/**
 	 * ajax判断登录是否合法
@@ -458,7 +466,7 @@ public class AdminController extends BaseController{
 		Integer pageNumber = this.getParaToInt("pageNumber", 1);
 		Integer search_type = getParaToInt("search_type", 1);
 		Integer pageSize = 10;
-		String condit = this.getPara("condit", "");//单项选择题目查询关键字
+		String condit = this.getPara("condit", "");
 		Page<Record> page = Student.me.findByParams(pageNumber, pageSize, search_type, condit);
 		
 		setAttr("search_type", search_type);
@@ -476,7 +484,7 @@ public class AdminController extends BaseController{
 		
 		Student student = getModel(Student.class);
 		
-		//qid为空时添加题目
+		//old_sid为空时添加学生
 		if(StrKit.isBlank(old_sid)){
 			if(student.save()){
 				rm.setSuccess(true);
@@ -488,7 +496,7 @@ public class AdminController extends BaseController{
 				rm.msgFailed("添加失败");
 			}
 		}else{
-			if (Student.me.deleteById(old_sid) && student.save()) {
+			if (Student.me.updateStudent(student, old_sid)) {
 				rm.setSuccess(true);
 				rm.setType("edit");
 				rm.msgSuccess("修改成功");
@@ -557,6 +565,30 @@ public class AdminController extends BaseController{
 		
 		renderJson(rm);
 	}
+	
+	public void deleteAllStudent(){
+		ResponseModel rm = new ResponseModel();
+		String password = getPara("password");
+		String aid = SessionUtil.getAdminUserId(getSession());
+		Admin admin = Admin.me.findById(aid);
+		if(admin != null){
+			if(admin.getStr("apassword").equals(password)){
+				Integer flag = Db.update("TRUNCATE TABLE "+AppTableConstant.STUDENT);
+				System.out.println("-------------"+flag);
+				if(flag >= 0){
+					rm.msgSuccess("删除成功");
+				}else{
+					rm.msgFailed("删除失败");
+				}
+			}else{
+				rm.msgFailed("输入密码错误");
+			}
+		}else{
+			rm.msgFailed("用户不存在");
+		}
+		renderJson(rm);
+	}
+	
 	/**
 	 * 下载学生上传模板
 	 */

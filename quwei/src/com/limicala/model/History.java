@@ -70,4 +70,9 @@ public class History extends BaseModel<History>{
 		}else
 			return 2;
 	}
+	
+	public History findModelByStuNum(String stuNum){
+		History history = findFirst("select * from history where hstuNum = ?",stuNum);
+		return history;
+	}
 }

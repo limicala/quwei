@@ -25,7 +25,7 @@
         <div>
             <h5 class="text-success">测试人：${student.sname }</h5>
             <h5 class="text-info">说明：${startword }</h5>
-            <h5 id="test_time" class="text-error">剩余答题时间：30:00</h5>
+            <h5 id="test_time" class="text-error">剩余答题时间：</h5>
         </div>
         <!--内容-->
         <form id="form" action="result" method="post">

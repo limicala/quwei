@@ -55,6 +55,7 @@
 
   </head>
   <body>
+  	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
     <div class="alert alert-waring fade in text-center hidden" role="alert" id="wrongTip">
       <button type="button" class="close" id="cloBtn">&times;</button>
       <span class="icon-warning-sign"></span>
@@ -84,10 +85,6 @@
 			$("#subBtn").removeClass("disabled");
 			$("#wrongTip").addClass("hidden");
 			})
-			
-		function getPath(){
-			return "<%=request.getContextPath()%>";
-		}
 	</script>
   </body>
 </html>

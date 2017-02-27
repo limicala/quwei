@@ -73,18 +73,18 @@
 		        data: "sid=" + sid,  
 		       /*  dataType: 'html',  
 		        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
-		        success: function(result) {  
+		        success: function(response) {  
 		        	
 		            //location.reload();  
 		           /*  $("#editModal").modal('hide');
 		            $("#message").text("修改成功");
 		            $("#tipModal").modal(); */
 		            //console.log(result);
-		        	
-		            if(result){
-		            	showWrongTip("您输入的学号有误，或者您未参与本次活动");
-		            }else{
+		        	//console.log(response);
+		            if(response.success){
 		            	window.location.href = $("#url").val()+"/contest";
+		            }else{
+		            	showWrongTip(response.msg);
 		            }
 		        }
 		    }); 

@@ -19,6 +19,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.limicala.config.BaseModel;
+import com.limicala.constant.AppTableConstant;
 import com.limicala.util.ExcelUtil;
 
 /**
@@ -30,12 +31,14 @@ public class Student extends BaseModel<Student>{
 	
 	public static Student me = new Student();
 	
+	public String getTableName(){
+		return " " + AppTableConstant.STUDENT + " ";
+	}
 	
 	private final static class SearchType{
 		public static final Integer ID = 1;
 		public static final Integer NAME = 2;
-		public static final Integer PROFESSION = 3;
-		public static final Integer COLLEGE = 4;
+		public static final Integer COLLEGE = 3;
 	}
 	
 	//问题库列表(初始化和查询结合)
@@ -52,8 +55,6 @@ public class Student extends BaseModel<Student>{
 				whereSql.append(" and sid like ").append("'%").append(condit).append("%'");
 			}else if(search_type == SearchType.NAME){
 				whereSql.append(" and sname like ").append("'%").append(condit).append("%'");
-			}else if(search_type == SearchType.PROFESSION){
-				whereSql.append(" and sprofession like ").append("'%").append(condit).append("%'");
 			}else if(search_type == SearchType.COLLEGE){
 				whereSql.append(" and scollege like ").append("'%").append(condit).append("%'");
 			}
@@ -89,6 +90,22 @@ public class Student extends BaseModel<Student>{
 		}else
 			return 2;
 	}
+	
+	public boolean updateStudent(Student student,String old_sid){
+		String sid = student.getStr("sid");
+		String sname = student.getStr("sname");
+		String scollege = student.getStr("scollege");
+		boolean flag = Db.update("update "+getTableName()+"set sid=?,sname=?,scollege=? where sid=?", sid,sname,scollege,old_sid) > 0;
+		History history = History.me.findModelByStuNum(old_sid);
+		if(history != null){
+			flag = flag && (history.set("hstuNum", sid)
+			.set("hname", sname)
+			.set("hcollege", scollege)
+			.update());
+		}
+		return flag;
+	}
+	
 	
 	/**
 	 * 接受请求，读取Excel表格然后存储

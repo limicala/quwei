@@ -25,10 +25,10 @@ public final class SessionUtil {
 	 * 获取登陆用户ID
 	 * @return
 	 */
-	public static Integer getAdminUserId(HttpSession httpSession){
+	public static String getAdminUserId(HttpSession httpSession){
 		Object obj = httpSession.getAttribute(AppConstant.adminUserId);
 		if(null != obj){
-			return (Integer) obj;
+			return (String) obj;
 		}
 		return null;
 	}
@@ -81,9 +81,9 @@ public final class SessionUtil {
 	 * @return
 	 */
 	public static String getFrontedLoginedUserId(HttpSession httpSession){
-		if(httpSession != null ){
-			String userId = httpSession.getAttribute(AppConstant.frontedUserId).toString();
-			return userId;
+		Object obj = httpSession.getAttribute(AppConstant.frontedUserId);
+		if(null != obj){
+			return obj.toString();
 		}
 		return null;
 	}
