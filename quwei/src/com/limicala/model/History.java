@@ -74,6 +74,7 @@ public class History extends BaseModel<History>{
 	}
 
 
+
 	public ArrayList<History> findByCondi(String condi) {
 		// TODO Auto-generated method stub
 		StringBuilder selectSql = new StringBuilder();
@@ -94,5 +95,10 @@ public class History extends BaseModel<History>{
 		}
 		System.out.println(selectSql.toString()+fromSql.toString()+whereSql.toString());
 		return (ArrayList<History>) History.me.find(selectSql.toString()+fromSql.toString()+whereSql.toString());
+	}
+	
+	public History findModelByStuNum(String stuNum){
+		History history = findFirst("select * from history where hstuNum = ?",stuNum);
+		return history;
 	}
 }

@@ -1,9 +1,9 @@
 package com.limicala.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import com.jfinal.kit.StrKit;
 import com.limicala.config.BaseController;
@@ -11,10 +11,10 @@ import com.limicala.constant.AppTableConstant;
 import com.limicala.model.ConfigOS;
 import com.limicala.model.History;
 import com.limicala.model.Question;
+import com.limicala.model.ResponseModel;
 import com.limicala.model.Student;
 import com.limicala.util.SessionUtil;
 import com.limicala.util.ShuffleUtil;
-import com.sun.javafx.collections.MappingChange.Map;
 
 public class UserController extends BaseController{
 	/**
@@ -24,17 +24,59 @@ public class UserController extends BaseController{
 		render("/index.jsp");
 	}
 	/**
+	 * 注销
+	 */
+	public void loginout(){
+		this.getSession().invalidate();
+		redirect("/");
+	}
+	
+	
+	
+	/**
 	 * 检查账号是否存在
 	 */
 	public void checkExsitStudent(){
 		String sid = getPara("sid");//账号
 		Student student = Student.me.findById(sid);
+		ResponseModel rm = new ResponseModel();
+		ConfigOS configOS = ConfigOS.me.findById(1);
+		Integer dayinterval = configOS.getInt("cdayinterval");
 		if(student != null){
-			SessionUtil.setFrontedLoginUserId(getSession(), sid);
-			renderJson(false);
+			History history = History.me.findModelByStuNum(student.getStr("sid"));
+			boolean flag = true;
+			if(history != null){//
+				Integer hrate = history.getInt("hrate");
+				if(hrate == null) hrate = 0;
+				if(hrate >= dayinterval){
+					rm.msgFailed("一天只能回答"+dayinterval+"次");
+				}else{
+					flag = history.set("hrate", hrate + 1).update();
+					if(flag == true){
+						SessionUtil.setFrontedLoginUserId(getSession(), sid);
+						rm.setSuccess(true);
+					}else{
+						rm.msgFailed("服务器出错");
+					}
+				}
+			}else{
+				history = new History();
+				flag = history.set("hstuNum", student.getStr("sid"))
+				.set("hname", student.getStr("sname"))
+				.set("hcollege", student.getStr("scollege"))
+				.set("hrate", 1)
+				.save();
+				if(flag == true){
+					SessionUtil.setFrontedLoginUserId(getSession(), sid);
+					rm.setSuccess(true);
+				}else{
+					rm.msgFailed("服务器出错");
+				}
+			}
 		}else{
-			renderJson(true);
+			rm.msgFailed("您输入的学号有误，或者您未参与本次活动");
 		}
+		renderJson(rm);
 	}
 	
 	//答题
@@ -50,8 +92,9 @@ public class UserController extends BaseController{
 		Integer multi_total_num = configOS.getInt("cmulti_num");
 		if(configOS != null){
 			setAttr("answer_time", configOS.getInt("canswertime"));
-			setAttr("startword", configOS.getStr("startword"));
+			setAttr("startword", configOS.getStr("cstartword"));
 		}
+		
 		setAttr("student", student);
 		setAttr("judge_total_num", judge_total_num);
 		setAttr("single_total_num", single_total_num);
@@ -80,13 +123,17 @@ public class UserController extends BaseController{
 		List<Question> multiList = createQuestionList(AppTableConstant.QUESTION_MUTIL, multi_total_num);
 		
 		//求分数
-		int total_score = getTotalScore(judgeList, singleList, multiList);
-		History history = new History();
-		history.set("hstuNum", student.getStr("sid"))
-		.set("hname", student.getStr("sname"))
-		.set("hcollege", student.getStr("scollege"))
-		.set("hscore", total_score)
-		.save();
+		Integer total_score = getTotalScore(judgeList, singleList, multiList);
+		
+		History history = History.me.findModelByStuNum(sid);
+		if(history != null){
+			//取到分数
+			Integer maxScore = history.getInt("hscore");
+			if(maxScore == null || maxScore < total_score){
+				history.set("hscore", total_score).update();
+			}
+		}
+		
 		
 		if(configOS != null){
 			setAttr("endword", configOS.getStr("cendword"));
@@ -219,4 +266,22 @@ public class UserController extends BaseController{
 		}
 		return score;
 	}
+	
+	private static boolean isSameDate(Date date1, Date date2) {
+	       Calendar cal1 = Calendar.getInstance();
+	       cal1.setTime(date1);
+
+	       Calendar cal2 = Calendar.getInstance();
+	       cal2.setTime(date2);
+
+	       boolean isSameYear = cal1.get(Calendar.YEAR) == cal2
+	               .get(Calendar.YEAR);
+	       boolean isSameMonth = isSameYear
+	               && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
+	       boolean isSameDate = isSameMonth
+	               && cal1.get(Calendar.DAY_OF_MONTH) == cal2
+	                       .get(Calendar.DAY_OF_MONTH);
+
+	       return isSameDate;
+	  }
 }

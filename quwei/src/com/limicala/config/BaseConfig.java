@@ -1,12 +1,17 @@
 package com.limicala.config;
 
 
+import javax.servlet.http.HttpSession;
+
+import com.jfinal.aop.Interceptor;
+import com.jfinal.aop.Invocation;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
+import com.jfinal.core.Controller;
 import com.jfinal.core.JFinal;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
@@ -20,6 +25,7 @@ import com.limicala.model.ConfigOS;
 import com.limicala.model.History;
 import com.limicala.model.Question;
 import com.limicala.model.Student;
+import com.limicala.util.SessionUtil;
 
 /**
  * JFinal框架总配置类（继承JFinalConfig类）
@@ -95,7 +101,63 @@ public class BaseConfig extends JFinalConfig{
 	@Override
 	public void configInterceptor(Interceptors me) {
 		// TODO Auto-generated method stub
-		
+		me.add(new Interceptor() {
+			@Override
+			public void intercept(Invocation inv) {
+				String rpath = inv.getController().getRequest().getServletPath()
+						.toLowerCase();
+				boolean f = true;
+				Controller controller = inv.getController();
+				HttpSession session = controller.getSession();
+				System.out.println("rpath"+rpath);
+				//在系统内部了
+				if(!(rpath.startsWith("/admin"))){//不是管理员
+					if(rpath.equals("/") || rpath.equals("/index.jsp") || rpath.equals("/checkexsitstudent")){//学生登录页面
+						f = true;
+					}else{//学生其他页面
+						f = isStudent(session);
+						if(f == false){
+							System.out.println("拦截该请求:"+rpath);
+							System.out.println("管理员未登录");
+							controller.redirect("/");
+							return;
+						}
+						
+					}
+					
+				}else {
+					if(rpath.equals("/admin/") || rpath.equals("/admin") || rpath.equals("/admin/dologin")){//不用拦截
+						f = true;
+					}else{
+						f = isAdmin(session);
+						if(f == false){
+							System.out.println("拦截该请求:"+rpath);
+							System.out.println("学生未登录");
+							controller.redirect("/admin");
+							return;
+						}
+					}
+				}
+				if(f){
+					inv.invoke();//转为请求的控制器
+				}
+			}
+			
+			private boolean isAdmin(HttpSession session){
+				String admin = SessionUtil.getAdminUserId(session);
+				if(null!=admin){
+					return true;
+				}
+				return false;
+			}
+			private boolean isStudent(HttpSession session){
+				String user = SessionUtil.getFrontedLoginedUserId(session);
+				if(null!=user){
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 
 	@Override

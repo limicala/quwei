@@ -56,7 +56,7 @@
                             <li><a href="questionManageView"><span class="icon-list-alt"></span> 题库信息管理</a></li>
                             <li><a href="historyManageView"><span class="icon-check"></span> 答题记录管理</a></li>
                             <li class="active"><a><span class="icon-wrench"></span> 系统配置</a></li>
-                            <li><a href="#contact"><span class="icon-off"></span> 退出系统</a></li>
+                            <li><a href="#" onclick="loginout()"><span class="icon-off"></span> 退出系统</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div>
@@ -82,11 +82,11 @@
 		            </div>
             	</div>
             	<div class="span3">
-            		<p>答题间隔时间（分钟）：</p>
+            		<p>一天答题次数 ：</p>
             	
 	            	<div class="input-append" style="padding-top: 7px;">
 	            		
-		            	<input id="interval" value="${configOS.cinterval }" class="span2" type="number" placeholder="答题间隔时间（分钟）"/>
+		            	<input id="interval" value="${configOS.cdayinterval }" class="span2" type="number" placeholder="答题间隔时间（分钟）"/>
 		            	<button class="btn" onclick="update_interval()"><span class="icon-pencil"></span>  确  认</button>
 		            </div>
             	</div>
@@ -161,122 +161,28 @@
         </div>
     </div>
     
+     <!--公用选择模态框-->
+    <div class="modal hide fade" id="chooseModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-center text-info" id="chooseContent">提 示</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="chooseOk">确定</button>&nbsp;&nbsp;
+                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
     <script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="<%=request.getContextPath()%>/resources/js/admin/config.js" type="text/javascript"></script>
     <script>
     
-   		function update_answertime(){
-   			var cid = $('#cid').val();
-    		var answer_time = $('#answer_time').val();   
-    		var old_time = $('#old_time').val();
-    		if(answer_time == old_time){
-    			showWrongTip("请修改时间间隔再提交");
-    			return;
-    		}
-    		$.ajax({  
-    	        type: "post",  
-    	        url: $("#url").val()+"/admin/update_config",  
-    	        data: "configOS.canswertime=" + answer_time + "&configOS.cid="+cid,  
-    	       /*  dataType: 'html',  
-    	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
-    	        success: function(result) {  
-    	            //location.reload();  
-    	          /*   $("#editModal").modal('hide'); */
-    	          	if(result){
-    	          		showRightTip("修改成功");
-    	          	}
-    	          	else{
-    	          		showWrongTip("修改失败");
-    	          	}
-    	        }  
-    	    }); 
-   		}
-    
-    	function update_interval(){
-    		var cid = $('#cid').val();
-    		var interval = $('#interval').val();   
-    		var old_interval = $('#old_interval').val();
-    		if(interval == old_interval){
-    			showWrongTip("请修改时间间隔再提交");
-    			return;
-    		}
-    		$.ajax({  
-    	        type: "post",  
-    	        url: $("#url").val()+"/admin/update_config",  
-    	        data: "configOS.cinterval=" + interval + "&configOS.cid="+cid,  
-    	       /*  dataType: 'html',  
-    	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
-    	        success: function(result) {  
-    	            //location.reload();  
-    	          /*   $("#editModal").modal('hide'); */
-    	          	if(result){
-    	          		showRightTip("修改成功");
-    	          	}
-    	          	else{
-    	          		showWrongTip("修改失败");
-    	          	}
-    	        }  
-    	    }); 
-    	}
-    	
-    	function update_score(){
-    		var cid = $('#cid').val();
-    		var judge_num = $('#judge_num').val();   
-    		var judge_score = $('#judge_score').val();   
-    		var single_num = $('#single_num').val();   
-    		var single_score = $('#single_score').val();   
-    		var multi_num = $('#multi_num').val();   
-    		var multi_score = $('#multi_score').val();   
-    		var startword = $('#startword').val();
-    		var endword = $('#endword').val();
-    		//alert(startword);
-    		
-    		total_score = judge_num * judge_score + single_num * single_score + multi_num * multi_score;
-    		//alert(total_score);
-    		if(total_score != 100){
-    			showWrongTip("总分应为100分，你当前设置的总分为"+total_score);	
-    			return;
-    		}
-    		$.ajax({
-    			url:$("#url").val()+"/admin/update_config",  
-    			dataType:"json",
-    			data:{
-    				"configOS.cid":cid,
-    				"configOS.cjudge_num":judge_num,
-    				"configOS.cjudge_score":judge_score,
-    				"configOS.csingle_num":single_num,
-    				"configOS.csingle_score":single_score,
-    				"configOS.cmulti_num":multi_num,
-    				"configOS.cmulti_score":multi_score,
-    				"configOS.cstartword":startword,
-    				"configOS.cendword":endword,
-    			},
-    			success:function(result){
-    			
-    				if(result){
-    	          		showRightTip("修改成功");
-    	          	}
-    	          	else{
-    	          		showWrongTip("修改失败");
-    	          	}
-    			}//success
-    		});//ajax
-    	}
-    	function showWrongTip(msg){
-    		$("#tipContent").text(msg);
-    		$("#tipContent").addClass("text-error");
-    		$("#tipContent").removeClass("text-success");
-    		$("#tipModal").modal('show');
-    	}
-    	
-    	//**************************显示正确正确信息**************************
-    	function showRightTip(msg){
-    		$("#tipContent").text(msg);
-    		$("#tipContent").removeClass("text-error");
-    		$("#tipContent").addClass("text-success");
-    		$("#tipModal").modal('show');
-    	}
+   		
     	 /*hidden.bs.modal	此事件在模态框被隐藏（并且同时在 CSS 过渡效果完成）之后被触发。*/
         /* $('#tipModal').on('hidden.bs.modal', function () {
         	location.reload();

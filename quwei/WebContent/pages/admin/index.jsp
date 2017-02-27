@@ -29,6 +29,7 @@
     </style>
 </head>
 <body>
+	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
 	<div class="container">
         <div class="jumbotron text-center" style="padding-top: 5px;">
             <img class="top" src="<%=request.getContextPath()%>/resources/images/main.jpg" class="img-rounded">
@@ -50,15 +51,29 @@
                             <li><a href="userManageView"><span class="icon-user"></span> 管理员管理</a></li>
                             <li><a href="stuManageView"><span class="icon-user"></span> 学生管理</a></li>
                             <li><a href="questionManageView"><span class="icon-list-alt"></span> 题库信息管理</a></li>
-                            <li><a href="#contact"><span class="icon-check"></span> 答题记录管理</a></li>
+                            <li><a href="historyManageView"><span class="icon-check"></span> 答题记录管理</a></li>
                             <li><a href="configView"><span class="icon-wrench"></span> 系统配置</a></li>
-                            <li><a href="#contact"><span class="icon-off"></span> 退出系统</a></li>
+                            <li><a href="#" onclick="loginout()"><span class="icon-off"></span> 退出系统</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div>
             </div>
         </div>
-
+		<!--公用选择模态框-->
+	    <div class="modal hide fade" id="chooseModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
+	        <div class="modal-dialog" role="document" >
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	                    <h4 class="modal-title text-center text-info" id="chooseContent">提 示</h4>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-primary" id="chooseOk">确定</button>&nbsp;&nbsp;
+	                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
         
         <div class="container text-center" style="padding-top: 30px;">
             <h3 class="text-warning">欢迎使用</h3>
@@ -90,5 +105,7 @@
     
 	<script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
 	<script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/admin/index.js" type="text/javascript"></script>
+	
 </body>
 </html>

@@ -66,7 +66,7 @@
                             <li><a href="questionManageView"><span class="icon-list-alt"></span> 题库信息管理</a></li>
                             <li><a href="historyManageView"><span class="icon-check"></span> 答题记录管理</a></li>
                             <li><a href="configView"><span class="icon-wrench"></span> 系统配置</a></li>
-                            <li><a href="#contact"><span class="icon-off"></span> 退出系统</a></li>
+                            <li><a href="#" onclick="loginout()"><span class="icon-off"></span> 退出系统</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div>
@@ -76,14 +76,16 @@
         <!-- 用户信息 -->
         <div class="container text-center">
             <ul class="inline"><!--操作-->
-               <li>
-                    <div class="input-append" style="padding-top: 10px;">
-                    	<select id="search_type" style="width:auto">
-                    	</select>
-                        <input class="span2" type="text" id="condit" value="${condit }" placeholder="关键字">
-                        <button class="btn" type="button" id="s" onclick="query(this);"><span class="icon-search"></span> 查 找 </button>
-                    </div>
-                </li>
+                <li>
+					<div class="input-prepend input-append" style="padding-top: 7px;">
+						<div class="btn-group">
+							<select id="search_type" style="width:auto">
+                    		</select>
+						</div>
+						<input class="span2" type="text" id="condit" value="${condit }" placeholder="关键字">
+					</div>
+				</li>
+				<li><button class="btn" type="button" id="s" onclick="query(this);"><span class="icon-search"></span> 查 找 </button></li>
                 <li><button type="button" class="btn" onclick="location.href='stuManageView'"><span class="icon-refresh"></span> 刷 新 </button></li>
                 <li><button type="button" class="btn" data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
                 
@@ -91,25 +93,25 @@
 			<ul class="inline"><!--操作-->
 				<li><button type="button" class="btn" id="singleDels" onclick="deleteStudents(this)"><span class="icon-trash"></span> 删除所选 </button></li>
                 
-                <li><button type="button" class="btn"  onclick="emptyStudent(this)"><span class="icon-trash"></span> 清空数据 </button></li>
+                <li><button  type="button" class="btn"  onclick="emptyStudent(this)"><span class="icon-trash"></span> 清空数据 </button></li>
 			</ul>
-            <div class="container">
-                <table id="table" class="table table-striped text-center" style="max-width: 700px;margin-left: auto;margin-right: auto;">
-                    <caption class="text-left">
+            <div class="container tb-responsive">
+                <table id="table" class="table table-condensed" style="max-width:700px;margin-left:auto;margin-right:auto;">
+                 <%--    <caption class="text-left">
                     	<h4>
                     		<strong>学生信息</strong>
-                    		<button style="float:right" class="btn" data-toggle="modal" data-target="#editModal"><span class="icon-plus"></span> 添 加 </button>
+                    		<button style="margin-bottom: 5px;" class="btn" data-toggle="modal" data-target="#editModal"><span class="icon-plus"></span> 添 加 </button>
                     	</h4>
-                    </caption>
-                    <thead>
+                    </caption> --%>
+                    <thead style="white-space:nowrap; position: relative;z-index: 1;/*绝对定位 */background:#cccccc;">
 	                    <tr>
 	                    	<th style="width: 50px;"> 
-                                <input type="checkbox" id="select_all"/>全 选
+                                	全 选<input type="checkbox" id="select_all"/>
                             </th>
-	                        <th style="width:30%">学号</th>
-	                        <th style="width:20%">姓名</th>
-	                        <th style="width:20%">学院</th>
-	                        <th>&nbsp;&nbsp;&nbsp;编辑</th>
+	                        <th style="padding-left: 33px;min-width: 110px;">学号</th>
+	                        <th style="min-width: 75px;">姓名</th>
+	                        <th style="min-width: 100px;width: 200px;">学院</th>
+	                        <th style="padding-left: 25px;">&nbsp;&nbsp;&nbsp;编辑</th>
 	                    </tr>
                     </thead>
                    
@@ -120,12 +122,12 @@
                     	
                     		<tr>
                     			
-                    			<td><input type="checkbox" name="stu_list" value="${s.sid }"/></td><!--选择-->
-		                        <td class="content">${s.sid }</td>
-		                        <td class="content">${s.sname }</td>
+                    			<td style="padding-left: 25px;"><input  type="checkbox" name="stu_list" value="${s.sid }"/></td><!--选择-->
+		                        <td style="padding-left: 33px;min-width: 110px;">${s.sid }</td>
+		                        <td >${s.sname }</td>
 		                       <%--  <td>${s.sprofession }</td> --%>
-		                        <td class="content">${s.scollege }</td>
-		                        <td>
+		                        <td >${s.scollege }</td>
+		                        <td >
 		                            <button class="btn btn-link" id="<%=table_id %>" data-toggle="modal" data-target="#editModal" onclick="editStudent(this)">编辑</button>
 		                            <button class="btn btn-link" id="<%=table_id %>" data-toggle="modal" data-target="#judgeModal" onclick="deleteStudent(this)">删除</button>
 		                        </td>
@@ -233,13 +235,13 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title text-center text-info" id="chooseContent">提 示</h4>
                 </div>
-                <!-- <div id="confirm_password" class="modal-body text-center">
+                <div style="display:none;" id="confirm_password" class="modal-body text-center">
                 	
                     <ul class="inline">
-                        <li><h5>姓名</h5></li>
-                        <li><input type="text" id="sname"/></li>
+                        <li><h5>请输入密码</h5></li>
+                        <li><input type="text" id="admin_password"/></li>
                     </ul>
-                </div> -->
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="chooseOk">确定</button>&nbsp;&nbsp;
                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
@@ -260,8 +262,8 @@
     
     	
 	    function initSearch(id,st){
-	    	var search = new Array('1','学号','姓名','专业','学院');
-	   		for(var i = 1; i <= 4; i++){
+	    	var search = new Array('','学号','姓名','学院');
+	   		for(var i = 1; i <= 3; i++){
    				if(i != st){//可选
    					$(id).append("<option value='"+i+"'>"+search[i]+"</option>");
    				}else{//设置默认
@@ -270,6 +272,11 @@
 	   			
 	   		}
 	   	}
+	    
+	    $("#chooseModal").on('hidden', function () {
+            /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据           单项*/
+	    	 $("#confirm_password").hide();
+        })
 	    
 	    $("#editModal").on('hidden', function () {
             /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据           单项*/

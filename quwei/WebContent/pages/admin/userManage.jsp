@@ -35,6 +35,7 @@
     </style>
 </head>
 <body>
+	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
     <div class="container">
         <!-- 图片 -->
         <div class="jumbotron text-center" style="padding-top: 5px;">
@@ -59,7 +60,7 @@
                             <li><a href="questionManageView"><span class="icon-list-alt"></span> 题库信息管理</a></li>
                             <li><a href="historyManageView"><span class="icon-check"></span> 答题记录管理</a></li>
                             <li><a href="configView"><span class="icon-wrench"></span> 系统配置</a></li>
-                            <li><a href="#contact"><span class="icon-off"></span> 退出系统</a></li>
+                            <li><a href="#" onclick="loginout()"><span class="icon-off"></span> 退出系统</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div>
@@ -193,116 +194,29 @@
         </div>
     </div>
     
+    <!--公用选择模态框-->
+    <div class="modal hide fade" id="chooseModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-center text-info" id="chooseContent">提 示</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="chooseOk">确定</button>&nbsp;&nbsp;
+                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
     <script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="<%=request.getContextPath()%>/resources/js/admin/userManage.js" type="text/javascript"></script>
     <script>
     
     
-    	function edit(obj){
-    		
-    		var id = $(obj).attr("id"); 
-    		//alert(id+table_id);
-    	    //获取表格中的一行数据  
-    	    var account = document.getElementById("table").rows[id].cells[0].innerText;  
-    	    var password = document.getElementById("table").rows[id].cells[1].innerText;
-    	    //向模态框中传值 
-    	    $('#oldN').val(account);  
-    	    $('#editN').val(account);  
-    	    $('#oldP').val(password);  
-    	    $('#editP').val(password);  
-    	}
     	
-    	function delete_admin(){
-    	    $.ajax({  
-    	        type: "post",  
-    	        url: "<%=request.getContextPath()%>/admin/delete",  
-    	        data: "id=" + $('#delete_id').val(),  
-    	       /*  dataType: 'html',  
-    	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
-    	        success: function(result) {  
-    	            //location.reload();  
-    	        	$("#judgeModal").modal('hide');
-    	        	$("#message").text("删除成功");
-    	        	$("#tipModal").modal();
-    	        }  
-    	    });  
-    	}
-    	
-    	function update(){
-    		var old_account = $('#oldN').val();  
-    	    var account = $('#editN').val().trim();  
-    	    var old_password = $('#oldP').val().trim();
-    	    var password = $('#editP').val().trim();  
-    	    if(account == '' || password == ''){
-    	    	$("#check_tip").html("<span style='color:red'>请填写信息再提交</span>");
-    	    }
-    	    else if(old_account==account&& old_password== password){
-    	    	if(old_account==''){//添加新用户
-    	    		$("#check_tip").html("<span style='color:red'>请填写信息再提交</span>");
-    	    	}else{
-    	    		$("#check_tip").html("<span style='color:red'>请修改信息再提交</span>");
-    	    	}
-    	    	
-    	    }else{
-    	    	$.ajax({  
-        	        type: "post",  
-        	        url: "<%=request.getContextPath()%>/admin/update",  
-        	        data: "old_account=" + old_account + "&account=" + account + "&password=" + password,  
-        	       /*  dataType: 'html',  
-        	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
-        	        success: function(result) {  
-        	            //location.reload();  
-        	            $("#editModal").modal('hide');
-        	            if(old_account==''){//添加新用户
-        	            	$("#message").text("添加成功");
-            	    	}else{
-            	    		$("#message").text("修改成功");
-            	    	}
-        	            
-        	            $("#tipModal").modal();
-        	        }  
-        	    });  
-    	    }
-    	    
-    	}
-    	
-    	function get_delete_id(obj){
-    		var id = $(obj).attr("id"); 
-    		//alert(id+table_id);
-    	    //获取表格中的一行数据  
-    	    var account = document.getElementById("table").rows[id].cells[0].innerText;
-    	    $('#delete_id').val(account);  
-    	}
-    	
-    	function check_exsit(){
-    		var old_account = $('#oldN').val();
-    		var account = $('#editN').val();
-    		if(old_account != account){
-    			$.ajax({  
-        	        type: "post",  
-        	        url: "<%=request.getContextPath()%>/admin/checkAid",  
-        	        data: "account=" + account,  
-        	       /*  dataType: 'html',  
-        	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
-        	        success: function(result) {  
-        	            //location.reload();  
-        	           /*  $("#editModal").modal('hide');
-        	            $("#message").text("修改成功");
-        	            $("#tipModal").modal(); */
-        	            //console.log(result);
-        	            if(result){
-        	            	$("#check_tip").html("<span style='color:red'>用户名已存在</span>");
-        	            	//aaaa = "<span hidden=true style="color:red">用户名已存在</span>";
-        	            	$("#update_button").attr("disabled","disabled");
-        	            }else{
-        	            	$("#check_tip").html("<span style='color:green'>用户名可用</span>");
-        	            	$("#update_button").removeAttr("disabled");
-        	            }
-        	        }  
-        	    }); 
-    		}
-    		
-    	}
     	
         $("#editModal").on('hidden', function () {
             /*拟态框隐藏事件，用于初始化输入框，因为拟态框隐藏不会再次初始化，会保留之前输入的数据     判断*/
@@ -318,15 +232,7 @@
         $('#tipModal').on('hidden.bs.modal', function () {
         	location.reload();
 		})
-        function search(){
-        	account = $("#account").val();
-        	if (account.trim() == ""){
-        		$("#message").text("请输入账号");
-        		$("#tipModal").modal();
-	    		return;
-	    	}
-	    	location.href = "userManageView?account="+account;
-        }
+        
     </script>
 </body>
 </html>

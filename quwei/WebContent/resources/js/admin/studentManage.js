@@ -30,6 +30,7 @@ function clean(){
     $("#scollege").val("");
     $("#check_tip").html("");
     $("#update_button").removeAttr("disabled");
+   
   /*  $("#singleD").val("");
     $("#singleTip").val("");*/
 //    $("input[name='singleOptionsRadios'][value='A']").attr("CHECKED", false);
@@ -143,7 +144,42 @@ function deleteStudent(obj){
 }
 //************************** 清空学生表  **************************
 function emptyStudent(){
+	$("#confirm_password").show();
+	$("#chooseModal").modal('show');
+	$("#chooseOk").unbind("click");
+	showChoose("确 定 删 除 所 选 学 生 信 息 吗 ？");
 	
+	
+	$("#chooseOk").bind("click", function(){
+		var password = $("#admin_password").val().trim();
+		alert(password);
+		if(password == ''){
+			showWrongTip("请输入密码");
+			return;
+		}
+		$.ajax({
+			type: "post",
+			url: $("#url").val()+"/admin/deleteAllStudent",
+			data: "password=" + password,
+			success: function(resp){
+				if(resp.success){
+					$("#chooseModal").modal('hide');
+					
+					location.href = "stuManageView?" + $("#param").val();
+				}
+				else{
+					$("#chooseModal").modal('hide');
+					$("#confirm_password").hide();
+					showWrongTip(resp.msg);
+				}
+			},
+			error: function(resp){
+				$("#chooseModal").modal('hide');
+				$("#confirm_password").hide();
+				showWrongTip("服务器出错");
+			}
+		});
+	});
 }
 
 //************************** 删 除 选 择 题 目  **************************
@@ -238,4 +274,15 @@ function doUpload(){
 	}else{
 		$("#uploadForm").submit();
 	}
+}
+/**
+ * 注销
+ * @returns
+ */
+function loginout(){
+	$("#chooseOk").unbind("click");
+	showChoose("确 定 要 注 销 管  理  员  账  号  吗 ？");
+	$("#chooseOk").bind("click", function(){
+		window.location.href=$("#url").val()+"/admin/loginout";
+	});
 }

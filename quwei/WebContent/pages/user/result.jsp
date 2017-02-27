@@ -64,12 +64,23 @@
 	                    <h6 class="text-success">正确答案：${s.qanswer eq '1' ? '√' : '×' }</h6>
 	                </div>
 	                <div class="span4 ">
-	                	<c:if test="${s.u_answer eq s.qanswer}">
-                       		<h6 class="text-success">你的答案：${s.u_answer eq '1' ? '√' : '×' }</h6>
-                       	</c:if>
-                       	<c:if test="${s.u_answer ne s.qanswer}">
-                       		<h6 class="text-error">你的答案： ${s.u_qanswer eq '1' ? '√' : '×' }</h6>
-                       	</c:if>
+	                	<c:choose>
+	                		<c:when test="${s.u_answer ne ''}">
+	                			<c:choose>
+	                				<c:when test="${s.u_answer eq s.qanswer}">
+			                       		<h6 class="text-success">你的答案：${s.u_answer eq '1' ? '√' : '×' }</h6>
+			                       	</c:when>
+			                       	<c:when test="${s.u_answer ne s.qanswer}">
+			                       		<h6 class="text-error">你的答案： ${s.u_qanswer eq '1' ? '√' : '×' }</h6>
+			                       	</c:when>
+	                			</c:choose>
+	                		</c:when>
+	                		
+	                		<c:otherwise>
+	                			<h6 class="text-error">你的答案：</h6>
+	                		</c:otherwise>
+	                	</c:choose>
+                       	
 	                    
 	                </div>
 	            </div>
@@ -203,6 +214,9 @@
 	            
 	        </div>
 	
+			<div class="container text-center" style="padding-top:20px;padding-bottom:20px;">
+                <button class="btn btn-success" onclick="location.href='loginout'">退出并返回登录页面</button>
+            </div>
 	
 	        <div class="text-center" style="padding-top: 15px; padding-bottom: 15px;">
 	            <p>
@@ -214,7 +228,6 @@
 	
 	<script src="<%=request.getContextPath()%>/frame/jquery/js/jquery.js" type="text/javascript"></script>
 	<script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-
 </body>
 </html>
     
