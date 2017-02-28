@@ -71,9 +71,7 @@
     </style>
 </head>
 <body>
-
 	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
-	
 	<input id="param" class="hidden" value="<%=request.getQueryString()%>"/>
     <!-- 主要内容 -->
     <div class="container">
@@ -176,7 +174,7 @@
 	                                	<input class="hidden" id="o${s.qid }State" value="${s.qlimit }"/>
 	                                	<select id="${s.qid }State" onchange="setState(this)" class="${s.qlimit eq '1' ? 'text-error' : '' }" style="width: 65px;">
 										  <option ${s.qlimit eq "0" ? "SELECTED" : ""} value="0">随机</option>
-										  <option ${s.qlimit eq "1" ? "SELECTED" : ""} value="1">必答</option>
+										  <option ${s.qlimit eq "1" ? "SELECTED" : ""} value="1">优先</option>
 										</select>
 	                                </td><!--答题限定-->
 	                                <td rowspan="4" style="width: 150px;"><!--题目操作->编辑->删除-->

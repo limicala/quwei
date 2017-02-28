@@ -24,8 +24,6 @@ import com.limicala.util.ExcelUtil;
 
 /**
  * 学生表的model类
- * @author red
- *
  */
 public class Student extends BaseModel<Student>{
 	
@@ -91,6 +89,12 @@ public class Student extends BaseModel<Student>{
 			return 2;
 	}
 	
+	/**
+	 * 更新学生信息
+	 * @param student
+	 * @param old_sid
+	 * @return
+	 */
 	public boolean updateStudent(Student student,String old_sid){
 		String sid = student.getStr("sid");
 		String sname = student.getStr("sname");
@@ -138,38 +142,11 @@ public class Student extends BaseModel<Student>{
 		
 		String qtype = "";//题型
 		String fileName = "";//上传文件名字
-		FileItem tempItem;
 		
-//		//先遍历获取到题型
-//		for(FileItem item : list){
-//			//System.out.println("接受参数");
-//			//如果fileitem中封装的是普通输入项的数据
-//			if(item.isFormField()){
-//				String name = item.getFieldName();
-//				//解决普通输入项的数据的中文乱码问题
-//				//String value = item.getString("UTF-8");
-//				if (name.trim().equals("uploadType")){
-//					qtype = item.getString("UTF-8");
-//				}
-//			}
-//		}
-//		
-//		if (qtype.trim().equals("")){
-//			return 0;
-//		}else if (qtype.trim().equals("judge")){
-//			qtype = "1";
-//		}else if (qtype.trim().equals("single")){
-//			qtype = "2";
-//		}else if (qtype.trim().equals("multi")){
-//			qtype = "3";
-//		}
-		
-
 		for(FileItem item : list){
 			//System.out.println("接受参数");
 			//如果fileitem中封装的是普通输入项的数据
 			if(!item.isFormField()){
-				
 				//如果fileitem中封装的是上传文件
 				//得到上传的文件名称，
 				fileName = item.getName();
@@ -194,7 +171,6 @@ public class Student extends BaseModel<Student>{
 					
 					int insertNum = 0;
 					
-					
 					for (Student s : studentList){
 						if ((!s.getStr("sid").trim().equals("")) && (!s.getStr("sname").trim().equals(""))){
 							if (s.save())
@@ -210,13 +186,10 @@ public class Student extends BaseModel<Student>{
 						flag = 0;
 					}
 				}
-
 				//删除处理文件上传时生成的临时文件
 				item.delete();
-				//tempItem = item;
 			}
 		}
-		
 		return flag;
 	}
 }

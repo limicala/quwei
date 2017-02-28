@@ -39,20 +39,14 @@ import com.limicala.util.SessionUtil;
  * 		4、configInterceptor(Interceptors me) 
  * 		       配置过滤器
  * 		5、configHandler(Handlers me) 
- * 		       
- * 
- * @author ZDD
- *
  */
 public class BaseConfig extends JFinalConfig{
 
 	@Override
 	public void configConstant(Constants me) {
-		// TODO Auto-generated method stub
 		/**
 		 * JFinal框架的开发配置步骤
 		 * 1、配置视图类型：jsp模式
-		 * 
 		 */
 
 		/**
@@ -61,51 +55,53 @@ public class BaseConfig extends JFinalConfig{
 		//读取数据库配置文件
 		PropKit.use("jdbc.properties");
 		
-		me.setViewType(ViewType.JSP);
-		me.setDevMode(PropKit.getBoolean("devMode", true));
-		
+		me.setViewType(ViewType.JSP);//配置框架所用视图
+		me.setDevMode(PropKit.getBoolean("devMode", true));//开发模式
 	}
 
 	@Override
 	public void configRoute(Routes me) {
-		// TODO Auto-generated method stub
+		/**
+		 * 配置请求映射关系
+		 * add(para1, para2, para3)
+		 * para1:请求servlet路径
+		 * para2:所映射的类
+		 * para3:视图响应路径
+		 */
 		me.add("/admin", AdminController.class,"/pages/admin");
 		me.add("/", UserController.class,"/pages/user");
 	}
 	
 	@Override
 	public void configPlugin(Plugins me) {
-		// TODO Auto-generated method stub
 		// 配置C3p0数据库连接池插件
-		
 		C3p0Plugin c3p0Plugin = new C3p0Plugin(PropKit.get("jdbcUrl", ""),PropKit.get("user", ""), PropKit.get("password", "").trim());
 		me.add(c3p0Plugin);
 		
 		// 配置ActiveRecord插件
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(c3p0Plugin);
 		me.add(arp);
-		//显示sql语句
+		
+		//设置显示sql语句
 		arp.setShowSql(true);
 		
-		//把表和一个对象对应起来
-		
+		//配置数据表和相应映射类（Model子类）
 		arp.addMapping(AppTableConstant.ADMIN, AppTableConstant.ADMIN_KEY, Admin.class);
-
 		arp.addMapping(AppTableConstant.CONFIG_OS, AppTableConstant.CONFIG_OS_KEY, ConfigOS.class);
 		arp.addMapping(AppTableConstant.QUESTION, AppTableConstant.QUESTION_KEY, Question.class);
 		arp.addMapping(AppTableConstant.HISTORY, AppTableConstant.HISTORY_KEY ,History.class);
-
 		arp.addMapping(AppTableConstant.STUDENT, AppTableConstant.STUDENT_KEY, Student.class);
 	}
 
+	/**
+	 * 配置拦截器
+	 */
 	@Override
 	public void configInterceptor(Interceptors me) {
-		// TODO Auto-generated method stub
 		me.add(new Interceptor() {
 			@Override
 			public void intercept(Invocation inv) {
-				String rpath = inv.getController().getRequest().getServletPath()
-						.toLowerCase();
+				String rpath = inv.getController().getRequest().getServletPath().toLowerCase();
 				boolean f = true;
 				Controller controller = inv.getController();
 				HttpSession session = controller.getSession();
@@ -122,9 +118,7 @@ public class BaseConfig extends JFinalConfig{
 							controller.redirect("/");
 							return;
 						}
-						
 					}
-					
 				}else {
 					if(rpath.equals("/admin/") || rpath.equals("/admin") || rpath.equals("/admin/dologin")){//不用拦截
 						f = true;
@@ -143,6 +137,7 @@ public class BaseConfig extends JFinalConfig{
 				}
 			}
 			
+			//判断是否是管理员
 			private boolean isAdmin(HttpSession session){
 				String admin = SessionUtil.getAdminUserId(session);
 				if(null!=admin){
@@ -150,6 +145,8 @@ public class BaseConfig extends JFinalConfig{
 				}
 				return false;
 			}
+			
+			//判断是否是学生
 			private boolean isStudent(HttpSession session){
 				String user = SessionUtil.getFrontedLoginedUserId(session);
 				if(null!=user){
@@ -161,10 +158,8 @@ public class BaseConfig extends JFinalConfig{
 	}
 
 	@Override
-	public void configHandler(Handlers me) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void configHandler(Handlers me) {	}
+	
 	public static void main(String[] args) {
 		JFinal.start("WebContent", 9080, "/", 5);
 	}

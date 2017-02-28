@@ -1,5 +1,8 @@
 package com.limicala.constant;
 
+/**
+ *数据库：数据表名、主键名、特殊类型值
+ */
 public final class AppTableConstant {
 	
 	//管理员
@@ -15,12 +18,13 @@ public final class AppTableConstant {
 	//问题
 	public static final String QUESTION = "question";
 	public static final String QUESTION_KEY = "qid";
-	public static final Integer QUESTION_JUDGE = 1;
-	public static final Integer QUESTION_SINGLE = 2;
-	public static final Integer QUESTION_MUTIL = 3;
 	
-	public static final Integer QUESTION_UNLIMIT = 0;
-	public static final Integer QUESTION_LIMIT = 1;
+	public static final Integer QUESTION_JUDGE = 1;//判断题
+	public static final Integer QUESTION_SINGLE = 2;//单选题
+	public static final Integer QUESTION_MUTIL = 3;//多选题
+	
+	public static final Integer QUESTION_UNLIMIT = 0;//随机
+	public static final Integer QUESTION_LIMIT = 1;//优先
 	
 	//学生
 	public static final String STUDENT = "student";

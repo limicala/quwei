@@ -14,6 +14,7 @@ import com.jfinal.plugin.activerecord.Model;
  * @param <M>
  */
 public abstract class  BaseModel<M extends Model<?>> extends Model<M> {
+	
 	private static final long serialVersionUID = -4447796116787868438L;
 	
 	/**

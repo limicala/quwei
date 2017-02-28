@@ -37,6 +37,13 @@
             /* max-width: 200px; */
             word-break:break-all;
         }
+        
+        .tb-responsive {
+            width: 100%;
+            max-height: 600px;
+            overflow-y:auto;
+            -ms-overflow-style: -ms-autohiding-scrollbar;
+        }
     </style>
 </head>
 <body>
@@ -96,7 +103,7 @@
                 <li><button  type="button" class="btn"  onclick="emptyStudent(this)"><span class="icon-trash"></span> 清空数据 </button></li>
 			</ul>
             <div class="container tb-responsive">
-                <table id="table" class="table table-condensed" style="max-width:700px;margin-left:auto;margin-right:auto;">
+                <table id="table" class="table table-condensed tb-responsive" style="max-width:700px;margin-left:auto;margin-right:auto;">
                  <%--    <caption class="text-left">
                     	<h4>
                     		<strong>学生信息</strong>
@@ -214,18 +221,6 @@
             </div>
         </div>
     </div>
-    
-     <!--公用提示模态框-->
-    <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
-        <div class="modal-dialog" role="document" >
-            <div class="modal-content">
-                <div class="modal-body text-center">
-                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 id="tipContent"></h4>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!--公用选择模态框-->
     <div class="modal hide fade" id="chooseModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
@@ -239,12 +234,24 @@
                 	
                     <ul class="inline">
                         <li><h5>请输入密码</h5></li>
-                        <li><input type="text" id="admin_password"/></li>
+                        <li><input type="password" id="admin_password"/></li>
                     </ul>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="chooseOk">确定</button>&nbsp;&nbsp;
                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--公用提示模态框-->
+    <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 id="tipContent"></h4>
                 </div>
             </div>
         </div>

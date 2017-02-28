@@ -29,13 +29,7 @@ function singleClean(){
     $("#singleC").val("");
     $("#singleD").val("");
     $("#singleTip").val("");
-//    $("input[name='singleOptionsRadios'][value='A']").attr("CHECKED", false);
-//    $("input[name='singleOptionsRadios'][value='B']").attr("CHECKED", false);
-//    $("input[name='singleOptionsRadios'][value='C']").attr("CHECKED", false);
-//    $("input[name='singleOptionsRadios'][value='D']").attr("CHECKED", false);
     $("input[name='singleOptionsRadios']").attr("CHECKED", null);
-    
-    flag = false;
 }
 
 //************************** 清 除 多 选 模 态 框 内 容 **************************
@@ -50,8 +44,6 @@ function multiClean(){
     $("input[name='multiOptionsRadios'][type=checkbox]").each(function() {
     	$(this).removeAttr("CHECKED");
 	});
-    
-    flag = false;
 }
 
 //************************** 清 除 判 断 模 态 框 内 容 **************************
@@ -59,11 +51,7 @@ function judgeClean(){
 	$("#judgeId").val("");
 	$("#judgeContent").val("");
     $("#judgeTip").val("");
-//    $("input[name='judgeOptionsRadios'][value='0']").attr("CHECKED", false);
-//    $("input[name='judgeOptionsRadios'][value='1']").attr("CHECKED", false);
     $("input[name='judgeOptionsRadios']").attr("CHECKED", null);
-    
-    flag = false;
 }
 
 //**************************关键字查询题目信息**************************
@@ -107,9 +95,7 @@ function addSingle(){
 		showWrongTip("题目答案不能为空");
 		return;
 	}
-
 	var explain = $("#singleTip").val().trim();
-	
 	$.ajax({
         type: "post",  
         url: $("#url").val()+"/admin/updateQuestion",
@@ -159,19 +145,15 @@ function addMulti(){
 		showWrongTip("选项内容不能为空");
 		return;
 	}
-	
 	var answer = "";
 	$("input[name='multiOptionsRadios'][type=checkbox]:CHECKED").each(function() {
 		answer = answer + $(this).val();
 	});
-
 	if (answer == ""){
 		showWrongTip("题目答案不能为空");
 		return;
 	}
-	
 	var explain = $("#multiTip").val().trim();
-	
 	$.ajax({
         type: "post",
         url: $("#url").val()+"/admin/updateQuestion",
@@ -219,9 +201,7 @@ function addJudge(){
 		showWrongTip("题目答案不能为空");
 		return;
 	}
-
 	var explain = $("#judgeTip").val().trim();
-	
 	$.ajax({
         type: "post",  
         url: $("#url").val()+"/admin/updateQuestion",
@@ -345,9 +325,6 @@ function editJudge(ob){
 	$("#judgeId").val(id);
 	$("#judgeContent").val(content);
     $("#judgeTip").val(explain);
-//    $("input[name='judgeOptionsRadios'][type='radio'][value='"+answer+"']").attr("CHECKED", true);
-//    showRightTip(answer);
-//    return;
     $(":radio[name='judgeOptionsRadios'][value='" + answer + "']").prop("checked", "checked");
     $("#judgeModal").modal('show');
 }
@@ -382,7 +359,6 @@ function deleteQuestion(ob){
 function deleteQuestions(ob){
 	var id = ob.id.substring(0, ob.id.length - 4);
 	var delId = "";
-	
 	//根据点击相应所属页面“删除所选”按钮获取相应题目的选中编号
 	if (id == "single"){
 		$("input[name='singleCB'][type=checkbox]").each(function() {

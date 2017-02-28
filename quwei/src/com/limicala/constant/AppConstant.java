@@ -2,19 +2,21 @@ package com.limicala.constant;
 
 public final class AppConstant {
 	
-	
-	public static final Integer PAGE_SIZE = 20;
-	
-	public static final Integer SINGEL_PAGE_SIZE = 10;
-	public static final Integer MUTIL_PAGE_SIZE = 10;
-	public static final Integer JUDGE_PAGE_SIZE = 10;
-	
-	public static final Integer HISTORY_PAGE_SIZE = 3;
+	/**
+	 * 分页大小
+	 */
+	public static final Integer PAGE_SIZE = 20;//默认管理员
+	public static final Integer SINGEL_PAGE_SIZE = 10;//单选题库
+	public static final Integer MUTIL_PAGE_SIZE = 10;//多选题库
+	public static final Integer JUDGE_PAGE_SIZE = 10;//判断题库
+	public static final Integer HISTORY_PAGE_SIZE = 20;//答题记录
 	
 	public static final String adminUserId = "adminUserId";
 	public static final String adminUserName = "adminUserName";
 	
-	//前台用户session变量名称
+	/**
+	 * 前台用户session变量名称
+	 */
 	public static final String frontedUserId = "frontedUserId";
 	
 	public static final String sessionId = "sessionId";
@@ -24,8 +26,10 @@ public final class AppConstant {
 	public static final String IMPORT_EXCEL_DIR = "import_excel_dir";
 	
 	
-	
-	//上传Excle表格列表头
+	/**
+	 * 上传、下载Excel表格列表头
+	 */
+	//题库
 	public static final String QCONTENT = "*内容";
 	public static final String QA = "*A选项";
 	public static final String QB = "*B选项";
@@ -33,12 +37,11 @@ public final class AppConstant {
 	public static final String QD = "*D选项";
 	public static final String QANSWER = "*答案";
 	public static final String QEXPLAIN = "注解";
-			
+	//学生
 	public static final String SID = "*学号";
 	public static final String SNAME = "*姓名";
 	public static final String SCOLLEGE = "学院";
-	
-	//记录导出表头
+	//答题记录记录
 	public static final String HSTU_NUM = "学号";
 	public static final String HNAME = "姓名";
 	public static final String HCOLLEGE = "学院";

@@ -13,13 +13,18 @@ import jdk.nashorn.internal.runtime.arrays.NumericElements;
 
 public class History extends BaseModel<History>{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5105236804487974925L;
 	
 	public static History me = new History();
 
+	/**
+	 * 获取分页
+	 * @param hpn 				当前页码
+	 * @param historyPageSize   分页大小
+	 * @param condi				查询条件类型
+	 * @param condiValue		查询条件值
+	 * @return 分页Page<Record>
+	 */
 	public Page<Record> findByParams(Integer hpn, Integer historyPageSize, String condi, String condiValue) {
 		// TODO Auto-generated method stub
 		StringBuilder selectSql = new StringBuilder();
@@ -45,8 +50,9 @@ public class History extends BaseModel<History>{
 	
 	
 	/**
+	 * 删除答题记录
 	 * 返回3个状态：“0”删除失败，一个都没删除成功；“1”删除成功；“2”只删除部分
-	 * @param ids
+	 * @param ids 以“|”分割的记录主键值组成的字符串
 	 * @return
 	 */
 	public int deleteHistories(String hid) {
@@ -59,7 +65,6 @@ public class History extends BaseModel<History>{
 		String[] id = hid.split("\\|");
 		Integer idAllNum = id.length;
 		int idDelNum = 0;
-	
 		for (int i = 0; i < idAllNum; ++i){
 			System.out.println(id[i]);
 			if(History.me.deleteById(id[i]))
@@ -73,18 +78,18 @@ public class History extends BaseModel<History>{
 			return 2;
 	}
 
-
-
+	/**
+	 * 通过条件排序的记录
+	 * @param condi 排序条件 "default"默认答题时间降序    "score"答题分数降序   "college"学院分组
+	 * @return
+	 */
 	public ArrayList<History> findByCondi(String condi) {
-		// TODO Auto-generated method stub
 		StringBuilder selectSql = new StringBuilder();
 		selectSql.append(" select * ");
 		StringBuilder fromSql = new StringBuilder();
 		fromSql.append("from history");
 		StringBuilder whereSql = new StringBuilder();
 		whereSql.append(" where 1 = 1 ");
-		
-		
 		if (StrKit.notBlank(condi) && !condi.equals("defalut")) {
 			if (condi.trim().equals("score"))
 				whereSql.append("order by hscore desc");
@@ -93,10 +98,14 @@ public class History extends BaseModel<History>{
 			else
 				whereSql.append("order by htime desc");
 		}
-		System.out.println(selectSql.toString()+fromSql.toString()+whereSql.toString());
 		return (ArrayList<History>) History.me.find(selectSql.toString()+fromSql.toString()+whereSql.toString());
 	}
 	
+	/**
+	 * 通过学号获取相应记录
+	 * @param stuNum
+	 * @return
+	 */
 	public History findModelByStuNum(String stuNum){
 		History history = findFirst("select * from history where hstuNum = ?",stuNum);
 		return history;

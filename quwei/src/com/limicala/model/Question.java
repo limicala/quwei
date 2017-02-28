@@ -22,26 +22,23 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-
+import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.plugin.activerecord.tx.Tx;
 import com.limicala.config.BaseModel;
 
 import com.limicala.constant.AppTableConstant;
 import com.limicala.util.AnswerUtil;
 import com.limicala.util.ExcelUtil;
+
 /**
  * 问题表的Model类
- * @author red
- *
  */
 public class Question extends BaseModel<Question>{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6174983832181476567L;
 
 	public static Question me = new Question();
@@ -50,9 +47,15 @@ public class Question extends BaseModel<Question>{
 		return " "+AppTableConstant.QUESTION+" ";
 	}
 	
-	//问题库列表(初始化和查询结合)
+	/**
+	 * 问题库列表(初始化和查询结合)
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param qtype
+	 * @param condit
+	 * @return
+	 */
 	public Page<Record> findByParams(Integer pageNumber, Integer pageSize, int qtype, String condit){
-		// TODO Auto-generated method stub
 		StringBuilder selectSql = new StringBuilder();
 		selectSql.append(" select * ");
 		StringBuilder fromSql = new StringBuilder();
@@ -62,11 +65,22 @@ public class Question extends BaseModel<Question>{
 		if (StrKit.notBlank(condit)) {
 			whereSql.append(" and qcontent like ").append("'%").append(condit).append("%'");
 		}
-		
 		return Db.paginate(pageNumber, pageSize, selectSql.toString(), fromSql
 				.append(whereSql).toString());
 	}
 	
+	/**
+	 * 编辑修给问题信息
+	 * @param qid
+	 * @param content
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @param d
+	 * @param answer
+	 * @param explain
+	 * @return
+	 */
 	public boolean updateQuestion(String qid, String content, String a, String b, String c, String d, String answer, String explain){
 		return Question.me.findById(qid).set("qcontent", content).set("qa", a).set("qb", b).set("qc", c).set("qd", d)
 				.set("qanswer", answer).set("qexplain", explain).update();
@@ -100,6 +114,12 @@ public class Question extends BaseModel<Question>{
 			return 2;
 	}
 	
+	/**
+	 * 获取随机或者优先的题目
+	 * @param qtype
+	 * @param qlimit
+	 * @return
+	 */
 	public List<Question> findQuestionByParams(Integer qtype, Integer qlimit){
 		StringBuilder selectSql = new StringBuilder();
 		selectSql.append(" select * ");
@@ -115,13 +135,20 @@ public class Question extends BaseModel<Question>{
 		}
 		return find(selectSql.append(fromSql).append(whereSql).toString());
 	}
+	
+	/**
+	 * 获取一种类型题目的优先或者随机的题目数量
+	 * @param qtype
+	 * @param qlimit
+	 * @return
+	 */
 	public Integer findCountByParams(Integer qtype, Integer qlimit){
 		List<Question> temp = findQuestionByParams(qtype, qlimit);
 		return temp.size();
 	}
+	
 	/**
 	 * 接受请求，读取Excel表格然后存储
-	 * 
 	 * @param req
 	 * @return    “1”存储成功   “0”存储失败  “2”上传模板出错  “3”数据填充出错，数据丢失  "4"没数据
 	 * @throws FileUploadException 
@@ -147,10 +174,8 @@ public class Question extends BaseModel<Question>{
 		
 		//4、使用ServletFileUpload解析器解析上传数据，解析结果返回的是一个List<FileItem>集合，每一个FileItem对应一个Form表单的输入项
 		List<FileItem> list = upload.parseRequest(req);
-		
 		String qtype = "";//题型
 		String fileName = "";//上传文件名字
-		FileItem tempItem;
 		
 		//先遍历获取到题型
 		for(FileItem item : list){
@@ -175,7 +200,6 @@ public class Question extends BaseModel<Question>{
 		}else if (qtype.trim().equals("multi")){
 			qtype = "3";
 		}
-		
 
 		for(FileItem item : list){
 			//System.out.println("接受参数");
@@ -204,7 +228,7 @@ public class Question extends BaseModel<Question>{
 					
 					ArrayList<Question> questionList = (ArrayList<Question>)ExcelUtil.readExcel(workbook, fileName);
 					
-					int insertNum = 0;
+					int insertNum = 0;//定义正确插入的题目数量
 					
 					if (qtype.trim().equals("1")){//判断题
 						System.out.println("判断题");
@@ -215,7 +239,6 @@ public class Question extends BaseModel<Question>{
 							}
 						}
 					}else if(qtype.trim().equals("2") || qtype.trim().equals("3")){//选择题
-						System.out.println("选择题 -->" + questionList.size() + "条记录");
 						for (Question q : questionList){
 							if (q.get("qcontent").toString().trim().equals("") || 
 									q.get("qa").toString().trim().equals("") ||
@@ -241,15 +264,30 @@ public class Question extends BaseModel<Question>{
 						flag = 0;
 					}
 				}
-
 				//删除处理文件上传时生成的临时文件
 				item.delete();
-				//tempItem = item;
 			}
 		}
-		
 		return flag;
 	}
 	
+	/**
+	 * 答题次数加1
+	 * @param q
+	 * @return
+	 */
+	public boolean testPlus(Question q){
+		int a = Integer.valueOf(q.get("qall_times").toString()) + 1;
+		return q.set("qall_times", a).update();
+	}
 	
+	/**
+	 * 答题正确次数加1
+	 * @param q
+	 * @return
+	 */
+	public boolean truePlus(Question q){
+		int a = Integer.valueOf(q.get("qtrue_times").toString()) + 1;
+		return q.set("qtrue_times", a).update();
+	}
 }

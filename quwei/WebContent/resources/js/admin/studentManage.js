@@ -26,59 +26,39 @@ function clean(){
 	$("#old_sid").val("");
 	$("#sid").val("");
     $("#sname").val("");
- //   $("#spro").val("");
     $("#scollege").val("");
     $("#check_tip").html("");
     $("#update_button").removeAttr("disabled");
-   
-  /*  $("#singleD").val("");
-    $("#singleTip").val("");*/
-//    $("input[name='singleOptionsRadios'][value='A']").attr("CHECKED", false);
-//    $("input[name='singleOptionsRadios'][value='B']").attr("CHECKED", false);
-//    $("input[name='singleOptionsRadios'][value='C']").attr("CHECKED", false);
-//    $("input[name='singleOptionsRadios'][value='D']").attr("CHECKED", false);
-   /* $("input[name='singleOptionsRadios']").attr("CHECKED", null);*/
-    
-   // flag = false;
 }
 
 //************************** 编 辑 单 选 题 **************************
 function editStudent(obj){
 	var id = $(obj).attr("id"); 
-	//alert(id+table_id);
     //获取表格中的一行数据 
 	var table_row = document.getElementById("table").rows[id];
     var sid = table_row.cells[1].innerText;  
     var sname = table_row.cells[2].innerText;
-  //  var spro = table_row.cells[3].innerText;
     var scollege = table_row.cells[3].innerText;
     //向模态框中传值
     $("#table_id").val(id);
     $("#old_sid").val(sid);
 	$("#sid").val(sid);
     $("#sname").val(sname);
- //   $("#spro").val(spro);
     $("#scollege").val(scollege);
-
     $("#singleModal").modal('show');
 }
 
 //************************** 添 加 单 条 判 断 题 目 **************************
 function addStudent(){
 	var table_id = $("#table_id").val();
-	
 	var old_sid = $("#old_sid").val();
 	var sid = $("#sid").val().trim();
 	var sname = $("#sname").val().trim();
-//	var spro = $("#spro").val().trim();
 	var scollege = $("#scollege").val().trim();
 	if (sid == "" || sname == "" || scollege == ""){
 		showWrongTip("学生信息不能为空");
 		return;
 	}
-
-	
-	
 	$.ajax({
         type: "post",  
         url: $("#url").val()+"/admin/updateStudent",
@@ -94,14 +74,12 @@ function addStudent(){
         	}else{//编辑类型
         		if (resp.success){
             		showRightTip(resp.msg);
-            		//alert(table_id);
             		var table_row = document.getElementById("table").rows[table_id];
             		//学号
             		var input_str = "<input type='checkbox' name='stu_list' value='"+sid+"'/>";
             	    table_row.cells[0].innerHTML = input_str;  
             		table_row.cells[1].innerText = sid;  
             	    table_row.cells[2].innerText = sname;
-            	   // table_row.cells[3].innerText = spro;
             	    table_row.cells[3].innerText = scollege;
             		console.log(table_row);
             	}else{
@@ -118,7 +96,6 @@ function addStudent(){
 //************************** 删 除 学 生  **************************
 function deleteStudent(obj){
 	var id = $(obj).attr("id"); 
-	//alert(id+table_id);
     //获取表格中的一行数据  
     var sid = document.getElementById("table").rows[id].cells[1].innerText;
 	$("#chooseOk").unbind("click");
@@ -142,17 +119,15 @@ function deleteStudent(obj){
 		});
 	});
 }
+
 //************************** 清空学生表  **************************
 function emptyStudent(){
 	$("#confirm_password").show();
 	$("#chooseModal").modal('show');
 	$("#chooseOk").unbind("click");
 	showChoose("确 定 删 除 所 选 学 生 信 息 吗 ？");
-	
-	
 	$("#chooseOk").bind("click", function(){
 		var password = $("#admin_password").val().trim();
-		alert(password);
 		if(password == ''){
 			showWrongTip("请输入密码");
 			return;
@@ -164,18 +139,16 @@ function emptyStudent(){
 			success: function(resp){
 				if(resp.success){
 					$("#chooseModal").modal('hide');
-					
+					$("#admin_password").val();
 					location.href = "stuManageView?" + $("#param").val();
-				}
-				else{
-					$("#chooseModal").modal('hide');
-					$("#confirm_password").hide();
+				}else{
 					showWrongTip(resp.msg);
 				}
 			},
 			error: function(resp){
 				$("#chooseModal").modal('hide');
 				$("#confirm_password").hide();
+				$("#admin_password").val();
 				showWrongTip("服务器出错");
 			}
 		});
@@ -185,7 +158,6 @@ function emptyStudent(){
 //************************** 删 除 选 择 题 目  **************************
 function deleteStudents(ob){
 	var delId = "";
-	
 	//根据点击相应所属页面“删除所选”按钮获取相应题目的选中编号
 	$("input[name='stu_list'][type=checkbox]").each(function() {
 		if (this.checked){
@@ -216,8 +188,8 @@ function deleteStudents(ob){
 	});
 }
 
+//************************** 检测学生是否存在   **************************
 function check_exsit(){
-	//alert("aaaaa");
 	var old_sid = $('#old_sid').val();
 	var sid = $('#sid').val().trim();
 	if(old_sid != sid && sid != ''){
@@ -225,23 +197,11 @@ function check_exsit(){
 	        type: "post",  
 	        url: $("#url").val()+"/admin/checkExsitStudent",  
 	        data: "sid=" + sid,  
-	       /*  dataType: 'html',  
-	        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
-	        success: function(result) {  
-	        	
-	            //location.reload();  
-	           /*  $("#editModal").modal('hide');
-	            $("#message").text("修改成功");
-	            $("#tipModal").modal(); */
-	            //console.log(result);
-	        	
+	        success: function(result) {     	
 	            if(result){
-	            	//alert("bbbb");
 	            	$("#check_tip").html("<span style='color:red'>学号已存在</span>");
-	            	//aaaa = "<span hidden=true style="color:red">用户名已存在</span>";
 	            	$("#update_button").attr("disabled","disabled");
 	            }else{
-	            	//$("#check_tip").html("<span style='color:green'>用户名可用</span>");
 	            	$("#update_button").removeAttr("disabled");
 	            }
 	        },
@@ -252,7 +212,6 @@ function check_exsit(){
 			}
 	    }); 
 	}
-	
 }
 
 
@@ -275,6 +234,7 @@ function doUpload(){
 		$("#uploadForm").submit();
 	}
 }
+
 /**
  * 注销
  * @returns

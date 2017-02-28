@@ -7,7 +7,6 @@ import com.limicala.constant.AppConstant;
 
 public final class SessionUtil {
 
-	
 	/**
 	 * 设置登录用户ID
 	 * @author	wwd
@@ -21,6 +20,7 @@ public final class SessionUtil {
 			httpSession.setAttribute(AppConstant.adminUserId, userId);
 		}
 	}
+	
 	/**
 	 * 获取登陆用户ID
 	 * @return
@@ -33,12 +33,22 @@ public final class SessionUtil {
 		return null;
 	}
 	
+	/**
+	 * 将用户名保存进session
+	 * @param httpSession
+	 * @param username
+	 */
 	public static void setAdminUsername(HttpSession httpSession,String username){
 		if(httpSession != null && StrKit.notBlank(username)){
 			httpSession.setAttribute(AppConstant.adminUserName, username);
 		}
 	}
 	
+	/**
+	 * 获取用户名
+	 * @param httpSession
+	 * @return
+	 */
 	public static String getAdminUsername(HttpSession httpSession){
 		Object obj = httpSession.getAttribute(AppConstant.adminUserName);
 		if(null != obj){
@@ -47,12 +57,22 @@ public final class SessionUtil {
 		return null;
 	}
 	
+	/**
+	 * 设置sessionId
+	 * @param httpSession
+	 * @param sessionId
+	 */
 	public static void setSessionId(HttpSession httpSession,String sessionId){
 		if(httpSession != null && StrKit.notBlank(sessionId)){
 			httpSession.setAttribute(AppConstant.sessionId, sessionId);
 		}
 	}
 	
+	/**
+	 * 获取sessionId
+	 * @param httpSession
+	 * @return
+	 */
 	public static String getSessionId(HttpSession httpSession){
 		Object obj = httpSession.getAttribute(AppConstant.sessionId);
 		if(null != obj){
@@ -61,10 +81,13 @@ public final class SessionUtil {
 		return null;
 	}
 	
+	/**
+	 * 设置用户信息
+	 * @param httpSession
+	 * @param userId
+	 */
 	public static void setAdminUserInfo(HttpSession httpSession,String userId){
 		setAdminUserId(httpSession, userId);
-//		setAdminUsername(httpSession, username);
-//		setSessionId(httpSession, sessionId);
 	}
 	
 	

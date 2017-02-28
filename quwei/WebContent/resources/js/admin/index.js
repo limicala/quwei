@@ -3,6 +3,7 @@ function showChoose(msg){
 	$("#chooseContent").text(msg);
 	$("#chooseModal").modal('show');
 }
+
 /**
  * 注销
  * @returns

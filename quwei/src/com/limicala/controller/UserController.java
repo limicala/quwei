@@ -23,6 +23,7 @@ public class UserController extends BaseController{
 	public void index(){
 		render("/index.jsp");
 	}
+	
 	/**
 	 * 注销
 	 */
@@ -30,8 +31,6 @@ public class UserController extends BaseController{
 		this.getSession().invalidate();
 		redirect("/");
 	}
-	
-	
 	
 	/**
 	 * 检查账号是否存在
@@ -79,7 +78,9 @@ public class UserController extends BaseController{
 		renderJson(rm);
 	}
 	
-	//答题
+	/**
+	 * 测试
+	 */
 	public void contest(){
 		//学生账号
 		String sid = SessionUtil.getFrontedLoginedUserId(getSession());
@@ -105,7 +106,10 @@ public class UserController extends BaseController{
 		
 		render("testing.jsp");
 	}
-	//答题结果
+	
+	/**
+	 * 答题结果
+	 */
 	public void result(){
 		String sid = SessionUtil.getFrontedLoginedUserId(getSession());
 		Student student = Student.me.findById(sid);
@@ -130,10 +134,9 @@ public class UserController extends BaseController{
 			//取到分数
 			Integer maxScore = history.getInt("hscore");
 			if(maxScore == null || maxScore < total_score){
-				history.set("hscore", total_score).update();
+				history.set("hscore", total_score).set("htime", new Date()).update();
 			}
 		}
-		
 		
 		if(configOS != null){
 			setAttr("endword", configOS.getStr("cendword"));
@@ -158,19 +161,12 @@ public class UserController extends BaseController{
 		List<Question> list = Question.me.findQuestionByParams(qtype, AppTableConstant.QUESTION_LIMIT);
 		//随机选取的题目
 		List<Question> list_unlimit = Question.me.findQuestionByParams(qtype, AppTableConstant.QUESTION_UNLIMIT);
-//		if(qtype == 1){
-//			for(Question q: list_unlimit){
-//				System.out.println(q.getStr("qcontent"));
-//			}
-//		}
-			
+
 		int limit_size = list.size();
 		int unlimit_size = list_unlimit.size();
-		//System.out.println("total_num"+total_num);
-		//System.out.println("limit_size"+limit_size);
+
 		//如果当前配置中需要的题数小于必答题题数，返回空
 		if(total_num < limit_size){
-			//System.out.println("cjisacjiasjcias");
 			return null;
 		}
 		//生成一个不重复的随机序列
@@ -181,7 +177,6 @@ public class UserController extends BaseController{
 		}
 		//将符合条件的列表再重新打乱以下顺序
 		ShuffleUtil.shuffle3(list);
-		
 		return list;
 	}
 	
@@ -208,7 +203,6 @@ public class UserController extends BaseController{
 				if(getPara(input_name) != null){
 					user_answer = getPara(input_name);
 				}
-				
 			}else{
 				String[] temp = getParaValues(input_name);
 				
@@ -246,27 +240,39 @@ public class UserController extends BaseController{
 		for(Question q : judgeList){
 			String u_answer = q.getStr("u_answer");
 			String qanswer = q.getStr("qanswer");
+			Question.me.testPlus(q);
 			if(StrKit.notBlank(u_answer, qanswer) && u_answer.equals(qanswer)){
-				score += j_score; 
+				score += j_score;
+				Question.me.truePlus(q);
 			}
 		}
 		for(Question q : singleList){
 			String u_answer = q.getStr("u_answer");
 			String qanswer = q.getStr("qanswer");
+			Question.me.testPlus(q);
 			if(StrKit.notBlank(u_answer, qanswer) && u_answer.equals(qanswer)){
-				score += s_score; 
+				score += s_score;
+				Question.me.truePlus(q);
 			}
 		}
 		for(Question q : multiList){
 			String u_answer = q.getStr("u_answer");
 			String qanswer = q.getStr("qanswer");
+			Question.me.testPlus(q);
 			if(StrKit.notBlank(u_answer, qanswer) && u_answer.equals(qanswer)){
-				score += m_score; 
+				score += m_score;
+				Question.me.truePlus(q);
 			}
 		}
 		return score;
 	}
 	
+	/**
+	 * 检测最后一次答题是否是当天
+	 * @param date1
+	 * @param date2
+	 * @return
+	 */
 	private static boolean isSameDate(Date date1, Date date2) {
 	       Calendar cal1 = Calendar.getInstance();
 	       cal1.setTime(date1);

@@ -8,7 +8,12 @@ public class AnswerUtil {
 	
 	public static String answerRange = "abcd";
 	
-	//判断答案里有包含除了ABCD的其他字母,q_type为题目类型
+	/**
+	 * 判断答案里有包含除了ABCD的其他字母,q_type为题目类型
+	 * @param q_type
+	 * @param answer
+	 * @return
+	 */
 	public static boolean checkAnswer(Integer q_type, String answer){
 		answer = answer.toLowerCase();
 		if(q_type == AppTableConstant.QUESTION_SINGLE){
@@ -21,20 +26,17 @@ public class AnswerUtil {
 		return false;
 	}
 	
-	//判断某个字符在字符串里
+	/**
+	 * 判断某个字符在字符串里
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public static boolean isExsit(String x, String y){
 		int index = y.indexOf(x);
 		if(index > -1){
 			return true;
 		}
 		return false;
-	}
-	
-	public static void main(String[] args) {
-		System.out.println(AnswerUtil.checkAnswer(2, "A"));
-		System.out.println(AnswerUtil.checkAnswer(2, "是"));
-		System.out.println(AnswerUtil.checkAnswer(3, "去A我"));
-		System.out.println(AnswerUtil.checkAnswer(3, "ABC"));
-		System.out.println(AnswerUtil.checkAnswer(3, "啊啊啊1"));
 	}
 }

@@ -46,7 +46,6 @@ public final class ExcelUtil {
 	 */
 	public static  List<Question> readExcel(Workbook workbook, String excelName){
 		ArrayList<Question> questionList = null;
-
 		if (excelName.endsWith(".xls")){
 			questionList = (ArrayList<Question>) readQuestionFromExcelXls(workbook);
 		}else if(excelName.endsWith(".xlsx")){
@@ -66,7 +65,6 @@ public final class ExcelUtil {
 	 */
 	public static  List<Student> readStudentExcel(Workbook workbook, String excelName){
 		List<Student> studentList = null;
-
 		if (excelName.endsWith(".xls")){
 			studentList = (ArrayList<Student>) readStudentFromExcelXls(workbook);
 		}else if(excelName.endsWith(".xlsx")){
@@ -80,9 +78,7 @@ public final class ExcelUtil {
 	 * @param excelInputStream
 	 * @return
 	 */
-	@SuppressWarnings("resource")
 	public static List<Student> readStudentFromExcelXls(Workbook workbook) {
-		// TODO Auto-generated method stub
 		List<Student> studentList = new ArrayList<Student>();
 		try {
 			HSSFSheet sheet = (HSSFSheet) workbook.getSheetAt(0);
@@ -93,12 +89,9 @@ public final class ExcelUtil {
 				student.set("sid", handleHSSFCell(row.getCell(0)));//获取学生学号
 				student.set("sname", handleHSSFCell(row.getCell(1)));//获取学生姓名
 				student.set("scollege", handleHSSFCell(row.getCell(2)));//获取学生学院
-				
 				studentList.add(student);
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println("readStudentFromExcelXls抛异常。");
 			e.printStackTrace();
 		}
 		return studentList;
@@ -109,28 +102,25 @@ public final class ExcelUtil {
 	 * @param excelInputStream
 	 * @return
 	 */
-	@SuppressWarnings("resource")
+	@SuppressWarnings("rawtypes")
 	public static List<Student> readStudentFromExcelXlsx(Workbook workbook) {
-		// TODO Auto-generated method stub
 		List<Student> studentList = new ArrayList<Student>();
 		XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
 		XSSFRow row = null;
 		Student student = null;
 		try {
-			//System.out.println("读取的行数"+sheet.getPhysicalNumberOfRows());
+			 //System.out.println("读取的行数"+sheet.getPhysicalNumberOfRows());
 			 Iterator rows = sheet.rowIterator();
 			 rows.next();
-			while(rows.hasNext()){
-				row = (XSSFRow) rows.next();
-				student = new Student();
-				System.out.println(row.getCell(0).toString());
-				student.set("sid", handleXSSFCell(row.getCell(0)));//获取学生学号
-				student.set("sname", handleXSSFCell(row.getCell(1)));//获取学生姓名
-				student.set("scollege", handleXSSFCell(row.getCell(2)));//获取学生学院
-				studentList.add( student);
-			}
+			 while(rows.hasNext()){
+				 row = (XSSFRow) rows.next();
+				 student = new Student();
+				 student.set("sid", handleXSSFCell(row.getCell(0)));//获取学生学号
+				 student.set("sname", handleXSSFCell(row.getCell(1)));//获取学生姓名
+			 	 student.set("scollege", handleXSSFCell(row.getCell(2)));//获取学生学院
+				 studentList.add( student);
+			 }
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println("readStudentFromExcelXlsx抛异常。");
 			e.printStackTrace();
 		}
@@ -142,7 +132,6 @@ public final class ExcelUtil {
 	 * @param excelInputStream
 	 * @return
 	 */
-	@SuppressWarnings("resource")
 	public static List<Question> readQuestionFromExcelXls(Workbook workbook){
 		ArrayList<Question> questionList = new ArrayList<Question>();
 		try {
@@ -178,7 +167,6 @@ public final class ExcelUtil {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("readQuestionFromExcelXls抛异常。");
 			e.printStackTrace();
 		}
 		
@@ -190,11 +178,9 @@ public final class ExcelUtil {
 	 * @param excelInputStream
 	 * @return
 	 */
-	@SuppressWarnings("resource")
 	public static List<Question> readQuestionFromExcelXlsx(Workbook workbook){
 		ArrayList<Question> questionList = new ArrayList<Question>();
 		try {
-
 			XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
 			XSSFRow row = sheet.getRow(0);
 			Question nq;
@@ -279,7 +265,6 @@ public final class ExcelUtil {
 				}else if ( !row.getCell(6).toString().equals(AppConstant.QEXPLAIN)){
 					flag = false;
 				}
-				
 			}else{
 				flag = false;
 			}
@@ -317,7 +302,6 @@ public final class ExcelUtil {
 		}
 		return flag;
 	}
-
 	
 	/**
 	 * 处理单元格数据(2003)
@@ -393,7 +377,7 @@ public final class ExcelUtil {
 	 * @param cell
 	 * @return
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "unused" })
 	private static String handleCell(Cell cell) {
 		String value = "";
 		if(cell != null){
@@ -422,33 +406,21 @@ public final class ExcelUtil {
 		return value;
 	}
 	
-	
-	@SuppressWarnings("deprecation")
+	/**
+	 * 获取答题记录Workbook
+	 * @param hlist 
+	 * @return
+	 */
 	public static XSSFWorkbook getHistoryExcel(ArrayList<History> hlist){
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("答题记录_"+(new SimpleDateFormat("yyyy_MM_dd-hh_mm")).format(new Date()));
-		
-		XSSFCellStyle style = workbook.createCellStyle();
 		sheet.setDefaultColumnWidth(20);
-		
-		
-//		style.setFillBackgroundColor(new XSSFColor(IndexedColors.LIGHT_ORANGE));//橙色背景
-//		style.setFillForegroundColor(new XSSFColor(IndexedColors.BLACK));
-//
-//		//生成一个字体  
-//        XSSFFont font = workbook.createFont();  
-//        font.setColor(new XSSFColor(IndexedColors.BLUE));  
-//        font.setBold(true);
-//        style.setFont(font);
-		
-		
 		XSSFRow row = sheet.createRow(0);
 		row.createCell(0).setCellValue(AppConstant.HSTU_NUM);
 		row.createCell(1).setCellValue(AppConstant.HNAME);
 		row.createCell(2).setCellValue(AppConstant.HCOLLEGE);
 		row.createCell(3).setCellValue(AppConstant.HSCORE);
 		row.createCell(4).setCellValue(AppConstant.HTIME);
-		
 		int i = 1;
 		for (History h : hlist){
 			row = sheet.createRow(i);
@@ -459,61 +431,6 @@ public final class ExcelUtil {
 			row.createCell(4).setCellValue(h.get("htime").toString().substring(0, 16));
 			++i;
 		}
-		
 		return workbook;
-	}
-	
-	
-	
-	
-	public static void main(String[] args) throws IOException{
-		try {
-//			File ef = new File("D://学生信息上传模板.xlsx"); 
-//			FileInputStream testExcel = new FileInputStream(ef);
-//			System.out.println(testExcel.available());
-//			
-//			OPCPackage pkg = OPCPackage.open(new File("D://学生信息上传模板.xlsx"));
-//			Workbook wb = new XSSFWorkbook(pkg);
-			
-//			Workbook workbook = null;
-//			try{
-//				workbook = new HSSFWorkbook(testExcel);
-//			}catch(Exception e){
-//				workbook = new XSSFWorkbook(testExcel);
-//			}
-//			List<Student> students = readStudentFromExcelXlsx(wb);
-//			for(Student student : students){
-//				System.out.println(student.getStr("sid"));
-//				System.out.println(student.getStr("sname"));
-//			}
-			
-//			ArrayList<Question> ql = (ArrayList<Question>) readQuestionFromExcelXlsx(workbook);
-//			for (Question q : ql){
-//				System.out.println(q.get("qcontent").toString());
-//				System.out.println(q.get("qanswer").toString());
-//				System.out.println(q.get("qexplain").toString());
-//			}
-			
-			ArrayList<History> hl = new ArrayList<History>();
-			for (int i = 0; i < 5; i++){
-				hl.add(new History()
-						.set("hstuNum", "201424132133")
-						.set("hname", "二狗")
-						.set("hcollege", "计算机学院")
-						.set("hscore", "59.9")
-						.set("htime", new SimpleDateFormat("yyyy.MM.dd-hh:mm").format(new Date())));
-			}
-			
-			XSSFWorkbook workbook = getHistoryExcel(hl);
-			
-			FileOutputStream fOut  =   new  FileOutputStream("D://记录.xlsx");
-            workbook.write(fOut);
-            fOut.flush();
-            fOut.close();
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

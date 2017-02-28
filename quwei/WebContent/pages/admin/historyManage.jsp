@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="java.util.List"%>
-<%@page import="com.jfinal.plugin.activerecord.Record"%>
-<%@page import="com.jfinal.plugin.activerecord.Page"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.jfinal.plugin.activerecord.Record"%>
+<%@ page import="com.jfinal.plugin.activerecord.Page"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -18,47 +18,16 @@
     <title>趣味问答系统-答题记录管理</title>
 	
     <style>
-        body{
-            background-color: #f5f5f5;
-        }
-        img{
-            width:100%;
-            max-height:200px;
-        }
-        @media (min-width: 950px) {
-            img{
-                height:200px;
-            }
-        }
-
-        table td {
-            vertical-align: middle !important;
-        }
-
-
-        .tb-responsive {
-            width: 100%;
-            max-height: 600px;
-            overflow-y:auto;
-            -ms-overflow-style: -ms-autohiding-scrollbar;
-        }
-
-
-
-        select{
-            width: 100%;
-        }
-
-        
-
-        .tip{
-            min-width: 100px;
-            max-width: 150px;
-            word-break:break-all;
-        }
-
-    </style>
+        body{background-color: #f5f5f5;}
+        img{width:100%;max-height:200px;}
+        @media (min-width: 950px) {img{height:200px;}}
+        table td {vertical-align: middle !important;}
+		.tb-responsive {width: 100%;max-height: 600px;overflow-y:auto;-ms-overflow-style: -ms-autohiding-scrollbar;}
+		select{width: 100%;}
+		.tip{min-width: 100px;max-width: 150px;word-break:break-all;}
+	</style>
 </head>
+
 <body>
 	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
 	
@@ -82,7 +51,6 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="brand" href="mainView"><span class="icon-home" style="margin-top: 5px;"></span><strong> 首 页 </strong></a>
-
                     <div class="nav-collapse collapse text-center">
                         <ul class="nav" style="padding-top:1px;">
                             <li><a href="userManageView"><span class="icon-user"></span> 管理员管理</a></li>
@@ -92,7 +60,7 @@
                             <li><a href="configView"><span class="icon-wrench"></span> 系统配置</a></li>
                             <li><a href="#" onclick="loginout()"><span class="icon-off"></span> 退出系统</a></li>
                         </ul>
-                    </div><!--/.nav-collapse -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,10 +83,10 @@
 					</div>
 				</li>
 				<li><button type="button" class="btn" onclick="queryRecord()"><span class="icon-search"></span> 查  找 </button></li>
-				<li><button type="button" class="btn"onclick="location.href='historyManageView?hpn=${page1.pageNumber}'"><span class="icon-refresh"></span> 刷  新 </button></li>
+				<li><button type="button" class="btn" onclick="location.href='historyManageView?hpn=${page1.pageNumber}'"><span class="icon-refresh"></span> 刷  新 </button></li>
 				<li><button type="button" class="btn" onclick="deleteHistory()"><span class="icon-trash"></span> 删除所选 </button></li>
 				<li><button type="button" class="btn" data-toggle="modal" data-target="#downloadModal"><span class="icon-download-alt"></span> 导出记录 </button></li>
-				<li><button type="button" class="btn"><span class="icon-off"></span> 清空数据 </button></li>
+				<li><button type="button" class="btn" onclick="emptyData()"><span class="icon-off"></span> 清空数据 </button></li>
 			</ul>
 			<div class="container tb-responsive">
 				<table class="table table-condensed">
@@ -142,7 +110,7 @@
 								<td>${h.hname }</td><!--姓名-->
 								<td>${h.hcollege }</td><!--学院-->
 								<td>${h.hscore }</td><!--分数-->
-								<td style="padding-left: 25px;">${fn:substring(h.htime, 0, 19) }</td><!--答题时间-->
+								<td style="padding-left: 25px;min-width: 110px;">${fn:substring(h.htime, 0, 16) }</td><!--答题时间-->
 							</tr>
 							<tr style="max-height: 1px;background:#ddd;"><!--间隔--><td colspan="6" style="max-height: 1px;"></td></tr>
 						</c:forEach>
@@ -155,7 +123,6 @@
     </div>
 	
     <!-- 部件 -->
-    
 	<!--导出模态框-->
     <div class="modal hide fade" id="downloadModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
         <div class="modal-dialog" role="document" >
@@ -176,11 +143,32 @@
 							<input  type="radio" name="dlCB" value="college"> 按学院分组
 						</label>
 					</div>
-					
 					<small style="margin-top:20px;" class="text-error">提示：默认为按答题时间先后顺序排列导出</small>
 				</div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="downloadOk" onclick="downloadHistory()">确定</button>&nbsp;&nbsp;
+                    <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!--清空模态框-->
+    <div class="modal hide fade" id="deleteModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
+        <div class="modal-dialog" role="document" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-center text-info">确 定 清 空 所 有 答 题 记 录 吗 ？</h4>
+                </div>
+                <div id="confirm_password" class="modal-body text-center">
+                    <ul class="inline">
+                        <li><h5>请输入密码</h5></li>
+                        <li><input type="password" id="admin_password"/></li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="deleteOk">确定</button>&nbsp;&nbsp;
                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
                 </div>
             </div>
@@ -196,7 +184,6 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title text-center text-info" id="chooseContent">提 示</h4>
                 </div>
-                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="chooseOk">确定</button>&nbsp;&nbsp;
                     <button type="button" class="btn btn-default" data-dismiss="modal"  aria-hidden="true">取消</button>
@@ -204,7 +191,6 @@
             </div>
         </div>
     </div>
-    
     
     <!--公用提示模态框-->
     <div class="modal hide fade" id="tipModal" tabindex="0" role="dialog" aria-hidden="true" data-backdrop="true">
@@ -232,6 +218,11 @@
 
 		$("#downloadModal").on('hidden', function () {
 			$(":radio[name='dlCB'][value='default']").prop("checked", "checked");
+        	$("#tipModal").modal('hide');
+        })
+        
+        $("#deleteModal").on('hidden', function () {
+        	$("#admin_password").val();
         	$("#tipModal").modal('hide');
         })
     </script>

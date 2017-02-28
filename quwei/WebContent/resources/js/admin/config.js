@@ -20,6 +20,8 @@ function showChoose(msg){
 	$("#chooseContent").text(msg);
 	$("#chooseModal").modal('show');
 }
+
+//*************************修改答题时间*************************
 function update_answertime(){
 	var cid = $('#cid').val();
 	var answer_time = $('#answer_time').val();   
@@ -32,11 +34,7 @@ function update_answertime(){
         type: "post",  
         url: $("#url").val()+"/admin/update_config",  
         data: "configOS.canswertime=" + answer_time + "&configOS.cid="+cid,  
-       /*  dataType: 'html',  
-        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
         success: function(result) {  
-            //location.reload();  
-          /*   $("#editModal").modal('hide'); */
           	if(result){
           		showRightTip("修改成功");
           	}
@@ -47,6 +45,7 @@ function update_answertime(){
     }); 
 }
 
+//***********************修改答题间隔时间************************
 function update_interval(){
 	var cid = $('#cid').val();
 	var interval = $('#interval').val();   
@@ -59,11 +58,7 @@ function update_interval(){
         type: "post",  
         url: $("#url").val()+"/admin/update_config",  
         data: "configOS.cdayinterval=" + interval + "&configOS.cid="+cid,  
-       /*  dataType: 'html',  
-        contentType: "application/x-www-form-urlencoded; charset=utf-8",   */
         success: function(result) {  
-            //location.reload();  
-          /*   $("#editModal").modal('hide'); */
           	if(result){
           		showRightTip("修改成功");
           	}
@@ -74,6 +69,7 @@ function update_interval(){
     }); 
 }
 
+//************************修改分数************************
 function update_score(){
 	var cid = $('#cid').val();
 	var judge_num = $('#judge_num').val();   
@@ -84,10 +80,9 @@ function update_score(){
 	var multi_score = $('#multi_score').val();   
 	var startword = $('#startword').val();
 	var endword = $('#endword').val();
-	//alert(startword);
-	
+
 	total_score = judge_num * judge_score + single_num * single_score + multi_num * multi_score;
-	//alert(total_score);
+
 	if(total_score != 100){
 		showWrongTip("总分应为100分，你当前设置的总分为"+total_score);	
 		return;
@@ -114,13 +109,11 @@ function update_score(){
           	else{
           		showWrongTip("修改失败");
           	}
-		}//success
-	});//ajax
+		}
+	});
 }
-/**
- * 注销
- * @returns
- */
+
+//***********************注销**********************
 function loginout(){
 	$("#chooseOk").unbind("click");
 	showChoose("确 定 要 注 销 管  理  员  账  号  吗 ？");

@@ -12,24 +12,13 @@
 	<title>趣味问答系统-用户管理</title>
 	
 	<style>
-        body{
-            background-color: #f5f5f5;
-        }
-        img{
-            width:100%;
-            max-height:200px;
-        }
-        @media (min-width: 950px) {
-            img{
-                height:200px;
-            }
-        }
-		
-        table td {
-            vertical-align: middle !important;
-        }
+        body{background-color: #f5f5f5;}
+        img{width:100%;max-height:200px;}
+        @media (min-width: 950px) {img{height:200px;}}
+        table td {vertical-align: middle !important;}
     </style>
 </head>
+
 <body>
 	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
     <div class="container">
@@ -58,7 +47,7 @@
                             <li class="active"><a><span class="icon-wrench"></span> 系统配置</a></li>
                             <li><a href="#" onclick="loginout()"><span class="icon-off"></span> 退出系统</a></li>
                         </ul>
-                    </div><!--/.nav-collapse -->
+                    </div>
                 </div>
             </div>
         </div>
