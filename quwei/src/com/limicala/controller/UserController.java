@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import com.jfinal.kit.StrKit;
 import com.limicala.config.BaseController;
@@ -42,35 +43,16 @@ public class UserController extends BaseController{
 		ConfigOS configOS = ConfigOS.me.findById(1);
 		Integer dayinterval = configOS.getInt("cdayinterval");
 		if(student != null){
-			History history = History.me.findModelByStuNum(student.getStr("sid"));
-			boolean flag = true;
-			if(history != null){//
-				Integer hrate = history.getInt("hrate");
-				if(hrate == null) hrate = 0;
-				if(hrate >= dayinterval){
-					rm.msgFailed("一天只能回答"+dayinterval+"次");
-				}else{
-					flag = history.set("hrate", hrate + 1).update();
-					if(flag == true){
-						SessionUtil.setFrontedLoginUserId(getSession(), sid);
-						rm.setSuccess(true);
-					}else{
-						rm.msgFailed("服务器出错");
-					}
-				}
-			}else{
-				history = new History();
-				flag = history.set("hstuNum", student.getStr("sid"))
-				.set("hname", student.getStr("sname"))
-				.set("hcollege", student.getStr("scollege"))
-				.set("hrate", 1)
-				.save();
-				if(flag == true){
+			if(Question.me.hasQuestions()){
+				boolean flag = History.me.canContest(student.getStr("sid"), dayinterval);
+				if (flag) {
 					SessionUtil.setFrontedLoginUserId(getSession(), sid);
 					rm.setSuccess(true);
 				}else{
-					rm.msgFailed("服务器出错");
+					rm.msgFailed("一天只能回答"+dayinterval+"次");
 				}
+			}else{
+				rm.msgFailed("无法作答，题库在更新");
 			}
 		}else{
 			rm.msgFailed("您输入的学号有误，或者您未参与本次活动");
@@ -87,7 +69,6 @@ public class UserController extends BaseController{
 		Student student = Student.me.findById(sid);
 		
 		ConfigOS configOS = ConfigOS.me.findById(1);
-		
 		Integer judge_total_num = configOS.getInt("cjudge_num");
 		Integer single_total_num =  configOS.getInt("csingle_num");
 		Integer multi_total_num = configOS.getInt("cmulti_num");
@@ -114,6 +95,7 @@ public class UserController extends BaseController{
 		String sid = SessionUtil.getFrontedLoginedUserId(getSession());
 		Student student = Student.me.findById(sid);
 		ConfigOS configOS = ConfigOS.me.findById(1);
+		Integer dayinterval = configOS.getInt("cdayinterval");
 		//将三种题型的答案都分别放在一个Map对象里面
 		Integer judge_total_num = getParaToInt("judge_total_num");
 		Integer single_total_num = getParaToInt("single_total_num");
@@ -128,14 +110,9 @@ public class UserController extends BaseController{
 		
 		//求分数
 		Integer total_score = getTotalScore(judgeList, singleList, multiList);
-		
-		History history = History.me.findModelByStuNum(sid);
-		if(history != null){
-			//取到分数
-			Integer maxScore = history.getInt("hscore");
-			if(maxScore == null || maxScore < total_score){
-				history.set("hscore", total_score).set("htime", new Date()).update();
-			}
+		boolean flag = History.me.canContest(sid, dayinterval);
+		if (flag) { //再次检查是否符合答题条件
+			History.me.updateHistory(sid, total_score);
 		}
 		
 		if(configOS != null){
@@ -166,12 +143,20 @@ public class UserController extends BaseController{
 		int unlimit_size = list_unlimit.size();
 
 		//如果当前配置中需要的题数小于必答题题数，返回空
-		if(total_num < limit_size){
+		/*if(total_num < limit_size){
+			//生成一个不重复的随机序列
+			int[] random = ShuffleUtil.GetRandomSequence2(unlimit_size, total_num - limit_size);
+			System.out.println("90900000000000000000");
 			return null;
+		}*/
+		Random random = new Random();
+		while(total_num < limit_size){
+			list.remove(random.nextInt(limit_size));
+			limit_size--;
 		}
 		//生成一个不重复的随机序列
-		int[] random = ShuffleUtil.GetRandomSequence2(unlimit_size, total_num - limit_size);
-		for(int r : random){
+		int[] randomNum = ShuffleUtil.GetRandomSequence2(unlimit_size, total_num - limit_size);
+		for(int r : randomNum){
 			//从不是必选题中挑出来，添加到列表里
 			list.add(list_unlimit.get(r));
 		}
@@ -216,7 +201,9 @@ public class UserController extends BaseController{
 			}
 			
 			Integer q_id = getParaToInt(prefix+i);
+			System.out.println("问题id"+q_id);
 			Question question = Question.me.findById(q_id);
+			System.out.println(question == null);
 			//用户的答案
 			question.put("u_answer",user_answer);
 			questions.add(question);
@@ -266,28 +253,4 @@ public class UserController extends BaseController{
 		}
 		return score;
 	}
-	
-	/**
-	 * 检测最后一次答题是否是当天
-	 * @param date1
-	 * @param date2
-	 * @return
-	 */
-	private static boolean isSameDate(Date date1, Date date2) {
-	       Calendar cal1 = Calendar.getInstance();
-	       cal1.setTime(date1);
-
-	       Calendar cal2 = Calendar.getInstance();
-	       cal2.setTime(date2);
-
-	       boolean isSameYear = cal1.get(Calendar.YEAR) == cal2
-	               .get(Calendar.YEAR);
-	       boolean isSameMonth = isSameYear
-	               && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
-	       boolean isSameDate = isSameMonth
-	               && cal1.get(Calendar.DAY_OF_MONTH) == cal2
-	                       .get(Calendar.DAY_OF_MONTH);
-
-	       return isSameDate;
-	  }
 }

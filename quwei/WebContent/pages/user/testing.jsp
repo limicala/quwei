@@ -201,10 +201,10 @@
 		function fix(num, length) {
 			  return ('' + num).length < length ? ((new Array(length + 1)).join('0') + num).slice(-length) : '' + num;
 		}
-        /* $('form').submit(function(){ 
+        /*  $('form').submit(function(){ 
 			alert($(this).serialize()); 
 			return false; 
-		});  */
+		});   */
     </script>
 </body>
 </html>

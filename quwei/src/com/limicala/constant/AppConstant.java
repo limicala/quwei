@@ -40,7 +40,7 @@ public final class AppConstant {
 	//学生
 	public static final String SID = "*学号";
 	public static final String SNAME = "*姓名";
-	public static final String SCOLLEGE = "学院";
+	public static final String SCOLLEGE = "*学院";
 	//答题记录记录
 	public static final String HSTU_NUM = "学号";
 	public static final String HNAME = "姓名";

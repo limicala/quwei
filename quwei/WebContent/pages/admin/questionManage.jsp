@@ -3,6 +3,7 @@
 <%@page import="com.jfinal.plugin.activerecord.Record"%>
 <%@page import="com.jfinal.plugin.activerecord.Page"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -169,7 +170,7 @@
 	                                <td rowspan="4" style="width: 50px;" id="${s.qid }Answer">${s.qanswer }</td><!--答案-->
 	                                <td rowspan="4" class="tip" id="${s.qid }Explain">${s.qexplain }</td><!--题目注释-->
 	                                <td rowspan="4">${s.qall_times }</td><!--回答次数-->
-	                                <td rowspan="4">${s.qtrue_times }</td><!--正确率-->
+	                                <td rowspan="4"><fmt:formatNumber value="${s.true_rate * 100 }" pattern="0.00"/>%</td><!--正确率-->
 	                                <td rowspan="4">
 	                                	<input class="hidden" id="o${s.qid }State" value="${s.qlimit }"/>
 	                                	<select id="${s.qid }State" onchange="setState(this)" class="${s.qlimit eq '1' ? 'text-error' : '' }" style="width: 65px;">
@@ -327,12 +328,12 @@
 	                                <td rowspan="4" style="width: 50px;" id="${m.qid }Answer">${m.qanswer }</td><!--答案-->
 	                                <td rowspan="4" class="tip" id="${m.qid }Explain">${m.qexplain }</td><!--题目注释-->
 	                                <td rowspan="4">${m.qall_times }</td><!--回答次数-->
-	                                <td rowspan="4">${m.qtrue_times }</td><!--正确率-->
+	                                <td rowspan="4"><fmt:formatNumber value="${m.true_rate * 100 }" pattern="0.00"/>%</td><!--正确率-->
 	                                <td rowspan="4">
 	                                	<input class="hidden" id="o${m.qid }State" value="${m.qlimit }"/>
 	                                	<select id="${m.qid }State" onchange="setState(this)" class="${m.qlimit eq '1' ? 'text-error' : '' }" style="width: 70px;">
 										  <option ${m.qlimit eq "0" ? "SELECTED" : ""} value="0">随机</option>
-										  <option ${m.qlimit eq "1" ? "SELECTED" : ""} value="1">必答</option>
+										  <option ${m.qlimit eq "1" ? "SELECTED" : ""} value="1">优先</option>
 										</select>
 	                                </td><!--答题限定-->
 	                                <td rowspan="4" style="width: 150px;"><!--题目操作->编辑->删除-->
@@ -484,12 +485,12 @@
 	                                
 	                                <td class="tip" style="width: 210px;" id="${j.qid }Explain" >${j.qexplain }</td><!--题目注释-->
 	                                <td >${j.qall_times }</td><!--答题次数-->
-	                                <td >${j.qtrue_times }</td><!--正确率-->
+	                                <td ><fmt:formatNumber value="${j.true_rate * 100 }" pattern="0.00"/>%</td><!--正确率-->
 	                                <td >
 	                                	<input class="hidden" id="o${j.qid }State" value="${j.qlimit }"/>
 	                                	<select id="${j.qid }State" onchange="setState(this)" class="${j.qlimit eq '1' ? 'text-error' : '' }" style="width: 70px;">
 										  <option ${j.qlimit eq "0" ? "SELECTED" : ""} value="0">随机</option>
-										  <option ${j.qlimit eq "1" ? "SELECTED" : ""} value="1">必答</option>
+										  <option ${j.qlimit eq "1" ? "SELECTED" : ""} value="1">优先</option>
 										</select>
 	                                </td><!--答题限定-->
 	                                <td style="width: 100px;"><!--题目操作->编辑->删除-->

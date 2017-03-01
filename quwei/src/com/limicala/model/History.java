@@ -1,6 +1,8 @@
 package com.limicala.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.jfinal.kit.StrKit;
@@ -110,4 +112,89 @@ public class History extends BaseModel<History>{
 		History history = findFirst("select * from history where hstuNum = ?",stuNum);
 		return history;
 	}
+	
+	/**
+	 * 检查用户是否有资格答题
+	 * 
+	 */
+	public boolean canContest(String sid, Integer dayinterval){
+		boolean flag = true;
+		History history = findModelByStuNum(sid);
+		if(history != null){//答过题
+			Date lastDate = history.getDate("htime");
+			Date nowDate = new Date();
+			Integer hrate = history.getInt("hrate");
+			if(hrate == null) hrate = 0;
+			if(isSameDate(lastDate, nowDate)){//同一天
+				if(hrate >= dayinterval){
+					flag = false;//不能答题
+				}
+			}
+		}
+		return flag;
+	}
+	
+	public boolean updateHistory(String sid, Integer total_score) {
+		// TODO Auto-generated method stub
+		History history = findModelByStuNum(sid);
+		Student student = Student.me.findById(sid);
+		Date nowDate = new Date();
+		boolean flag = true;
+		if(history != null){//答过题
+			Date lastDate = history.getDate("htime");
+			
+			Integer hrate = history.getInt("hrate");
+			if(hrate == null) hrate = 0;
+			if(isSameDate(lastDate, nowDate)){//同一天
+				flag = history.set("hrate", hrate + 1)
+						.set("htime", nowDate)
+						.set("hscore", total_score)
+						.update();
+				
+			}else{//不是同一天
+				flag = history.set("hrate", 1)
+						.set("htime", nowDate )
+						.set("hscore", total_score)
+						.update();
+			}
+			
+		}else{
+			history = new History();
+			flag = history.set("hstuNum", sid)
+			.set("hname", student.getStr("sname"))
+			.set("hcollege", student.getStr("scollege"))
+			.set("hscore", total_score)
+			.set("hrate", 1)
+			.set("htime", nowDate)
+			.save();
+		}
+		return flag;
+	}
+	
+	/**
+	 * 检测最后一次答题是否是当天
+	 * @param date1
+	 * @param date2
+	 * @return
+	 */
+	private static boolean isSameDate(Date date1, Date date2) {
+	       Calendar cal1 = Calendar.getInstance();
+	       cal1.setTime(date1);
+
+	       Calendar cal2 = Calendar.getInstance();
+	       cal2.setTime(date2);
+
+	       boolean isSameYear = cal1.get(Calendar.YEAR) == cal2
+	               .get(Calendar.YEAR);
+	       boolean isSameMonth = isSameYear
+	               && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
+	       boolean isSameDate = isSameMonth
+	               && cal1.get(Calendar.DAY_OF_MONTH) == cal2
+	                       .get(Calendar.DAY_OF_MONTH);
+
+	       return isSameDate;
+	 }
+
+
+	
 }

@@ -57,7 +57,7 @@ public class Question extends BaseModel<Question>{
 	 */
 	public Page<Record> findByParams(Integer pageNumber, Integer pageSize, int qtype, String condit){
 		StringBuilder selectSql = new StringBuilder();
-		selectSql.append(" select * ");
+		selectSql.append(" select *,if(qall_times = 0,0,(qtrue_times/qall_times)) as true_rate");
 		StringBuilder fromSql = new StringBuilder();
 		fromSql.append("from question");
 		StringBuilder whereSql = new StringBuilder();
@@ -289,5 +289,35 @@ public class Question extends BaseModel<Question>{
 	public boolean truePlus(Question q){
 		int a = Integer.valueOf(q.get("qtrue_times").toString()) + 1;
 		return q.set("qtrue_times", a).update();
+	}
+	
+	/**
+	 * 判断能不能组出一套试题
+	 */
+	public boolean hasQuestions(){
+		ConfigOS configOS = ConfigOS.me.findById(1);
+		if(configOS != null){
+			Integer judgeTotalNum = configOS.getInt("cjudge_num");
+			Integer judgeQuestionNum = findCountByParams(AppTableConstant.QUESTION_JUDGE, -1);
+			if(judgeTotalNum > judgeQuestionNum){
+				return false;
+			}
+			
+			Integer singleTotalNum =  configOS.getInt("csingle_num");
+			Integer singleQuestionNum = findCountByParams(AppTableConstant.QUESTION_SINGLE, -1);
+			if(singleTotalNum > singleQuestionNum){
+				return false;
+			}
+			Integer multiTotalNum = configOS.getInt("cmulti_num");
+			Integer multiQuestionNum = findCountByParams(AppTableConstant.QUESTION_MUTIL, -1);
+			if(multiTotalNum > multiQuestionNum){
+				return false;
+			}
+			//都符合的话就返回true
+			return true;
+		}else{//没有配置问题，也不能答题
+			return false;
+		}
+		
 	}
 }
