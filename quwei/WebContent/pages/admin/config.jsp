@@ -75,7 +75,7 @@
             	
 	            	<div class="input-append" style="padding-top: 7px;">
 	            		
-		            	<input id="interval" value="${configOS.cdayinterval }" class="span2" type="number" placeholder="答题间隔时间（分钟）"/>
+		            	<input id="interval" value="${configOS.cdayinterval }" class="span2" type="number" placeholder="一天答题次数"/>
 		            	<button class="btn" onclick="update_interval()"><span class="icon-pencil"></span>  确  认</button>
 		            </div>
             	</div>

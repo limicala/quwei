@@ -27,6 +27,11 @@ import com.limicala.util.ExcelUtil;
  */
 public class Student extends BaseModel<Student>{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public static Student me = new Student();
 	
 	public String getTableName(){

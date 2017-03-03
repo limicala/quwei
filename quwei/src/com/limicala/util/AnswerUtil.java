@@ -1,7 +1,5 @@
 package com.limicala.util;
 
-import org.apache.log4j.chainsaw.Main;
-
 import com.limicala.constant.AppTableConstant;
 
 public class AnswerUtil {

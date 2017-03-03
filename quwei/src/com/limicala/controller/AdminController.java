@@ -157,7 +157,7 @@ public class AdminController extends BaseController{
 		Integer pageNumber = this.getParaToInt("pageNumber", 1);
 		Integer pageSize = 6;
 		String account = getPara("account");
-		Page<Record> page = Admin.me.findByParams(pageNumber, pageSize, account);
+		Page<Record> page = Admin.me.findByParams(pageNumber, AppConstant.PAGE_SIZE, account);
 		setAttr("url", "userManageView");
 		setAttr("account", account);
 		setAttr("page", page);
@@ -573,7 +573,7 @@ public class AdminController extends BaseController{
 		Integer search_type = getParaToInt("search_type", 1);
 		Integer pageSize = 10;
 		String condit = this.getPara("condit", "");
-		Page<Record> page = Student.me.findByParams(pageNumber, pageSize, search_type, condit);
+		Page<Record> page = Student.me.findByParams(pageNumber, AppConstant.PAGE_SIZE, search_type, condit);
 		setAttr("search_type", search_type);
 		setAttr("condit", condit);
 		setAttr("page", page);

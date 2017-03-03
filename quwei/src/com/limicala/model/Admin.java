@@ -1,7 +1,5 @@
 package com.limicala.model;
 
-import java.util.List;
-
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
