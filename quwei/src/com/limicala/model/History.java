@@ -33,7 +33,7 @@ public class History extends BaseModel<History>{
 		StringBuilder whereSql = new StringBuilder();
 		whereSql.append(" where 1 = 1 ");
 		//学号stuNum、姓名name、学院college
-		if (StrKit.notBlank(condi) && StrKit.notBlank(condiValue) && !condi.equals("none")) {
+		if (StrKit.notBlank(condi) && StrKit.notBlank(condiValue)) {
 			if (condi.trim().equals("stuNum"))
 				whereSql.append(" and hstuNum like ").append("'%").append(condiValue).append("%'");
 			else if (condi.trim().equals("name"))
@@ -65,7 +65,7 @@ public class History extends BaseModel<History>{
 		Integer idAllNum = id.length;
 		int idDelNum = 0;
 		for (int i = 0; i < idAllNum; ++i){
-			System.out.println(id[i]);
+			//System.out.println(id[i]);
 			if(History.me.deleteById(id[i]))
 				idDelNum++;
 		}
@@ -139,22 +139,21 @@ public class History extends BaseModel<History>{
 		boolean flag = true;
 		if(history != null){//答过题
 			Date lastDate = history.getDate("htime");
-			
+			Integer maxScore = history.getInt("hscore");
 			Integer hrate = history.getInt("hrate");
 			if(hrate == null) hrate = 0;
 			if(isSameDate(lastDate, nowDate)){//同一天
-				flag = history.set("hrate", hrate + 1)
-						.set("htime", nowDate)
-						.set("hscore", total_score)
-						.update();
+				history.set("hrate", hrate + 1)
+						.set("htime", nowDate);
 				
 			}else{//不是同一天
-				flag = history.set("hrate", 1)
-						.set("htime", nowDate )
-						.set("hscore", total_score)
-						.update();
+				history.set("hrate", 1)
+						.set("htime", nowDate );
 			}
-			
+			if(maxScore < total_score){
+				history.set("hscore", total_score);
+			}
+			flag = history.update();
 		}else{
 			history = new History();
 			flag = history.set("hstuNum", sid)

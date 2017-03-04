@@ -13,7 +13,7 @@
     <meta http-equiv="expires" content="0">
     <link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-	<title>趣味问答系统-用户管理</title>
+	<title>趣味问答系统-学生管理</title>
 	
 	<style>
         body{
@@ -94,10 +94,12 @@
 				</li>
 				<li><button class="btn" type="button" id="s" onclick="query(this);"><span class="icon-search"></span> 查 找 </button></li>
                 <li><button type="button" class="btn" onclick="location.href='stuManageView'"><span class="icon-refresh"></span> 刷 新 </button></li>
-                <li><button type="button" class="btn" data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
+                <li><button type="button" class="btn" data-toggle="modal" data-target="#editModal"><span class="icon-plus"></span> 添 加 </button></li>
+                
                 
             </ul>
 			<ul class="inline"><!--操作-->
+				<li><button type="button" class="btn" data-toggle="modal" data-target="#uploadModal"><span class="icon-plus-sign"></span> 批量导入 </button></li>
 				<li><button type="button" class="btn" id="singleDels" onclick="deleteStudents(this)"><span class="icon-trash"></span> 删除所选 </button></li>
                 
                 <li><button  type="button" class="btn"  onclick="emptyStudent(this)"><span class="icon-trash"></span> 清空数据 </button></li>
@@ -118,7 +120,7 @@
 	                        <th style="padding-left: 33px;min-width: 110px;">学号</th>
 	                        <th style="min-width: 75px;">姓名</th>
 	                        <th style="min-width: 100px;width: 200px;">学院</th>
-	                        <th style="padding-left: 25px;">&nbsp;&nbsp;&nbsp;编辑</th>
+	                        <th style="min-width:50px;padding-left: 9px;">&nbsp;&nbsp;&nbsp;编辑</th>
 	                    </tr>
                     </thead>
                    

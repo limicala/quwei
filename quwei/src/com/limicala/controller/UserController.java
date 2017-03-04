@@ -38,23 +38,31 @@ public class UserController extends BaseController{
 		String sid = getPara("sid");//账号
 		Student student = Student.me.findById(sid);
 		ResponseModel rm = new ResponseModel();
-		ConfigOS configOS = ConfigOS.me.findById(1);
-		Integer dayinterval = configOS.getInt("cdayinterval");
-		if(student != null){
-			if(Question.me.hasQuestions()){
-				boolean flag = History.me.canContest(student.getStr("sid"), dayinterval);
-				if (flag) {
-					SessionUtil.setFrontedLoginUserId(getSession(), sid);
-					rm.setSuccess(true);
+		
+		if(ConfigOS.me.hasConfiged()==false){
+			rm.msgFailed("试题还未配置");
+			//System.out.println("配置为空");
+			renderJson(rm);
+		}else{
+			ConfigOS configOS = ConfigOS.me.findById(1);
+			Integer dayinterval = configOS.getInt("cdayinterval");
+			if(student != null){
+				if(Question.me.hasQuestions()){
+					boolean flag = History.me.canContest(student.getStr("sid"), dayinterval);
+					if (flag) {
+						SessionUtil.setFrontedLoginUserId(getSession(), sid);
+						rm.setSuccess(true);
+					}else{
+						rm.msgFailed("一天只能回答"+dayinterval+"次");
+					}
 				}else{
-					rm.msgFailed("一天只能回答"+dayinterval+"次");
+					rm.msgFailed("无法作答，题库在更新");
 				}
 			}else{
-				rm.msgFailed("无法作答，题库在更新");
+				rm.msgFailed("您输入的学号有误，或者您未参与本次活动");
 			}
-		}else{
-			rm.msgFailed("您输入的学号有误，或者您未参与本次活动");
 		}
+		
 		renderJson(rm);
 	}
 	
@@ -144,7 +152,7 @@ public class UserController extends BaseController{
 		/*if(total_num < limit_size){
 			//生成一个不重复的随机序列
 			int[] random = ShuffleUtil.GetRandomSequence2(unlimit_size, total_num - limit_size);
-			System.out.println("90900000000000000000");
+			//System.out.println("90900000000000000000");
 			return null;
 		}*/
 		Random random = new Random();
@@ -199,9 +207,9 @@ public class UserController extends BaseController{
 			}
 			
 			Integer q_id = getParaToInt(prefix+i);
-			System.out.println("问题id"+q_id);
+			//System.out.println("问题id"+q_id);
 			Question question = Question.me.findById(q_id);
-			System.out.println(question == null);
+			//System.out.println(question == null);
 			//用户的答案
 			question.put("u_answer",user_answer);
 			questions.add(question);

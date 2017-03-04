@@ -134,6 +134,9 @@ public class Question extends BaseModel<Question>{
 	 */
 	public Integer findCountByParams(Integer qtype, Integer qlimit){
 		List<Question> temp = findQuestionByParams(qtype, qlimit);
+		if (temp == null) {
+			return 0;
+		}
 		return temp.size();
 	}
 	
@@ -169,7 +172,7 @@ public class Question extends BaseModel<Question>{
 		
 		//先遍历获取到题型
 		for(FileItem item : list){
-			//System.out.println("接受参数");
+			////System.out.println("接受参数");
 			//如果fileitem中封装的是普通输入项的数据
 			if(item.isFormField()){
 				String name = item.getFieldName();
@@ -192,7 +195,7 @@ public class Question extends BaseModel<Question>{
 		}
 
 		for(FileItem item : list){
-			//System.out.println("接受参数");
+			////System.out.println("接受参数");
 			//如果fileitem中封装的是普通输入项的数据
 			if(!item.isFormField()){
 				
@@ -221,7 +224,7 @@ public class Question extends BaseModel<Question>{
 					int insertNum = 0;//定义正确插入的题目数量
 					
 					if (qtype.trim().equals("1")){//判断题
-						System.out.println("判断题");
+						//System.out.println("判断题");
 						for (Question q : questionList){
 							if ((!q.get("qcontent").toString().trim().equals("")) && (!q.get("qanswer").toString().trim().equals(""))){
 								if (q.set("qtype", 1).save())

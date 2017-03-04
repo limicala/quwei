@@ -1,5 +1,6 @@
 package com.limicala.controller;
 
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -78,6 +79,8 @@ public class AdminController extends BaseController{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		//因为前面应用使用Respones对象传递数据了，所有之后就不用再请求，就renderNull();
+		renderNull();
 	}
 	
 	/**
@@ -555,6 +558,7 @@ public class AdminController extends BaseController{
 		if(configOS.getInt("cid")!= null){
 			renderJson(configOS.update());
 		}else{
+			configOS.set("cid", 1);
 			renderJson(configOS.save());
 		}
 	}
@@ -685,7 +689,7 @@ public class AdminController extends BaseController{
 		if(admin != null){
 			if(admin.getStr("apassword").equals(password)){
 				Integer flag = Db.update("TRUNCATE TABLE "+AppTableConstant.STUDENT);
-				System.out.println("-------------"+flag);
+				//System.out.println("-------------"+flag);
 				if(flag >= 0){
 					rm.msgSuccess("删除成功");
 				}else{
