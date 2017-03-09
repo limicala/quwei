@@ -78,6 +78,7 @@ public class AdminController extends BaseController{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return;
 	}
 	
 	/**
