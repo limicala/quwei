@@ -1,35 +1,25 @@
 package com.limicala.model;
 
 
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-
-import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.plugin.activerecord.tx.Tx;
 import com.limicala.config.BaseModel;
-
 import com.limicala.constant.AppTableConstant;
 import com.limicala.util.AnswerUtil;
 import com.limicala.util.ExcelUtil;
@@ -144,6 +134,9 @@ public class Question extends BaseModel<Question>{
 	 */
 	public Integer findCountByParams(Integer qtype, Integer qlimit){
 		List<Question> temp = findQuestionByParams(qtype, qlimit);
+		if (temp == null) {
+			return 0;
+		}
 		return temp.size();
 	}
 	
@@ -179,7 +172,7 @@ public class Question extends BaseModel<Question>{
 		
 		//先遍历获取到题型
 		for(FileItem item : list){
-			//System.out.println("接受参数");
+			////System.out.println("接受参数");
 			//如果fileitem中封装的是普通输入项的数据
 			if(item.isFormField()){
 				String name = item.getFieldName();
@@ -202,7 +195,7 @@ public class Question extends BaseModel<Question>{
 		}
 
 		for(FileItem item : list){
-			//System.out.println("接受参数");
+			////System.out.println("接受参数");
 			//如果fileitem中封装的是普通输入项的数据
 			if(!item.isFormField()){
 				
@@ -231,7 +224,7 @@ public class Question extends BaseModel<Question>{
 					int insertNum = 0;//定义正确插入的题目数量
 					
 					if (qtype.trim().equals("1")){//判断题
-						System.out.println("判断题");
+						//System.out.println("判断题");
 						for (Question q : questionList){
 							if ((!q.get("qcontent").toString().trim().equals("")) && (!q.get("qanswer").toString().trim().equals(""))){
 								if (q.set("qtype", 1).save())

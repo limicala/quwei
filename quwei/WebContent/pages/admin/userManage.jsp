@@ -13,7 +13,7 @@
     <meta http-equiv="expires" content="0">
     <link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-	<title>趣味问答系统-用户管理</title>
+	<title>趣味问答系统-管理员管理</title>
 	
 	<style>
         body{

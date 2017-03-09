@@ -1,5 +1,6 @@
 package com.limicala.controller;
 
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -78,7 +79,9 @@ public class AdminController extends BaseController{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return;
+
+		//因为前面应用使用Respones对象传递数据了，所有之后就不用再请求，就renderNull();
+		renderNull();
 	}
 	
 	/**
@@ -158,7 +161,7 @@ public class AdminController extends BaseController{
 		Integer pageNumber = this.getParaToInt("pageNumber", 1);
 		Integer pageSize = 6;
 		String account = getPara("account");
-		Page<Record> page = Admin.me.findByParams(pageNumber, pageSize, account);
+		Page<Record> page = Admin.me.findByParams(pageNumber, AppConstant.PAGE_SIZE, account);
 		setAttr("url", "userManageView");
 		setAttr("account", account);
 		setAttr("page", page);
@@ -556,6 +559,7 @@ public class AdminController extends BaseController{
 		if(configOS.getInt("cid")!= null){
 			renderJson(configOS.update());
 		}else{
+			configOS.set("cid", 1);
 			renderJson(configOS.save());
 		}
 	}
@@ -574,7 +578,7 @@ public class AdminController extends BaseController{
 		Integer search_type = getParaToInt("search_type", 1);
 		Integer pageSize = 10;
 		String condit = this.getPara("condit", "");
-		Page<Record> page = Student.me.findByParams(pageNumber, pageSize, search_type, condit);
+		Page<Record> page = Student.me.findByParams(pageNumber, AppConstant.PAGE_SIZE, search_type, condit);
 		setAttr("search_type", search_type);
 		setAttr("condit", condit);
 		setAttr("page", page);
@@ -686,7 +690,7 @@ public class AdminController extends BaseController{
 		if(admin != null){
 			if(admin.getStr("apassword").equals(password)){
 				Integer flag = Db.update("TRUNCATE TABLE "+AppTableConstant.STUDENT);
-				System.out.println("-------------"+flag);
+				//System.out.println("-------------"+flag);
 				if(flag >= 0){
 					rm.msgSuccess("删除成功");
 				}else{

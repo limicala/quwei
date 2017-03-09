@@ -23,10 +23,10 @@ function showChoose(msg){
 //**************************查找信息**************************
 function queryRecord(){
 	var condi = $("#condi").val();//判断查询条件
-	if (condi == "none"){
+	/*if (condi == "none"){
 		showWrongTip("请选择查询条件");
 		return;
-	}
+	}*/
 	var condiValue = $("#condiValue").val();//判断查询条件值
 	if (condiValue.trim() == ""){
 		showWrongTip("请输入查询关键字");

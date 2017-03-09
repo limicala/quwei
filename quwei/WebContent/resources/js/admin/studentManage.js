@@ -125,7 +125,7 @@ function emptyStudent(){
 	$("#confirm_password").show();
 	$("#chooseModal").modal('show');
 	$("#chooseOk").unbind("click");
-	showChoose("确 定 删 除 所 选 学 生 信 息 吗 ？");
+	showChoose("确 定 删 除 所  有  的  学 生 信 息 吗 ？");
 	$("#chooseOk").bind("click", function(){
 		var password = $("#admin_password").val().trim();
 		if(password == ''){

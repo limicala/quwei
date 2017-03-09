@@ -9,7 +9,7 @@
     <meta http-equiv="expires" content="0">
     <link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="<%=request.getContextPath()%>/frame/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-	<title>趣味问答系统-用户管理</title>
+	<title>趣味问答系统-系统配置</title>
 	
 	<style>
         body{background-color: #f5f5f5;}
@@ -75,7 +75,7 @@
             	
 	            	<div class="input-append" style="padding-top: 7px;">
 	            		
-		            	<input id="interval" value="${configOS.cdayinterval }" class="span2" type="number" placeholder="答题间隔时间（分钟）"/>
+		            	<input id="interval" value="${configOS.cdayinterval }" class="span2" type="number" placeholder="一天答题次数"/>
 		            	<button class="btn" onclick="update_interval()"><span class="icon-pencil"></span>  确  认</button>
 		            </div>
             	</div>
@@ -132,7 +132,7 @@
             			</td>
             		</tr>
             	</table>
-            	<button class="btn" onclick="update_score()"><span class="icon-pencil"></span>  确  认</button>
+            	<button class="btn" onclick="update_score()" style="margin-bottom: 20px;"><span class="icon-pencil"></span>  确  认</button>
             </div>
         </div>
 

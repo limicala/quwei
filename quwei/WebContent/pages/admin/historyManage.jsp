@@ -73,7 +73,7 @@
 					<div class="input-prepend input-append" style="padding-top: 7px;">
 						<div class="btn-group">
 							<select id="condi">
-								<option value="none">条件</option>
+								<!-- <option value="none">条件</option> -->
 								<option value="stuNum" ${condi eq "stuNum" ? "selected" : "" }>学号</option>
 								<option value="name" ${condi eq "name" ? "selected" : "" }>姓名</option>
 								<option value="college" ${condi eq "college" ? "selected" : "" }>学院</option>

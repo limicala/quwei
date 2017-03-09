@@ -36,6 +36,7 @@ function update_answertime(){
         data: "configOS.canswertime=" + answer_time + "&configOS.cid="+cid,  
         success: function(result) {  
           	if(result){
+          		$('#cid').val(1); 
           		showRightTip("修改成功");
           	}
           	else{
@@ -60,6 +61,7 @@ function update_interval(){
         data: "configOS.cdayinterval=" + interval + "&configOS.cid="+cid,  
         success: function(result) {  
           	if(result){
+          		$('#cid').val(1); 
           		showRightTip("修改成功");
           	}
           	else{
@@ -104,6 +106,7 @@ function update_score(){
 		success:function(result){
 		
 			if(result){
+				$('#cid').val(1);  
           		showRightTip("修改成功");
           	}
           	else{

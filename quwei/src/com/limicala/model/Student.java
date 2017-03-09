@@ -27,6 +27,11 @@ import com.limicala.util.ExcelUtil;
  */
 public class Student extends BaseModel<Student>{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public static Student me = new Student();
 	
 	public String getTableName(){
@@ -144,7 +149,7 @@ public class Student extends BaseModel<Student>{
 		String fileName = "";//上传文件名字
 		
 		for(FileItem item : list){
-			//System.out.println("接受参数");
+			////System.out.println("接受参数");
 			//如果fileitem中封装的是普通输入项的数据
 			if(!item.isFormField()){
 				//如果fileitem中封装的是上传文件
@@ -166,7 +171,7 @@ public class Student extends BaseModel<Student>{
 					flag = 4;
 				}else{
 					int allNum = ExcelUtil.excelAllRowNum(workbook) - 1;//获取表格有效总记录数目
-					System.out.println("有效行数"+allNum);
+					//System.out.println("有效行数"+allNum);
 					List<Student> studentList = (ArrayList<Student>)ExcelUtil.readStudentExcel(workbook, fileName);
 					
 					int insertNum = 0;

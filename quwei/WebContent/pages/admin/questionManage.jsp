@@ -154,7 +154,7 @@
                                 <th style="width: 15px;">回答次数（次）</th>
                                 <th style="width: 15px;">正确率（%）</th>
                                 <th >答题限定</th>
-                                <th>&nbsp;&nbsp;&nbsp;编 辑</th>
+                                <th style="min-width:50px;padding-left: 9px;">&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -313,7 +313,7 @@
                                 <th style="width: 15px;">回答次数（次）</th>
                                 <th style="width: 15px;">正确率（%）</th>
                                 <th >答题限定</th>
-                                <th>&nbsp;&nbsp;&nbsp;编 辑</th>
+                                <th style="min-width:50px;padding-left: 9px;">&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -470,7 +470,7 @@
                                 <th style="width: 15px;">回答次数（次）</th>
                                 <th style="width: 15px;">正确率（%）</th>
                                 <th style="width: 70px;">答题限定</th>
-                                <th>&nbsp;&nbsp;&nbsp;编 辑</th>
+                                <th style="min-width:50px;padding-left: 9px;">&nbsp;&nbsp;&nbsp;编 辑</th>
                             </tr>
                             </thead>
                             <tbody>

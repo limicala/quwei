@@ -35,7 +35,7 @@
 	      <legend class="text-center"><h3>趣味问答</h3></legend>
 		 
 	      <div class="text-center">
-	        昵 称 <input type="text" id="stu_id" class="input-medium search-query" placeholder="学号是最美美的昵称哦">
+	        学 号 <input type="text" id="stu_id" class="input-medium search-query" placeholder="学号是最美美的昵称哦">
 	      </div>
 	      <div class="text-center" style="padding-top: 15px;">
 	        <button class="btn btn-success" onclick="jump()">开始答题</button>

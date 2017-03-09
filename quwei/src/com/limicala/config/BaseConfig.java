@@ -105,7 +105,7 @@ public class BaseConfig extends JFinalConfig{
 				boolean f = true;
 				Controller controller = inv.getController();
 				HttpSession session = controller.getSession();
-				System.out.println("rpath"+rpath);
+				////System.out.println("rpath"+rpath);
 				//在系统内部了
 				if(!(rpath.startsWith("/admin"))){//不是管理员
 					if(rpath.equals("/") || rpath.equals("/index.jsp") || rpath.equals("/checkexsitstudent")){//学生登录页面
@@ -113,10 +113,10 @@ public class BaseConfig extends JFinalConfig{
 					}else{//学生其他页面
 						f = isStudent(session);
 						if(f == false){
-							System.out.println("拦截该请求:"+rpath);
-							System.out.println("管理员未登录");
+							//System.out.println("拦截该请求:"+rpath);
+							//System.out.println("管理员未登录");
 							controller.redirect("/");
-							return;
+							//return;
 						}
 					}
 				}else {
@@ -125,10 +125,10 @@ public class BaseConfig extends JFinalConfig{
 					}else{
 						f = isAdmin(session);
 						if(f == false){
-							System.out.println("拦截该请求:"+rpath);
-							System.out.println("学生未登录");
+							//System.out.println("拦截该请求:"+rpath);
+							//System.out.println("学生未登录");
 							controller.redirect("/admin");
-							return;
+							//return;
 						}
 					}
 				}
