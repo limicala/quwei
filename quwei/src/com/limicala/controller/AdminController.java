@@ -79,6 +79,7 @@ public class AdminController extends BaseController{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		//因为前面应用使用Respones对象传递数据了，所有之后就不用再请求，就renderNull();
 		renderNull();
 	}

@@ -93,8 +93,7 @@
                     <h4 class="modal-title">二 维 码</h4>
                 </div>
                 <div class="modal-body text-center">
-					<img data-src="holder.js/360x360" src="getQrcode" style="width: 360px; height: 360px;">
-                    <!--<img src="images/birthday.png" class="img-rounded">-->
+					<img data-src="holder.js/300x300" src="getQrcode" style="width: 300px; height: 300px;">
                 </div>
                 <div class="modal-footer text-center ">
                     <button type="button" class="btn btn-success" onclick="location.href = 'downloadQrcode'"> 下 载 </button>
