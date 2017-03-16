@@ -505,7 +505,8 @@ public class AdminController extends BaseController{
 					e.printStackTrace();
 				}
 			}
-		}	
+		}
+		renderNull();
 	}
 	
 	/**

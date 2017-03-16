@@ -85,7 +85,7 @@
 				<li><button type="button" class="btn" onclick="queryRecord()"><span class="icon-search"></span> 查  找 </button></li>
 				<li><button type="button" class="btn" onclick="location.href='historyManageView?hpn=${page1.pageNumber}'"><span class="icon-refresh"></span> 刷  新 </button></li>
 				<li><button type="button" class="btn" onclick="deleteHistory()"><span class="icon-trash"></span> 删除所选 </button></li>
-				<li><button type="button" class="btn" data-toggle="modal" data-target="#downloadModal"><span class="icon-download-alt"></span> 导出记录 </button></li>
+				<li><button type="button" class="btn" id="downloadButton" data-toggle="modal" data-target="#downloadModal"><span class="icon-download-alt"></span> 导出记录 </button></li>
 				<li><button type="button" class="btn" onclick="emptyData()"><span class="icon-off"></span> 清空数据 </button></li>
 			</ul>
 			<div class="container tb-responsive">
@@ -208,6 +208,15 @@
     <script src="<%=request.getContextPath()%>/frame/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="<%=request.getContextPath()%>/resources/js/admin/historyManage.js" type="text/javascript"></script>
     <script>
+	    $(document).ready(function() {
+	    	var size = ${page1.totalRow};
+	    	//alert(size);
+	    	if(size == 0){
+	    		$("#downloadButton").attr('disabled', 'disabled');
+	    	}
+			
+		});
+	    
         $("#recordCB").click(function(){
             if(this.checked){   
                 $("input[name='recordCB'][type=checkbox]").prop("checked", true);  
