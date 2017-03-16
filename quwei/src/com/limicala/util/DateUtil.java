@@ -10,14 +10,6 @@ import java.util.List;
 public final class DateUtil {
 	public static final String ymd = "yyyy-MM-dd";
 	
-	public static void main(String[] args){
-		System.out.println(getLastWeekDays(new Date()));
-//		List<Date> list = getBeforeDays(new Date(),30);
-//		for(Date d : list){
-//			System.out.println(FormatUtil.formatDate(d, "yyyy-MM-dd"));
-//		}
-	}
-	
 	/**
 	 * 获取过去7天
 	 * @param date
@@ -30,7 +22,6 @@ public final class DateUtil {
 	        Calendar cal = Calendar.getInstance();
 	        cal.setTime(date);
 	        cal.add(Calendar.DATE, -8);
-//	        cal.add(Calendar.WEEK_OF_MONTH, -1);
 	        for (int i = 0; i < 7; i++) {
 	            cal.add(Calendar.DATE, 1);
 	            list.add(sf.format(cal.getTime()));
@@ -71,7 +62,6 @@ public final class DateUtil {
 	        Calendar cal = Calendar.getInstance();
 	        cal.setTime(date);
 	        cal.add(Calendar.MONTH, -1);
-
 	        Date d = getMonthStart(cal.getTime());
 	        Date monthEnd = getMonthEnd(cal.getTime());
 	        while (!d.after(monthEnd)) {
@@ -81,6 +71,7 @@ public final class DateUtil {
 		}
         return list;
 	}
+	
 	
 	public static String getLastMonth(Date date){
 		if(date != null){

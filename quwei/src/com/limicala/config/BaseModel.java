@@ -2,8 +2,8 @@ package com.limicala.config;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
@@ -14,6 +14,7 @@ import com.jfinal.plugin.activerecord.Model;
  * @param <M>
  */
 public abstract class  BaseModel<M extends Model<?>> extends Model<M> {
+	
 	private static final long serialVersionUID = -4447796116787868438L;
 	
 	/**
