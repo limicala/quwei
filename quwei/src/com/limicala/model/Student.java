@@ -158,9 +158,9 @@ public class Student extends BaseModel<Student>{
 
 				Workbook workbook = null;
 				try{
-					workbook = new HSSFWorkbook(item.getInputStream()); 
-				}catch(Exception e){
 					workbook = new XSSFWorkbook(item.getInputStream()); 
+				}catch(Exception e){
+					workbook = new HSSFWorkbook(item.getInputStream()); 
 				}
 				//“1”存储成功 “0”存储失败 “2”上传模板出错 “3”数据填充出错，数据丢失 "4"没数据
 				if (fileName.trim().equals("")){//判断文件名是否为空，为空即当做失败

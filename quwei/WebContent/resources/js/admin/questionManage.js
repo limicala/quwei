@@ -20,6 +20,17 @@ function showChoose(msg){
 	$("#chooseModal").modal('show');
 }
 
+//************************** 记录改变每次点击tab按钮的状态 ********************
+function changePageState(ob){
+	if(ob.id == "stab"){
+		$("#ct").val(1);
+	}else if(ob.id == "mtab"){
+		$("#ct").val(2);
+	}else if(ob.id == "jtab"){
+		$("#ct").val(3);
+	}
+}
+
 //************************** 清 除 单 选 模 态 框 内 容 **************************
 function singleClean(){
 	$("#singleId").val("");
@@ -62,16 +73,7 @@ function query(ob){
 		showWrongTip("请输入题目关键字");
 		return;
 	}
-	//获取tab位置码
-	var ct = "";
-	if (ob.id == "s"){
-		ct = "1";
-	}else if (ob.id == "m"){
-		ct = "2";
-	}else{
-		ct = "3";
-	}
-	location.href = "questionManageView?ct="+ct+"&"+condi+"="+condiValue;
+	location.href = "questionManageView?ct="+$("#ct").val()+"&"+condi+"="+condiValue;
 }
 
 //************************** 添 加 单 条 单 项 选 择 题 目 **************************
@@ -343,7 +345,10 @@ function deleteQuestion(ob){
 			success: function(resp){
 				if (resp.success){
 					$("#chooseModal").modal('hide');
-					location.href = "questionManageView?" + $("#param").val();
+					location.href = "questionManageView?ct="+ $("#ct").val() 
+					+"&spn=" + $("#spn").val()
+					+"&mpn=" + $("#mpn").val()
+					+"&jpn=" + $("#jpn").val();
 				}else{
 					showWrongTip(resp.msg);
 				}
@@ -395,7 +400,10 @@ function deleteQuestions(ob){
 			data: "delType=m&id=" + delId,
 			success: function(resp){
 				$("#chooseModal").modal('hide');
-				location.href = "questionManageView?" + $("#param").val();
+				location.href = "questionManageView?ct="+ $("#ct").val() 
+				+"&spn=" + $("#spn").val()
+				+"&mpn=" + $("#mpn").val()
+				+"&jpn=" + $("#jpn").val();
 			},
 			error: function(resp){
 				$("#chooseModal").modal('hide');

@@ -234,8 +234,11 @@ public final class ExcelUtil {
 			if (num != 3 && num != 7){//上传模板不符合
 				flag = false;
 			}else if (num == 3 && qtype.trim().equals("1")){
+				System.out.println(row.getCell(0).toString());
+				System.out.println(row.getCell(1).toString());
+				System.out.println(row.getCell(2).toString());
 				if(!row.getCell(0).toString().equals(AppConstant.QCONTENT) 
-						|| !row.getCell(1).toString().equals(AppConstant.QANSWER) 
+						|| !row.getCell(1).toString().contains(AppConstant.QANSWER) 
 						|| !row.getCell(2).toString().equals(AppConstant.QEXPLAIN))
 					flag = false;
 			}else if (num == 7 && (qtype.trim().equals("2") || qtype.trim().equals("3"))){

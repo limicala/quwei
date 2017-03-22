@@ -9,6 +9,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=11">
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
@@ -74,6 +75,10 @@
 <body>
 	<input id="url" class="hidden" value="<%=request.getContextPath()%>"/>
 	<input id="param" class="hidden" value="<%=request.getQueryString()%>"/>
+	<input id="spn" class="hidden" value="${page.pageNumber }"/>
+	<input id="mpn" class="hidden" value="${page1.pageNumber }"/>
+	<input id="jpn" class="hidden" value="${page2.pageNumber }"/>
+	<input id="ct" class="hidden" value="${ct }"/>
     <!-- 主要内容 -->
     <div class="container">
         <!--顶端图片-->
@@ -111,9 +116,9 @@
         <div class="container text-center">
             <!-- tab按钮 -->
             <ul class="nav nav-tabs">
-                <li ${ct eq "1" ? "class='active'" : "" } ><a href="#single" data-toggle="tab" id="">单 项 选 择 题</a></li>
-                <li ${ct eq "2" ? "class='active'" : "" } ><a href="#multi" data-toggle="tab">多 项 选 择 题</a></li>
-                <li ${ct eq "3" ? "class='active'" : "" } ><a href="#judge" data-toggle="tab">判 断 题</a></li>
+                <li ${ct eq "1" ? "class='active'" : "" } ><a href="#single" data-toggle="tab" id="stab" onclick="changePageState(this)">单 项 选 择 题</a></li>
+                <li ${ct eq "2" ? "class='active'" : "" } ><a href="#multi" data-toggle="tab" id= "mtab" onclick="changePageState(this)">多 项 选 择 题</a></li>
+                <li ${ct eq "3" ? "class='active'" : "" } ><a href="#judge" data-toggle="tab" id= "jtab" onclick="changePageState(this)">判 断 题</a></li>
             </ul>
             <!-- 对应tab按钮内容 -->
             <div class="tab-content" style="overflow-x: hidden;">
