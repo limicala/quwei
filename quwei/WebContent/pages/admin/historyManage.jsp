@@ -80,6 +80,7 @@
 								<option value="college" ${condi eq "college" ? "selected" : "" }>学院</option>
 							</select>
 						</div>
+						<input type="text" style="display:none"/><input type="password" style="display:none"/>
 						<input type="text" placeholder="关键字" id="condiValue" value="${condiValue }">
 					</div>
 				</li>

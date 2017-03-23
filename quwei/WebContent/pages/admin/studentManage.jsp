@@ -90,7 +90,7 @@
 							<select id="search_type" style="width:auto">
                     		</select>
 						</div>
-						<input class="span2" type="text" id="condit" value="${condit }" placeholder="关键字">
+						<input type="text" id="condit" value="${condit }" placeholder="关键字">
 					</div>
 				</li>
 				<li><button class="btn" type="button" id="s" onclick="query(this);"><span class="icon-search"></span> 查 找 </button></li>
@@ -208,7 +208,10 @@
                     </ul>
                     <ul class="inline">
                         <li><h5>学院</h5></li>
-                        <li><input type="text"  id="scollege"/></li>
+                        <li>
+                        	<input type="text" style="display:none"/><input type="password" style="display:none"/>
+                        	<input type="text"  id="scollege"/>
+                        </li>
                     </ul>
                 </div>
                 <div class="modal-footer">
