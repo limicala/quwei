@@ -4,7 +4,7 @@ import com.limicala.constant.AppTableConstant;
 
 public class AnswerUtil {
 	
-	public static String answerRange = "abcd";
+	public static String answerRange = "abcdABCD";
 	
 	/**
 	 * 判断答案里有包含除了ABCD的其他字母,q_type为题目类型
@@ -13,7 +13,6 @@ public class AnswerUtil {
 	 * @return
 	 */
 	public static boolean checkAnswer(Integer q_type, String answer){
-		answer = answer.toLowerCase();
 		if(q_type == AppTableConstant.QUESTION_SINGLE){
 			if(answer == null || answer.length() > 1) return false;
 			if(isExsit(answer, answerRange)) return true;
@@ -31,10 +30,14 @@ public class AnswerUtil {
 	 * @return
 	 */
 	public static boolean isExsit(String x, String y){
-		int index = y.indexOf(x);
-		if(index > -1){
-			return true;
+		char[] checkChar = x.toCharArray();
+		if(checkChar.length > 0){
+			for(int i = 0; i < checkChar.length; ++i){
+				if (y.indexOf(String.valueOf(checkChar[i])) == -1){
+					return false;
+				}
+			}
 		}
-		return false;
+		return true;
 	}
 }
