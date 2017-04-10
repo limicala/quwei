@@ -72,7 +72,7 @@
 			                       		<h6 class="text-success">你的答案：${s.u_answer eq '1' ? '√' : '×' }</h6>
 			                       	</c:when>
 			                       	<c:when test="${s.u_answer ne s.qanswer}">
-			                       		<h6 class="text-error">你的答案： ${s.u_qanswer eq '1' ? '√' : '×' }</h6>
+			                       		<h6 class="text-error">你的答案： ${s.u_answer eq '1' ? '√' : '×' }</h6>
 			                       	</c:when>
 	                			</c:choose>
 	                		</c:when>
