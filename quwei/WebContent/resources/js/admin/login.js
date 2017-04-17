@@ -2,6 +2,7 @@ $("form").submit(function(e){
     e.preventDefault();
     var id = document.getElementById("id").value;
 	var pwd = document.getElementById("password").value;
+	var verify_code = document.getElementById("verify_code").value;
 	if ( id.trim() == "" ){
 		showWrongMsg("请输入账号");
 		flag = false;
@@ -15,12 +16,13 @@ $("form").submit(function(e){
 		$.ajax({
 			url:$("#url").val()+"/admin/doLogin",
 			dataType:"json",
-			data:{"id":id,"password":pwd},
+			data:{"id":id,"password":pwd,"verify_code":verify_code},
 			success:function(response){
 				if(response.success){
 					location.href=$("#url").val()+"/admin/mainView";
 				}else{
 					showWrongMsg(response.msg);
+					$("#verify_img").attr("src",$("#url").val()+"/admin/img?time="+Math.random())
 				}
 			}
 		});

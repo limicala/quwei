@@ -68,8 +68,8 @@
         <input type="text" name="id" id="id" class="input-block-level" placeholder="用户名">
         <input type="password" name="password" id="password" class="input-block-level" placeholder="密码">
         <div>
-        	<img alt="验证码" src="#" style="width:40%;height:36px;padding-bottom: 15px;">
-        	<input type="text" name="verify_code" placeholder="验证码" style="width:50%">
+        	<img id="verify_img" alt="验证码" src="<%=request.getContextPath()%>/admin/img" onclick="javascript:this.src=this.src+'?time='+Math.random()" style="width:40%;height:36px;padding-bottom: 15px;">
+        	<input type="text" id="verify_code" placeholder="验证码" style="width:50%">
         </div>
         <div class="text-center">
          	<button class="btn btn-large btn-success" id="subBtn" type="submit">登录</button>

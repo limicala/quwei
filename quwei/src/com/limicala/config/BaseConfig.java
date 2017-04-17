@@ -120,7 +120,7 @@ public class BaseConfig extends JFinalConfig{
 						}
 					}
 				}else {
-					if(rpath.equals("/admin/") || rpath.equals("/admin") || rpath.equals("/admin/dologin")){//不用拦截
+					if(rpath.equals("/admin/") || rpath.equals("/admin") || rpath.equals("/admin/dologin") || rpath.equals("/admin/img")){//不用拦截
 						f = true;
 					}else{
 						f = isAdmin(session);

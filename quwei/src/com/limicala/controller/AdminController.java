@@ -1,6 +1,5 @@
 package com.limicala.controller;
 
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,11 +22,9 @@ import com.limicala.config.BaseController;
 import com.limicala.constant.AppConstant;
 import com.limicala.constant.AppTableConstant;
 import com.limicala.model.Admin;
-
 import com.limicala.model.ConfigOS;
 import com.limicala.model.History;
 import com.limicala.model.Question;
-
 import com.limicala.model.ResponseModel;
 import com.limicala.model.Student;
 import com.limicala.util.ExcelUtil;
@@ -54,6 +51,13 @@ public class AdminController extends BaseController{
 		render("index.jsp");
 	}
 	
+	/**
+	 * 生成验证码
+	 */
+	public void img(){
+		
+		renderCaptcha();
+	}
 	/**
 	 * 检查用户账号是否存在
 	 */
@@ -132,17 +136,25 @@ public class AdminController extends BaseController{
 		ResponseModel rm = new ResponseModel();
 		String aid = getPara("id");//获取账号
 		String apassword = getPara("password");
-		//检查用户是否存在
-		if(Admin.me.checkIdExist(aid)){
-			boolean isPass = Admin.me.checkLogin(aid, apassword);
-			if(isPass){
-				SessionUtil.setAdminUserInfo(getSession(), aid);
-				rm.msgSuccess("登录成功!");
-			}else{
-				rm.msgFailed("密码错误!");
-			}
+		String verify_code = getPara("verify_code");
+		System.out.println("----"+verify_code);
+		System.out.println(validateCaptcha("verify_code"));
+		//检查验证码是否正确
+		if(!validateCaptcha("verify_code")){
+			rm.msgFailed("验证码错误");
 		}else{
-			rm.msgFailed("用户不存在!");
+			//检查用户是否存在
+			if(Admin.me.checkIdExist(aid)){
+				boolean isPass = Admin.me.checkLogin(aid, apassword);
+				if(isPass){
+					SessionUtil.setAdminUserInfo(getSession(), aid);
+					rm.msgSuccess("登录成功!");
+				}else{
+					rm.msgFailed("密码错误!");
+				}
+			}else{
+				rm.msgFailed("用户不存在!");
+			}
 		}
 		renderJson(rm);
 	}
