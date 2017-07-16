@@ -32,9 +32,11 @@ public class Question extends BaseModel<Question>{
 	private static final long serialVersionUID = -6174983832181476567L;
 
 	public static Question me = new Question();
-	
-	public String getTableName(){
-		return " "+AppTableConstant.QUESTION+" ";
+
+	private static String tableName = null;
+
+	static {
+		tableName = " " + AppTableConstant.QUESTION + " ";
 	}
 	
 	/**
@@ -114,7 +116,7 @@ public class Question extends BaseModel<Question>{
 		StringBuilder selectSql = new StringBuilder();
 		selectSql.append(" select * ");
 		StringBuilder fromSql = new StringBuilder();
-		fromSql.append("from "+getTableName());
+		fromSql.append("from "+tableName);
 		StringBuilder whereSql = new StringBuilder();
 		whereSql.append(" where 1 = 1 ");
 		if (qtype > 0) {

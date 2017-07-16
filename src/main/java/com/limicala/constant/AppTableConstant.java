@@ -19,14 +19,14 @@ public final class AppTableConstant {
 	public static final String QUESTION = "question";
 	public static final String QUESTION_KEY = "qid";
 	
-	public static final Integer QUESTION_JUDGE = 1;//判断题
-	public static final Integer QUESTION_SINGLE = 2;//单选题
-	public static final Integer QUESTION_MUTIL = 3;//多选题
-	
-	public static final Integer QUESTION_UNLIMIT = 0;//随机
-	public static final Integer QUESTION_LIMIT = 1;//优先
-	
 	//学生
 	public static final String STUDENT = "student";
 	public static final String STUDENT_KEY = "sid";
+
+	public static final Integer QUESTION_JUDGE = 1;//判断题
+	public static final Integer QUESTION_SINGLE = 2;//单选题
+	public static final Integer QUESTION_MUTIL = 3;//多选题
+
+	public static final Integer QUESTION_UNLIMIT = 0;//随机
+	public static final Integer QUESTION_LIMIT = 1;//优先
 }

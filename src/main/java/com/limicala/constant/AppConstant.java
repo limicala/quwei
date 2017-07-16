@@ -21,10 +21,6 @@ public final class AppConstant {
 	
 	public static final String sessionId = "sessionId";
 	
-	public static final String EXPORT_EXCEL_DIR = "export_excel_dir";
-	
-	public static final String IMPORT_EXCEL_DIR = "import_excel_dir";
-	
 	
 	/**
 	 * 上传、下载Excel表格列表头

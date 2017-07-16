@@ -37,39 +37,20 @@ public class AdminController extends BaseController{
 	public void index(){
 		render("login.jsp");
 	}
-	
-	//******************************************************************************************
-	//******************************************************************************************
-	//**************************************** 管 理 员 首 页  *************************************
-	//******************************************************************************************
-	//******************************************************************************************
-
 	/**
 	 * 管理员首页
 	 */
 	public void mainView(){
 		render("index.jsp");
 	}
-	
+
 	/**
 	 * 生成验证码
 	 */
 	public void img(){
-		
+
 		renderCaptcha();
 	}
-	/**
-	 * 检查用户账号是否存在
-	 */
-	public void checkAid(){
-		String aid = getPara("account");//账号
-		if(Admin.me.checkIdExist(aid)){
-			renderJson(true);
-		}else{
-			renderJson(false);
-		}
-	}
-	
 	/**
 	 * 生成响应二维码
 	 */
@@ -87,7 +68,7 @@ public class AdminController extends BaseController{
 		//因为前面应用使用Respones对象传递数据了，所有之后就不用再请求，就renderNull();
 		renderNull();
 	}
-	
+
 	/**
 	 * 下载二维码
 	 */
@@ -120,6 +101,27 @@ public class AdminController extends BaseController{
 			}
 		}
 	}
+	
+	//******************************************************************************************
+	//******************************************************************************************
+	//**************************************** 管 理 员 首 页  *************************************
+	//******************************************************************************************
+	//******************************************************************************************
+
+
+	/**
+	 * 检查用户账号是否存在
+	 */
+	public void checkAid(){
+		String aid = getPara("account");//账号
+		if(Admin.me.checkIdExist(aid)){
+			renderJson(true);
+		}else{
+			renderJson(false);
+		}
+	}
+	
+
 	
 	/**
 	 * 注销账号，退出系统
@@ -182,8 +184,6 @@ public class AdminController extends BaseController{
 
 	/**
 	 * 添加单个管理员
-	 * @param aid
-	 * @param apassword
 	 */
 	@Before(Tx.class)
 	public void save(){
@@ -200,8 +200,6 @@ public class AdminController extends BaseController{
 	
 	/**
 	 * 修改管理员信息
-	 * @param aid
-	 * @param apassword
 	 */
 	@Before(Tx.class)
 	public void update(){

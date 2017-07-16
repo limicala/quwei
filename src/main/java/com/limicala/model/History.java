@@ -9,6 +9,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.limicala.config.BaseModel;
+import com.limicala.constant.AppTableConstant;
 
 public class History extends BaseModel<History>{
 
@@ -16,6 +17,11 @@ public class History extends BaseModel<History>{
 	
 	public static History me = new History();
 
+	private static String tableName = null;
+
+	static {
+		tableName = " " + AppTableConstant.HISTORY + " ";
+	}
 	/**
 	 * 获取分页
 	 * @param hpn 				当前页码
@@ -29,7 +35,7 @@ public class History extends BaseModel<History>{
 		StringBuilder selectSql = new StringBuilder();
 		selectSql.append(" select * ");
 		StringBuilder fromSql = new StringBuilder();
-		fromSql.append("from history");
+		fromSql.append("from " + tableName);
 		StringBuilder whereSql = new StringBuilder();
 		whereSql.append(" where 1 = 1 ");
 		//学号stuNum、姓名name、学院college
@@ -51,7 +57,7 @@ public class History extends BaseModel<History>{
 	/**
 	 * 删除答题记录
 	 * 返回3个状态：“0”删除失败，一个都没删除成功；“1”删除成功；“2”只删除部分
-	 * @param ids 以“|”分割的记录主键值组成的字符串
+	 * @param hid 以“|”分割的记录主键值组成的字符串
 	 * @return
 	 */
 	public int deleteHistories(String hid) {
@@ -79,20 +85,20 @@ public class History extends BaseModel<History>{
 
 	/**
 	 * 通过条件排序的记录
-	 * @param condi 排序条件 "default"默认答题时间降序    "score"答题分数降序   "college"学院分组
+	 * @param condit 排序条件 "default"默认答题时间降序    "score"答题分数降序   "college"学院分组
 	 * @return
 	 */
-	public ArrayList<History> findByCondi(String condi) {
+	public ArrayList<History> findByCondi(String condit) {
 		StringBuilder selectSql = new StringBuilder();
 		selectSql.append(" select * ");
 		StringBuilder fromSql = new StringBuilder();
-		fromSql.append("from history");
+		fromSql.append("from " + tableName);
 		StringBuilder whereSql = new StringBuilder();
 		whereSql.append(" where 1 = 1 ");
-		if (StrKit.notBlank(condi) && !condi.equals("defalut")) {
-			if (condi.trim().equals("score"))
+		if (StrKit.notBlank(condit) && !condit.equals("defalut")) {
+			if (condit.trim().equals("score"))
 				whereSql.append("order by hscore desc");
-			else if (condi.trim().equals("college"))
+			else if (condit.trim().equals("college"))
 				whereSql.append("order by hcollege desc");
 			else
 				whereSql.append("order by htime desc");

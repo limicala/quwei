@@ -33,9 +33,11 @@ public class Student extends BaseModel<Student>{
 	private static final long serialVersionUID = 1L;
 	
 	public static Student me = new Student();
-	
-	public String getTableName(){
-		return " " + AppTableConstant.STUDENT + " ";
+
+	private static String tableName = null;
+
+	static {
+		tableName = " " + AppTableConstant.STUDENT + " ";
 	}
 	
 	private final static class SearchType{
@@ -104,7 +106,7 @@ public class Student extends BaseModel<Student>{
 		String sid = student.getStr("sid");
 		String sname = student.getStr("sname");
 		String scollege = student.getStr("scollege");
-		boolean flag = Db.update("update "+getTableName()+"set sid=?,sname=?,scollege=? where sid=?", sid,sname,scollege,old_sid) > 0;
+		boolean flag = Db.update("update "+tableName+"set sid=?,sname=?,scollege=? where sid=?", sid,sname,scollege,old_sid) > 0;
 		History history = History.me.findModelByStuNum(old_sid);
 		if(history != null){
 			flag = flag && (history.set("hstuNum", sid)

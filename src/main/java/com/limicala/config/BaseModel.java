@@ -119,7 +119,4 @@ public abstract class  BaseModel<M extends Model<?>> extends Model<M> {
 		
 		return Db.queryNumber(sql.toString());
 	}
-	public String getTableName(){
-		return null;
-	}
 }

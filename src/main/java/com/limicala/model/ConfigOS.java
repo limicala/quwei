@@ -1,6 +1,7 @@
 package com.limicala.model;
 
 import com.limicala.config.BaseModel;
+import com.limicala.constant.AppTableConstant;
 
 /**
  * 配置表的Model类
@@ -10,7 +11,12 @@ public class ConfigOS extends BaseModel<ConfigOS>{
 	private static final long serialVersionUID = -23763987677493413L;
 	
 	public static ConfigOS me = new ConfigOS();
-	
+
+	private static String tableName = null;
+
+	static {
+		tableName = " " + AppTableConstant.CONFIG_OS + " ";
+	}
 	public boolean hasConfiged(){
 		boolean flag = false;
 		ConfigOS configOS = ConfigOS.me.findById(1);

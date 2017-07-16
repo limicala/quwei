@@ -16,12 +16,11 @@ public class Admin extends BaseModel<Admin>{
 	private static final long serialVersionUID = 1L;
 	
 	public static Admin me = new Admin();
-	
-	/**
-	 * 获取表名
-	 */
-	public String getTableName(){
-		return " "+AppTableConstant.ADMIN+" ";
+
+	private static String tableName = null;
+
+	static {
+		tableName = " " + AppTableConstant.ADMIN + " ";
 	}
 	
 	/**
@@ -62,7 +61,7 @@ public class Admin extends BaseModel<Admin>{
 		StringBuilder selectSql = new StringBuilder();
 		selectSql.append(" select * ");
 		StringBuilder fromSql = new StringBuilder();
-		fromSql.append("from admin");
+		fromSql.append("from " + tableName);
 		StringBuilder whereSql = new StringBuilder();
 		whereSql.append(" where 1 = 1 ");
 		if (StrKit.notBlank(aid)) {
@@ -73,13 +72,13 @@ public class Admin extends BaseModel<Admin>{
 	}
 	
 	/**
-	 * 编辑用户信息
+	 * 修改管理员信息
 	 * @param old_aid
 	 * @param new_aid
 	 * @param password
 	 * @return
 	 */
 	public boolean updateInfo(String old_aid, String new_aid, String password){
-		return Db.update("update "+getTableName()+"set aid=?,apassword=? where aid=?", new_aid,password,old_aid)>0;
+		return Db.update("update" + tableName + "set aid=?,apassword=? where aid=?", new_aid,password,old_aid)>0;
 	}
 }

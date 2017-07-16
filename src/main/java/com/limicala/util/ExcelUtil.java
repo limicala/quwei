@@ -29,7 +29,7 @@ public final class ExcelUtil {
 	 * 
 	 * 注意：此处只是简单的将数据全部读入容器，不会检测数据是否符合规范
 	 * 
-	 * @param excelInputStream
+	 * @param workbook
 	 * @param excelName
 	 * @return
 	 */
@@ -48,7 +48,7 @@ public final class ExcelUtil {
 	 * 
 	 * 注意：此处只是简单的将数据全部读入容器，不会检测数据是否符合规范
 	 * 
-	 * @param excelInputStream
+	 * @param workbook
 	 * @param excelName
 	 * @return
 	 */
@@ -64,7 +64,7 @@ public final class ExcelUtil {
 	
 	/**
 	 * 读取后缀为“xls”的Excel文件(2003版本)
-	 * @param excelInputStream
+	 * @param workbook
 	 * @return
 	 */
 	public static List<Student> readStudentFromExcelXls(Workbook workbook) {
@@ -88,7 +88,7 @@ public final class ExcelUtil {
 	
 	/**
 	 * 读取后缀为“xlsx”的Excel文件(2007版本)
-	 * @param excelInputStream
+	 * @param workbook
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
@@ -118,7 +118,7 @@ public final class ExcelUtil {
 
 	/**
 	 * 读取后缀为“xls”的Excel文件(2003版本)
-	 * @param excelInputStream
+	 * @param workbook
 	 * @return
 	 */
 	public static List<Question> readQuestionFromExcelXls(Workbook workbook){
@@ -164,7 +164,7 @@ public final class ExcelUtil {
 	
 	/**
 	 * 读取后缀为“xlsx”的Excel文件(2007版本)
-	 * @param excelInputStream
+	 * @param workbook
 	 * @return
 	 */
 	public static List<Question> readQuestionFromExcelXlsx(Workbook workbook){
@@ -210,7 +210,7 @@ public final class ExcelUtil {
 	
 	/**
 	 * 获取表格有效数据总行数
-	 * @param excelInputStream
+	 * @param workbook
 	 * @return
 	 */
 	public static int excelAllRowNum(Workbook workbook){
@@ -219,7 +219,7 @@ public final class ExcelUtil {
 	
 	/**
 	 * 判断题型适合和上传的表格内容表头相同
-	 * @param excelInputStream
+	 * @param workbook
 	 * @param qtype
 	 * @return
 	 */
@@ -269,8 +269,7 @@ public final class ExcelUtil {
 	
 	/**
 	 * 判断学生适合和上传的表格内容表头相同
-	 * @param excelInputStream
-	 * @param qtype
+	 * @param workbook
 	 * @return
 	 */
 	public static boolean checkStudentStandard(Workbook workbook){
